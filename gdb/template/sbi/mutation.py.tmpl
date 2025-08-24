@@ -1,0 +1,47 @@
+import gdb
+import os
+import json
+
+"""
+This script is a GDB mutator that modifies the values of registers
+
+Data file json format:
+{
+    "register_name": "value",
+    ...
+}
+
+e.g.
+{
+    "a0": "0x12345678",
+    "a1": "0x87654321"
+}
+"""
+class FuzzingMutator(gdb.Breakpoint):
+    def __init__(self):
+        super().__init__("*__TARGET_ADDRESS__", gdb.BP_BREAKPOINT)
+        self.silent = True
+        self.data_file = "__DATA_FILE__"
+    def stop(self):
+
+        try:
+            if os.path.exists(self.data_file):
+                data = None
+                with open(self.data_file, "r") as f:
+                    data = json.load(f)
+                
+                for register in data:
+                    new_val = int(data[register].strip(), 16)
+
+                    print(f"register = {register} : new_val = {new_val:x}")
+                    gdb.execute(f"set ${register} = {new_val}")
+
+                gdb.execute("detach")
+                gdb.execute("quit")
+        except Exception as e:
+            print(f"[ERROR] {e}")
+        return False
+
+FuzzingMutator()
+print(">>> breakpoint has been set")
+print(f"current dir is {os.getcwd()}")

@@ -1,0 +1,210 @@
+From d9ccc79dfa01143ee97e3f6f0316120b7cebaad6 Mon Sep 17 00:00:00 2001
+From: Masami Ichikawa <masami256@gmail.com>
+Date: Sun, 13 Jul 2025 01:08:08 +0900
+Subject: [PATCH] Add new xtest case for fuzzing
+
+Add test for fuzzing.
+
+Signed-off-by: Masami Ichikawa <masami256@gmail.com>
+---
+ host/xtest/CMakeLists.txt |  3 ++
+ host/xtest/Makefile       |  3 +-
+ host/xtest/fuzz_test.c    | 98 +++++++++++++++++++++++++++++++++++++++
+ host/xtest/xtest_main.c   |  9 +++-
+ host/xtest/xtest_test.h   |  3 ++
+ 5 files changed, 114 insertions(+), 2 deletions(-)
+ create mode 100644 host/xtest/fuzz_test.c
+
+diff --git a/host/xtest/CMakeLists.txt b/host/xtest/CMakeLists.txt
+index da193bd..407b74b 100644
+--- a/host/xtest/CMakeLists.txt
++++ b/host/xtest/CMakeLists.txt
+@@ -60,6 +60,7 @@ set (SRC
+ 	install_ta.c
+ 	stats.c
+ 	symm_cipher_perf.c
++	fuzz_test.c
+ 	xtest_helpers.c
+ 	xtest_main.c
+ 	xtest_test.c
+@@ -115,6 +116,8 @@ if (CFG_CRYPTO_SE05X)
+ 	add_compile_options(-DCFG_CRYPTO_SE05X)
+ endif()
+ 
++add_compile_options(-DFUZZ_TEST)
++
+ ################################################################################
+ # Built binary
+ ################################################################################
+diff --git a/host/xtest/Makefile b/host/xtest/Makefile
+index 18ffb7b..8408caa 100644
+--- a/host/xtest/Makefile
++++ b/host/xtest/Makefile
+@@ -75,10 +75,11 @@ srcs +=	adbg/src/adbg_case.c \
+ 	install_ta.c \
+ 	stats.c \
+ 	symm_cipher_perf.c \
++	fuzz_test.c \
+ 	xtest_helpers.c \
+ 	xtest_main.c \
+ 	xtest_test.c \
+-	xtest_uuid_helpers.c
++	xtest_uuid_helpers.c \
+ 
+ ifeq ($(CFG_SECURE_PARTITION)-$(CFG_SPMC_TESTS),y-y)
+ srcs += ffa_spmc_1000.c
+diff --git a/host/xtest/fuzz_test.c b/host/xtest/fuzz_test.c
+new file mode 100644
+index 0000000..cbd8519
+--- /dev/null
++++ b/host/xtest/fuzz_test.c
+@@ -0,0 +1,98 @@
++
++#include <assert.h>
++#include <ck_debug.h>
++#include <inttypes.h>
++#ifdef OPENSSL_FOUND
++#include <openssl/asn1.h>
++#include <openssl/bio.h>
++#include <openssl/evp.h>
++#include <openssl/pem.h>
++#include <openssl/x509.h>
++#endif
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <utee_defines.h>
++#include <util.h>
++
++#include "xtest_test.h"
++#include "xtest_helpers.h"
++#include "xtest_uuid_helpers.h"
++#include "ta_crypt.h"
++
++struct xtest_crypto_session {
++	ADBG_Case_t *c;
++	TEEC_Session *session;
++	uint32_t cmd_id_sha256;
++	uint32_t cmd_id_aes256ecb_encrypt;
++	uint32_t cmd_id_aes256ecb_decrypt;
++};
++
++static void xtest_fuzz_crypto_test(struct xtest_crypto_session *cs)
++{
++	uint32_t ret_orig = 0;
++	uint8_t crypt_out[16] = { };
++	uint8_t crypt_in[16] = { 22, 17 };
++	FILE *fp;
++	crypt_in[15] = 60;
++
++	fp = fopen("/root/hostshare/fuzz_input.txt", "r");
++	if (!fp) {
++		Do_ADBG_Log("Failed to open fuzz_input.txt");
++		return;
++	}
++
++	uint32_t test_cmd_id = 0;
++	if (fscanf(fp, "%x", &test_cmd_id) != 1) {
++		Do_ADBG_Log("Failed to read command ID from fuzz_input.txt");
++		fclose(fp);
++		return;
++	}
++
++	fclose(fp);
++
++	Do_ADBG_Log("Running fuzz test with command ID: 0x%x\n", test_cmd_id);
++
++	Do_ADBG_BeginSubCase(cs->c, "Cryptographic operation coverage");
++	{
++		TEEC_Operation op = TEEC_OPERATION_INITIALIZER;
++
++		op.params[0].tmpref.buffer = crypt_in;
++		op.params[0].tmpref.size = sizeof(crypt_in);
++		op.params[1].tmpref.buffer = crypt_out;
++		op.params[1].tmpref.size = sizeof(crypt_out);
++		op.paramTypes = TEEC_PARAM_TYPES(TEEC_MEMREF_TEMP_INPUT,
++						 TEEC_MEMREF_TEMP_OUTPUT,
++						 TEEC_NONE, TEEC_NONE);
++
++		(void)ADBG_EXPECT_TEEC_SUCCESS(cs->c,
++					       TEEC_InvokeCommand(cs->session,
++						test_cmd_id,
++						&op,
++						&ret_orig));
++	}
++	Do_ADBG_EndSubCase(cs->c, "Cryptographic operation coverage");
++}
++
++static void xtest_fuzz_test_1000(ADBG_Case_t *c)
++{
++	TEEC_Session session = { };
++	uint32_t ret_orig = 0;
++	struct xtest_crypto_session cs = { c, &session, TA_CRYPT_CMD_SHA256,
++					   TA_CRYPT_CMD_AES256ECB_ENC,
++					   TA_CRYPT_CMD_AES256ECB_DEC };
++
++	if (!ADBG_EXPECT_TEEC_SUCCESS(c, xtest_teec_open_session(
++					      &session, &crypt_user_ta_uuid,
++					      NULL, &ret_orig)))
++		return;
++
++	/* Run the fuzz test" */
++	xtest_fuzz_crypto_test(&cs);
++
++	TEEC_CloseSession(&session);
++}
++
++ADBG_CASE_DEFINE(fuzz, 1000, xtest_fuzz_test_1000,
++		 "fuzz test sample");
++
+diff --git a/host/xtest/xtest_main.c b/host/xtest/xtest_main.c
+index f0fdaac..eb67237 100644
+--- a/host/xtest/xtest_main.c
++++ b/host/xtest/xtest_main.c
+@@ -42,6 +42,9 @@ ADBG_SUITE_DEFINE(ffa_spmc);
+ #endif
+ ADBG_SUITE_DEFINE(regression);
+ 
++// Fuzz testing
++ADBG_SUITE_DEFINE(fuzz);
++
+ char *xtest_progname;
+ char *xtest_tee_name = NULL;
+ unsigned int level = 0;
+@@ -65,7 +68,9 @@ static const char glevel[] = "0";
+ #define FFA_SPMC_SUITE	""
+ #endif
+ 
+-static char gsuitename[] = "regression" GP_SUITE PKCS11_SUITE FFA_SPMC_SUITE;
++#define FUZZ_SUITE	"+fuzz"
++
++static char gsuitename[] = "regression" FUZZ_SUITE GP_SUITE PKCS11_SUITE FFA_SPMC_SUITE;
+ 
+ void usage(char *program);
+ 
+@@ -268,6 +273,8 @@ next:
+ 		else if (!strcmp(token, "ffa_spmc"))
+ 			ret = Do_ADBG_AppendToSuite(&all, &ADBG_Suite_ffa_spmc);
+ #endif
++		else if (!strcmp(token, "fuzz"))
++			ret = Do_ADBG_AppendToSuite(&all, &ADBG_Suite_fuzz);
+ 		else {
+ 			fprintf(stderr, "Unknown test suite: %s\n", token);
+ 			ret = -1;
+diff --git a/host/xtest/xtest_test.h b/host/xtest/xtest_test.h
+index 0b21ef1..c4b37e9 100644
+--- a/host/xtest/xtest_test.h
++++ b/host/xtest/xtest_test.h
+@@ -25,6 +25,9 @@ ADBG_SUITE_DECLARE(ffa_spmc);
+ #endif
+ ADBG_SUITE_DECLARE(regression);
+ 
++// Fuzz testing
++ADBG_SUITE_DECLARE(fuzz);
++
+ /* TEEC_Result */
+ ADBG_ENUM_TABLE_DECLARE(TEEC_Result);
+ 
+-- 
+2.50.1
+

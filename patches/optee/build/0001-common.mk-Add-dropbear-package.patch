@@ -1,0 +1,31 @@
+From a5a4823e245e191e3fd847ba9b3db75329da9551 Mon Sep 17 00:00:00 2001
+From: Masami Ichikawa <masami256@gmail.com>
+Date: Sun, 29 Jun 2025 10:59:55 +0900
+Subject: [PATCH] common.mk: Add dropbear package
+
+Add dropbear package to login via ssh for fuzzing.
+
+Signed-off-by: Masami Ichikawa <masami256@gmail.com>
+---
+ common.mk | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/common.mk b/common.mk
+index f3eaf99..919bbea 100644
+--- a/common.mk
++++ b/common.mk
+@@ -331,6 +331,11 @@ BR2_PACKAGE_OPENSC ?= y
+ # Embed keyutils for trusted-keys
+ BR2_PACKAGE_KEYUTILS ?= y
+ 
++# SSH and related
++BR2_PACKAGE_LIBXCRYPT=y
++BR2_PACKAGE_HAVEGED=y
++BR2_PACKAGE_DROPBEAR=y
++
+ # All BR2_* variables from the makefile or the environment are appended to
+ # ../out-br/extra.conf. All values are quoted "..." except y and n.
+ double-quote = "#" # This really sets the variable to " and avoids upsetting vim's syntax highlighting
+-- 
+2.50.1
+

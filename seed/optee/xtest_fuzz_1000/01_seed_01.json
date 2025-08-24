@@ -1,0 +1,7 @@
+{
+    "cmd_id": {
+        "fixed": false,
+        "value": "0xff",
+        "type": "integer"
+    }
+}

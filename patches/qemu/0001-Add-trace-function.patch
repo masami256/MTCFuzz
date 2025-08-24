@@ -1,0 +1,180 @@
+From 2885b35f92456701bb0e8b993bbf3606a14b46d1 Mon Sep 17 00:00:00 2001
+From: Masami Ichikawa <masami256@gmail.com>
+Date: Thu, 1 May 2025 22:23:52 +0900
+Subject: [PATCH] Add trace function
+
+Signed-off-by: Masami Ichikawa <masami256@gmail.com>
+---
+ accel/tcg/cpu-exec.c          |  4 +++
+ include/trace/mtcfuzz_trace.h |  9 ++++++
+ qapi/trace.json               | 33 +++++++++++++++++++
+ trace/qmp.c                   | 61 ++++++++++++++++++++++++++++++++++-
+ 4 files changed, 106 insertions(+), 1 deletion(-)
+ create mode 100644 include/trace/mtcfuzz_trace.h
+
+diff --git a/accel/tcg/cpu-exec.c b/accel/tcg/cpu-exec.c
+index 8163295f34..b20bd8f11d 100644
+--- a/accel/tcg/cpu-exec.c
++++ b/accel/tcg/cpu-exec.c
+@@ -41,6 +41,8 @@
+ #include "tb-context.h"
+ #include "internal-common.h"
+ #include "internal-target.h"
++#include "trace/mtcfuzz_trace.h"
++
+ 
+ /* -icount align implementation. */
+ 
+@@ -603,6 +605,7 @@ void cpu_exec_step_atomic(CPUState *cpu)
+ 
+         cpu_exec_enter(cpu);
+         /* execute the generated code */
++        mtcfuzz_record_tb_exec((uint64_t) pc);
+         trace_exec_tb(tb, pc);
+         cpu_tb_exec(cpu, tb, &tb_exit);
+         cpu_exec_exit(cpu);
+@@ -904,6 +907,7 @@ static inline void cpu_loop_exec_tb(CPUState *cpu, TranslationBlock *tb,
+                                     vaddr pc, TranslationBlock **last_tb,
+                                     int *tb_exit)
+ {
++    mtcfuzz_record_tb_exec((uint64_t) pc);
+     trace_exec_tb(tb, pc);
+     tb = cpu_tb_exec(cpu, tb, tb_exit);
+     if (*tb_exit != TB_EXIT_REQUESTED) {
+diff --git a/include/trace/mtcfuzz_trace.h b/include/trace/mtcfuzz_trace.h
+new file mode 100644
+index 0000000000..768d414f54
+--- /dev/null
++++ b/include/trace/mtcfuzz_trace.h
+@@ -0,0 +1,9 @@
++#ifndef MTCFUZZ_TRACE_H
++#define MTCFUZZ_TRACE_H
++
++#include <inttypes.h>
++
++/* Implemented in trace/qmp.c */
++void mtcfuzz_record_tb_exec(uint64_t pc);
++
++#endif
+\ No newline at end of file
+diff --git a/qapi/trace.json b/qapi/trace.json
+index eb5f63f513..d9f48b2113 100644
+--- a/qapi/trace.json
++++ b/qapi/trace.json
+@@ -82,3 +82,36 @@
+ ##
+ { 'command': 'trace-event-set-state',
+   'data': {'name': 'str', 'enable': 'bool', '*ignore-unavailable': 'bool' } }
++
++##
++# @mtcfuzz-trace-start:
++#
++# Start a fuzzing trace.
++#
++# @filename: Name of the file to store the trace.
++#
++# Since: 10.0
++#
++# .. qmp-example::
++#
++#     -> { "execute": "mtcfuzz-trace-start",
++#          "arguments": { "filename": "trace.log" } }
++#     <- { "return": {} }
++##
++{ 'command': 'mtcfuzz-trace-start',
++  'data': { 'filename': 'str' }}
++
++##
++# @mtcfuzz-trace-stop:
++#
++# Stop a fuzzing trace.
++#
++# Since: 10.0
++#
++# .. qmp-example::
++#
++#     -> { "execute": "mtcfuzz-trace-stop" }
++#     <- { "return": {} }
++##
++{ 'command': 'mtcfuzz-trace-stop'}
++  
+\ No newline at end of file
+diff --git a/trace/qmp.c b/trace/qmp.c
+index 074a27b204..825cc4c5ba 100644
+--- a/trace/qmp.c
++++ b/trace/qmp.c
+@@ -11,7 +11,8 @@
+ #include "qapi/error.h"
+ #include "qapi/qapi-commands-trace.h"
+ #include "control.h"
+-
++#include "qemu/thread.h"
++#include "trace/mtcfuzz_trace.h"
+ 
+ static bool check_events(bool ignore_unavailable, bool is_pattern,
+                          const char *name, Error **errp)
+@@ -106,3 +107,61 @@ void qmp_trace_event_set_state(const char *name, bool enable,
+         trace_event_set_state_dynamic(ev, enable);
+     }
+ }
++
++static FILE *mtcfuzz_tb_trace_fp = NULL;
++static QemuMutex mtcfuzz_tb_trace_lock;
++
++void qmp_mtcfuzz_trace_start(const char *filename, Error **errp)
++{
++    qemu_mutex_lock(&mtcfuzz_tb_trace_lock);
++
++    if (mtcfuzz_tb_trace_fp) {
++        error_setg(errp, "TB trace already running");
++        qemu_mutex_unlock(&mtcfuzz_tb_trace_lock);
++        return;
++    }
++
++    mtcfuzz_tb_trace_fp = fopen(filename, "w");
++    if (!mtcfuzz_tb_trace_fp) {
++        error_setg(errp, "Failed to open trace file: %s", filename);
++        qemu_mutex_unlock(&mtcfuzz_tb_trace_lock);
++        return;
++    }
++
++    qemu_mutex_unlock(&mtcfuzz_tb_trace_lock);
++}
++
++void qmp_mtcfuzz_trace_stop(Error **errp)
++{
++    qemu_mutex_lock(&mtcfuzz_tb_trace_lock);
++
++    if (!mtcfuzz_tb_trace_fp) {
++        error_setg(errp, "TB trace is not active");
++        qemu_mutex_unlock(&mtcfuzz_tb_trace_lock);
++        return;
++    }
++
++    fclose(mtcfuzz_tb_trace_fp);
++    mtcfuzz_tb_trace_fp = NULL;
++
++    qemu_mutex_unlock(&mtcfuzz_tb_trace_lock);
++}
++
++static void __attribute__((__constructor__)) mtcfuzz_init(void)
++{
++    qemu_mutex_init(&mtcfuzz_tb_trace_lock);
++}
++
++
++void mtcfuzz_record_tb_exec(uint64_t pc)
++{
++    qemu_mutex_lock(&mtcfuzz_tb_trace_lock);
++    
++    if (!mtcfuzz_tb_trace_fp) {
++        qemu_mutex_unlock(&mtcfuzz_tb_trace_lock);
++        return;
++    }
++
++    fprintf(mtcfuzz_tb_trace_fp, "0x%" PRIx64"\n", pc);
++    qemu_mutex_unlock(&mtcfuzz_tb_trace_lock);
++}
+-- 
+2.50.1
+

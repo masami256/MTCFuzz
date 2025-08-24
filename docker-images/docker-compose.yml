@@ -1,0 +1,12 @@
+services:
+  mtcfuzz:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mtcfuzz
+    container_name: mtcfuzz
+    command: /bin/sh -c "sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc && /bin/bash"
+    volumes:
+      - $HOME/projects:/home/build/projects:rw
+    privileged: true
+    user: build

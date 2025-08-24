@@ -1,0 +1,60 @@
+{
+    "target_type": "qemu",
+    "qemu_params": {
+        "qemu_path": "/home/build/projects/srcs/qemu/build/qemu-system-riscv64",
+        "machine": "virt",
+        "bios": "/home/build/projects/srcs/opensbi/build/platform/generic/firmware/fw_jump.bin",
+        "kernel": "/home/build/projects/srcs/linux/arch/riscv/boot/Image",
+        "append": "root=/dev/vda ro console=ttyS0 nokaslr oops=panic panic_on_warn=1 panic_on_oops=1",
+        "initrd": "/home/build/projects/srcs/buildroot/output/images/rootfs.cpio.gz",
+        "host": "10.0.2.2",
+        "port": 10022
+    },
+    "fuzzing": {
+        "kernel_binary": "/home/build/projects/srcs/linux/vmlinux",
+        "firmware_binary": "/home/build/projects/srcs/opensbi/build/platform/generic/firmware/fw_jump.elf",
+        "wait_for_qemu_seconds": 3,
+        "fuzzer_module": "lib.sbi.sbi_fuzzer",
+        "fuzzer_class": "SBIFuzzer",
+        "coverage_module": "lib.sbi.sbi_coverage",
+        "coverage_class": "SBICoverage",
+        "seed_manager": "lib.sbi.sbi_seed_manager",
+        "seed_manager_class": "SBISeedManager",
+        "max_fuzzing_loop": 1000,
+        "default_energy": 100,
+        "seed_dir": "/home/build/projects/mtcfuzz/seed/sbi",
+        "kernel_module": "/home/build/projects/mtcfuzz/test_harnesses/opensbi/ecall_fuzzing/driver/sbi_fuzz.ko",
+        "harness": "/home/build/projects/mtcfuzz/test_harnesses/opensbi/ecall_fuzzing/harness/harness",
+        "remote_work_dir": "/root/work",
+        "remote_command_exec_timeout": 2,
+        "local_work_dir": "/home/build/projects/mtcfuzz/work",
+        "ssh_retry_max": 5,
+        "machine_info_dir": "machine_info",
+        "num_fuzzers": 1,
+        "use_gdb": false,
+        "gdb_path": "/usr/bin/gdb-multiarch",
+        "gdb_port": 1234,
+        "target_binary": "/home/build/projects/srcs/linux/vmlinux",
+        "target_address": "0xffffffff80029a3e",
+        "gdb_script_template": "/home/build/projects/mtcfuzz/gdb/template/sbi/fuzz.gdb.tmpl",
+        "mutator_script_template": "/home/build/projects/mtcfuzz/gdb/template/sbi/mutation.py.tmpl",
+        "assign_energy_function": "aflfast",
+        "ignore_kernel_coverage": false,
+        "ignore_firmware_coverage": false
+    },
+    "address_filters": {
+        "kernel": [
+            {
+                "lower": "0xffffffff8001a512",
+                "upper": "0xffffffff8001b732"
+            }
+        ],
+        "firmware": [
+            {
+                "lower": "0x80000000",
+                "upper": "0x80050000"
+            }
+        ]
+    },
+    "debug": true
+}

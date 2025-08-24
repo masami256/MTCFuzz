@@ -1,0 +1,45 @@
+{
+    "target_type": "qemu",
+    "qemu_params": {
+        "qemu_path": "/home/build/projects/srcs/qemu/build/qemu-system-riscv64",
+        "machine": "virt",
+        "bios": "/home/build/projects/srcs/opensbi/build/platform/generic/firmware/fw_jump.bin",
+        "kernel": "/home/build/projects/srcs/linux/arch/riscv/boot/Image",
+        "append": "root=/dev/vda ro console=ttyS0 nokaslr oops=panic panic_on_warn=1 panic_on_oops=1",
+        "initrd": "/home/build/projects/srcs/buildroot/output/images/rootfs.cpio.gz"
+    },
+    "fuzzing": {
+        "kernel_binary": "/home/build/projects/srcs/linux/vmlinux",
+        "firmware_binary": "/home/build/projects/srcs/opensbi/build/platform/generic/firmware/fw_jump.elf",
+        "wait_for_qemu_seconds": 3,
+        "fuzzer_module": "lib.sbi.sbi_fuzzer",
+        "fuzzer_class": "SBIFuzzer",
+        "coverage_module": "lib.sbi.sbi_coverage",
+        "coverage_class": "SBICoverage",
+        "seed_manager": "lib.sbi.sbi_seed_manager",
+        "seed_manager_class": "SBISeedManager",
+        "default_energy": 50,
+        "seed_dir": "/home/build/projects/mtcfuzz/seed/sbi/sbi_base_ecall_coverage_test",
+        "kernel_module": "/home/build/projects/mtcfuzz/test_harnesses/opensbi/ecall_fuzzing/driver/sbi_fuzz.ko",
+        "harness": "/home/build/projects/mtcfuzz/test_harnesses/opensbi/ecall_fuzzing/harness/harness",
+        "local_work_dir": "/home/build/projects/mtcfuzz/work",
+        "assign_energy_function": "aflfast",
+        "ignore_kernel_coverage": false,
+        "ignore_firmware_coverage": true
+    },
+    "address_filters": {
+        "kernel": [
+            {
+                "lower": "0xffffffff8001a512",
+                "upper": "0xffffffff8001b732"
+            }
+        ],
+        "firmware": [
+            {
+                "lower": "0x80000000",
+                "upper": "0x80050000"
+            }
+        ]
+    },
+    "debug": true
+}

@@ -1,0 +1,19 @@
+# Download, Build, and Test run
+
+```
+mkdir optee
+cd optee
+repo init -u https://github.com/OP-TEE/manifest.git -m qemu_v8.xml
+repo sync -j4 --no-clone-bundle
+cd buildroot
+git am /home/build/projects/mtcfuzz/patches/optee/buildroot/0001-dropbear-Allow-empty-password-login.patch
+cd ../build
+git am /home/build/projects/mtcfuzz/patches/optee/build/0001-common.mk-Add-dropbear-package.patch
+git am /home/build/projects/mtcfuzz/patches/optee/build/0001-kconfigs-Enable-debug-info-options-to-qemu.conf.patch
+git am /home/build/projects/mtcfuzz/patches/optee/build/0001-Add-kernel-parameters-for-fuzzing.patch
+git am /home/build/projects/mtcfuzz/patches/optee/build/0001-Set-BOOTDELAY-parameter-to-0.patch
+make -j$(nproc) toolchains
+make DEBUG=1 -j$(nproc)
+make run DEBUG=1 CFG_CORE_ASLR=n -j$(nproc)
+```
+

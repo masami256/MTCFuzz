@@ -1,0 +1,26 @@
+From 5f5d1fe286d00fdb3dd0ae5593dc641a0b29f9ab Mon Sep 17 00:00:00 2001
+From: Masami Ichikawa <masami256@gmail.com>
+Date: Thu, 10 Jul 2025 21:09:44 +0900
+Subject: [PATCH] kconfigs: Enable debug info options to qemu.conf
+
+Enable debug info options to be able to get source line information.
+
+Signed-off-by: Masami Ichikawa <masami256@gmail.com>
+---
+ kconfigs/qemu.conf | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kconfigs/qemu.conf b/kconfigs/qemu.conf
+index f8373ee..b39a7ce 100644
+--- a/kconfigs/qemu.conf
++++ b/kconfigs/qemu.conf
+@@ -15,3 +15,6 @@ CONFIG_ENCRYPTED_KEYS=y
+ CONFIG_ARM_FFA_TRANSPORT=y
+ CONFIG_TCG_TPM=y
+ CONFIG_TCG_FTPM_TEE=y
++CONFIG_DEBUG_INFO=y
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
++CONFIG_DEBUG_INFO_REDUCED is not set
+-- 
+2.50.0
+

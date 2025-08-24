@@ -1,0 +1,11 @@
+set pagination off
+handle SIGINT nostop noprint
+set debuginfod enabled off
+set logging file __LOG_FILE_NAME__
+set logging overwrite on
+set logging enabled on
+
+target remote :__PORT__
+
+source __MUTATOR_FILE__
+continue
