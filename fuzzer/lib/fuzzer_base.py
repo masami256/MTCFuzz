@@ -66,5 +66,5 @@ class FuzzerBase:
         # print(f'Send file {self.config["fuzzing"]["harness"]} to {self.remote_harness_path}')
         self.ssh_client.send_file(self.config["fuzzing"]["harness"], f"{self.remote_harness_path}")
 
-    def generate_input(self, seed: dict, **kwargs) -> None:
+    def generate_input(self, seed: dict, **kwargs) -> dict:
         raise NotImplementedError("generate_input() must be implemented in the subclass")
