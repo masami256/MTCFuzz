@@ -1,0 +1,12 @@
+{
+    "input_len": {
+        "fixed": false,
+        "value": "0xffff",
+        "type": "integer"
+    },
+    "buffer_len": {
+        "fixed": false,
+        "value": "0xffff",
+        "type": "integer"
+    }
+}

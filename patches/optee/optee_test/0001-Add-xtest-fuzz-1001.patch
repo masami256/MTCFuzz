@@ -1,0 +1,117 @@
+From f0381f296f32622cbf7b72278c49d06a21873122 Mon Sep 17 00:00:00 2001
+From: Masami Ichikawa <masami256@gmail.com>
+Date: Fri, 29 Aug 2025 20:21:04 +0900
+Subject: [PATCH] Add xtest fuzz 1001
+
+Add xtest fuzz 1001
+
+Signed-off-by: Masami Ichikawa <masami256@gmail.com>
+---
+ host/xtest/fuzz_test.c | 86 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 85 insertions(+), 1 deletion(-)
+
+diff --git a/host/xtest/fuzz_test.c b/host/xtest/fuzz_test.c
+index cbd8519..5548b72 100644
+--- a/host/xtest/fuzz_test.c
++++ b/host/xtest/fuzz_test.c
+@@ -74,6 +74,69 @@ static void xtest_fuzz_crypto_test(struct xtest_crypto_session *cs)
+ 	Do_ADBG_EndSubCase(cs->c, "Cryptographic operation coverage");
+ }
+ 
++static void xtest_fuzz_crypto_input_test(struct xtest_crypto_session *cs)
++{
++	uint32_t ret_orig = 0;
++	uint8_t *crypt_out = NULL;
++	uint8_t *crypt_in = NULL;
++	FILE *fp;
++
++	fp = fopen("/root/hostshare/fuzz_input.txt", "r");
++	if (!fp) {
++		Do_ADBG_Log("Failed to open fuzz_input.txt");
++		return;
++	}
++
++	uint32_t input_len = 0;
++	uint32_t buffer_len = 0;
++	
++	if (fscanf(fp, "%x,%x", &input_len, &buffer_len) != 2) {
++		Do_ADBG_Log("Failed to read command ID from fuzz_input.txt");
++		fclose(fp);
++		return;
++	}
++
++	fclose(fp);
++
++	crypt_in = malloc(sizeof(uint8_t) * buffer_len);
++	if (!crypt_in) {
++		Do_ADBG_Log("Failed to allocate input buffer memory: size %d bytes\n", buffer_len);
++		return;
++	}
++	memset(crypt_in, 0x41, buffer_len);
++
++	crypt_out = malloc(sizeof(uint8_t) * buffer_len);
++	if (!crypt_out) {
++		Do_ADBG_Log("Failed to allocate output buffer memory: size %d bytes\n", buffer_len);
++		return;
++	}
++	memset(crypt_out, 0x0, buffer_len);
++
++	Do_ADBG_Log("Running fuzz test with given buffer size: 0x%x, actual size 0x%x\n", input_len, buffer_len);
++
++	Do_ADBG_BeginSubCase(cs->c, "Cryptographic operation coverage");
++	{
++		TEEC_Operation op = TEEC_OPERATION_INITIALIZER;
++
++		op.params[0].tmpref.buffer = crypt_in;
++		op.params[0].tmpref.size = input_len;
++		op.params[1].tmpref.buffer = crypt_out;
++		op.params[1].tmpref.size = input_len;
++		op.paramTypes = TEEC_PARAM_TYPES(TEEC_MEMREF_TEMP_INPUT,
++						 TEEC_MEMREF_TEMP_OUTPUT,
++						 TEEC_NONE, TEEC_NONE);
++
++		(void)ADBG_EXPECT_TEEC_SUCCESS(cs->c,
++					       TEEC_InvokeCommand(cs->session,
++						cs->cmd_id_aes256ecb_encrypt,
++						&op,
++						&ret_orig));
++	}
++	free(crypt_in);
++	free(crypt_out);
++	Do_ADBG_EndSubCase(cs->c, "Cryptographic operation coverage");
++}
++
+ static void xtest_fuzz_test_1000(ADBG_Case_t *c)
+ {
+ 	TEEC_Session session = { };
+@@ -94,5 +157,26 @@ static void xtest_fuzz_test_1000(ADBG_Case_t *c)
+ }
+ 
+ ADBG_CASE_DEFINE(fuzz, 1000, xtest_fuzz_test_1000,
+-		 "fuzz test sample");
++		 "fuzzing Cryptographic operation");
++
++static void xtest_fuzz_test_1001(ADBG_Case_t *c)
++{
++	TEEC_Session session = { };
++	uint32_t ret_orig = 0;
++	struct xtest_crypto_session cs = { c, &session, TA_CRYPT_CMD_SHA256,
++					   TA_CRYPT_CMD_AES256ECB_ENC,
++					   TA_CRYPT_CMD_AES256ECB_DEC };
++
++	if (!ADBG_EXPECT_TEEC_SUCCESS(c, xtest_teec_open_session(
++					      &session, &crypt_user_ta_uuid,
++					      NULL, &ret_orig)))
++		return;
++
++	/* Run the fuzz test" */
++	xtest_fuzz_crypto_input_test(&cs);
++
++	TEEC_CloseSession(&session);
++}
+ 
++ADBG_CASE_DEFINE(fuzz, 1001, xtest_fuzz_test_1001,
++		 "fuzzing crypto input");
+-- 
+2.51.0
+

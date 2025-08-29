@@ -1,0 +1,93 @@
+{
+    "target_type": "qemu",
+    "qemu_params": {
+        "qemu_path": "/home/build/projects/srcs/qemu/build/qemu-system-aarch64",
+        "machine": "virt,acpi=off,secure=on,mte=off,gic-version=3,virtualization=false",
+        "bios": "/home/build/projects/mtcfuzz/work/bin/bl1.bin",
+        "kernel": "/home/build/projects/mtcfuzz/work/bin/Image",
+        "append": "console=ttyAMA0,115200 keep_bootcon root=/dev/vda2 nokaslr oops=panic panic_on_warn=1 panic_on_oops=1",
+        "initrd": "/home/build/projects/srcs/optee/out/bin/rootfs.cpio.uboot",
+        "smp": "2",
+        "memory": "2048",
+        "extra_serial": false
+    },
+    "ssh_params": {
+    },
+    "fuzzing": {
+        "optee_artifact_dir": "/home/build/projects/srcs/optee/out/bin",
+        "kernel_binary": "/home/build/projects/srcs/optee/linux/vmlinux",
+        "firmware_binary": "/home/build/projects/srcs/optee/optee_os/out/arm/core/tee.elf",
+        "wait_for_qemu_seconds": 5,
+        "remote_command_exec_timeout": 10,
+        "fuzzer_module": "lib.optee.optee_xtest_1001_fuzzer",
+        "fuzzer_class": "OpteeXtest1001Fuzzer",
+        "coverage_module": "lib.optee.optee_coverage",
+        "coverage_class": "OPTEECoverage",
+        "seed_manager": "lib.optee.optee_xtest_1001_seed_manager",
+        "seed_manager_class": "OPTEEXtest1001SeedManager",
+        "default_energy": 50,
+        "seed_dir": "/home/build/projects/mtcfuzz/seed/optee/xtest_fuzz_1001",
+        "local_work_dir": "/home/build/projects/mtcfuzz/work",
+        "assign_energy_function": "aflfast",
+        "ignore_kernel_coverage": false,
+        "ignore_firmware_coverage": false,
+        "hostshare_9p": "/root/hostshare",
+        "tag_9p": "hostshare",
+        "xtest_number": 1001
+    },
+    "address_filters": {
+        "kernel": [
+            {
+                "lower": "0xffff800080ecf788",
+                "upper": "0xffff800080ed5a50"
+            }
+        ],
+        "firmware": [
+            {
+                "lower": "0xe1118c4",
+                "upper": "0xe111d24"
+            },
+            {
+                "lower": "0xe111308",
+                "upper": "0xe11187c"
+            },
+            {
+                "lower": "0xe1101a4",
+                "upper": "0xe1111ec"
+            },
+            {
+                "lower": "0xe10e7cc",
+                "upper": "0xe10f70c"
+            },
+            {
+                "lower": "0xe1144f8",
+                "upper": "0xe11572c"
+            },
+            {
+                "lower": "0xe1123cc",
+                "upper": "0xe11429c"
+            },
+            {
+                "lower": "0xe187728",
+                "upper": "0xe18831c"
+            },
+            {
+                "lower": "0xe17b9dc",
+                "upper": "0xe17bca0"
+            },            
+            {
+                "lower": "0xe177948",
+                "upper": "0xe177d40"
+            },
+            {
+                "lower": "0xe179d00",
+                "upper": "0xe17a09c"
+            },            
+            {
+                "lower": "0xe17e4d8",
+                "upper": "0xe17f808"
+            }
+        ]
+    },
+    "debug": true
+}
