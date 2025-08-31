@@ -174,7 +174,6 @@ def main():
     args = parse_args()
     coverage = read_csv(args.csv)
 
-    # 取りうる全ファイル集合を作成
     all_files = set()
     for key in coverage.keys():
         src_path, _ = key.rsplit(":", 1)
