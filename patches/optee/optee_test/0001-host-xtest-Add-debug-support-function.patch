@@ -1,4 +1,4 @@
-From b5b7b26e1ad2955f36b6412c0769d297009a8346 Mon Sep 17 00:00:00 2001
+From 6c5407a8bf8841d8283a9f68d43041cc88753373 Mon Sep 17 00:00:00 2001
 From: Masami Ichikawa <masami256@gmail.com>
 Date: Sun, 31 Aug 2025 15:58:39 +0900
 Subject: [PATCH] host/xtest: Add debug support function
@@ -9,8 +9,8 @@ ELF file.
 Signed-off-by: Masami Ichikawa <masami256@gmail.com>
 ---
  host/xtest/Makefile    |  2 +-
- host/xtest/fuzz_test.c | 36 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+), 1 deletion(-)
+ host/xtest/fuzz_test.c | 33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+), 1 deletion(-)
 
 diff --git a/host/xtest/Makefile b/host/xtest/Makefile
 index 8408caa..8db53e9 100644
@@ -26,7 +26,7 @@ index 8408caa..8db53e9 100644
  LDFLAGS += -L$(OPTEE_CLIENT_EXPORT)/lib -lteec
  ifeq ($(CFG_PKCS11_TA),y)
 diff --git a/host/xtest/fuzz_test.c b/host/xtest/fuzz_test.c
-index 5548b72..4c79cfe 100644
+index 5548b72..6df0dc6 100644
 --- a/host/xtest/fuzz_test.c
 +++ b/host/xtest/fuzz_test.c
 @@ -14,6 +14,7 @@
@@ -37,7 +37,7 @@ index 5548b72..4c79cfe 100644
  
  #include "xtest_test.h"
  #include "xtest_helpers.h"
-@@ -28,6 +29,37 @@ struct xtest_crypto_session {
+@@ -28,6 +29,34 @@ struct xtest_crypto_session {
  	uint32_t cmd_id_aes256ecb_decrypt;
  };
  
@@ -61,10 +61,7 @@ index 5548b72..4c79cfe 100644
 +
 +	char line[256];
 +	while (fgets(line, sizeof(line), fp)) {
-+		if  (strstr(line, "xtest")) {
-+			Do_ADBG_Log("%s", line);
-+		}
-+        
++		Do_ADBG_Log("%s", line);        
 +		memset(line, 0x0, sizeof(line));
 +    }
 +
@@ -75,7 +72,7 @@ index 5548b72..4c79cfe 100644
  static void xtest_fuzz_crypto_test(struct xtest_crypto_session *cs)
  {
  	uint32_t ret_orig = 0;
-@@ -167,6 +199,10 @@ static void xtest_fuzz_test_1001(ADBG_Case_t *c)
+@@ -167,6 +196,10 @@ static void xtest_fuzz_test_1001(ADBG_Case_t *c)
  					   TA_CRYPT_CMD_AES256ECB_ENC,
  					   TA_CRYPT_CMD_AES256ECB_DEC };
  
