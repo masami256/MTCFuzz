@@ -1,0 +1,91 @@
+From b5b7b26e1ad2955f36b6412c0769d297009a8346 Mon Sep 17 00:00:00 2001
+From: Masami Ichikawa <masami256@gmail.com>
+Date: Sun, 31 Aug 2025 15:58:39 +0900
+Subject: [PATCH] host/xtest: Add debug support function
+
+Add a function to show function address to resolve function address in
+ELF file.
+
+Signed-off-by: Masami Ichikawa <masami256@gmail.com>
+---
+ host/xtest/Makefile    |  2 +-
+ host/xtest/fuzz_test.c | 36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/host/xtest/Makefile b/host/xtest/Makefile
+index 8408caa..8db53e9 100644
+--- a/host/xtest/Makefile
++++ b/host/xtest/Makefile
+@@ -156,7 +156,7 @@ ifeq ($(CFG_WERROR),y)
+ CFLAGS += -Werror
+ endif
+ 
+-CFLAGS += -g3
++CFLAGS += -g
+ 
+ LDFLAGS += -L$(OPTEE_CLIENT_EXPORT)/lib -lteec
+ ifeq ($(CFG_PKCS11_TA),y)
+diff --git a/host/xtest/fuzz_test.c b/host/xtest/fuzz_test.c
+index 5548b72..4c79cfe 100644
+--- a/host/xtest/fuzz_test.c
++++ b/host/xtest/fuzz_test.c
+@@ -14,6 +14,7 @@
+ #include <string.h>
+ #include <utee_defines.h>
+ #include <util.h>
++#include <unistd.h>
+ 
+ #include "xtest_test.h"
+ #include "xtest_helpers.h"
+@@ -28,6 +29,37 @@ struct xtest_crypto_session {
+ 	uint32_t cmd_id_aes256ecb_decrypt;
+ };
+ 
++__attribute__((noinline)) static void print_func_address(void)
++{
++	Do_ADBG_Log("print_func_address: %p\n", print_func_address);
++}
++
++static int read_base_address(void)
++{
++	pid_t pid = getpid();
++
++	char maps[256] = { 0x0 };
++	sprintf(maps, "/proc/%d/maps", pid);
++
++	FILE *fp = fopen(maps, "r");
++	if (!fp) {
++		Do_ADBG_Log("Failed to open %s\n", maps);
++		return -1;
++	}
++
++	char line[256];
++	while (fgets(line, sizeof(line), fp)) {
++		if  (strstr(line, "xtest")) {
++			Do_ADBG_Log("%s", line);
++		}
++        
++		memset(line, 0x0, sizeof(line));
++    }
++
++	fclose(fp);
++
++	return 0;
++}
+ static void xtest_fuzz_crypto_test(struct xtest_crypto_session *cs)
+ {
+ 	uint32_t ret_orig = 0;
+@@ -167,6 +199,10 @@ static void xtest_fuzz_test_1001(ADBG_Case_t *c)
+ 					   TA_CRYPT_CMD_AES256ECB_ENC,
+ 					   TA_CRYPT_CMD_AES256ECB_DEC };
+ 
++	print_func_address();
++	if (read_base_address())
++		return ;
++
+ 	if (!ADBG_EXPECT_TEEC_SUCCESS(c, xtest_teec_open_session(
+ 					      &session, &crypt_user_ta_uuid,
+ 					      NULL, &ret_orig)))
+-- 
+2.51.0
+
