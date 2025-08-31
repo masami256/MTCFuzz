@@ -1,0 +1,29 @@
+From 968234ac03cee5af3ec109de6d2be5b005d59d2e Mon Sep 17 00:00:00 2001
+From: Masami Ichikawa <masami256@gmail.com>
+Date: Sun, 31 Aug 2025 15:56:42 +0900
+Subject: [PATCH] Enable buildroot debug option
+
+For debugging purpose, enable BR2_ENABLE_DEBUG option.
+
+Signed-off-by: Masami Ichikawa <masami256@gmail.com>
+---
+ common.mk | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/common.mk b/common.mk
+index 919bbea..9ef2484 100644
+--- a/common.mk
++++ b/common.mk
+@@ -336,6 +336,9 @@ BR2_PACKAGE_LIBXCRYPT=y
+ BR2_PACKAGE_HAVEGED=y
+ BR2_PACKAGE_DROPBEAR=y
+ 
++# Enable debug
++BR2_ENABLE_DEBUG=y
++
+ # All BR2_* variables from the makefile or the environment are appended to
+ # ../out-br/extra.conf. All values are quoted "..." except y and n.
+ double-quote = "#" # This really sets the variable to " and avoids upsetting vim's syntax highlighting
+-- 
+2.51.0
+
