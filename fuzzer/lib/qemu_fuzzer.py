@@ -140,6 +140,9 @@ class QemuFuzzer(FuzzerBase):
                 exec_result = self.ssh_client.exec_command("dmesg -c")
                 save_cmd_output(exec_result["stdout"], f"{local_initial_workdir}/boot-dmesg.log")
             
+                self.ssh_client.exec_command("sysctl -w kernel.randomize_va_space=0")
+                save_cmd_output(exec_result["stdout"], f"{local_initial_workdir}/disable_aslr.log")
+
             pid = self.get_pid()
             print(f"Process with PID {pid} is running.")
             return True, pid
