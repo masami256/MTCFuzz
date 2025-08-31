@@ -12,6 +12,14 @@ git am /home/build/projects/mtcfuzz/patches/optee/build/0001-common.mk-Add-dropb
 git am /home/build/projects/mtcfuzz/patches/optee/build/0001-kconfigs-Enable-debug-info-options-to-qemu.conf.patch
 git am /home/build/projects/mtcfuzz/patches/optee/build/0001-Add-kernel-parameters-for-fuzzing.patch
 git am /home/build/projects/mtcfuzz/patches/optee/build/0001-Set-BOOTDELAY-parameter-to-0.patch
+git am /home/build/projects/mtcfuzz/patches/optee/build/0001-Enable-buildroot-debug-option.patch
+
+cd ../optee_test
+git am /home/build/projects/mtcfuzz/patches/optee/optee_test/0001-add-test.patch
+git am /home/build/projects/mtcfuzz/patches/optee/optee_test/0001-Add-xtest-fuzz-1001.patch
+git am /home/build/projects/mtcfuzz/patches/optee/optee_test/0001-host-xtest-Add-debug-support-function.patch
+
+cd ../build
 make -j$(nproc) toolchains
 make DEBUG=1 -j$(nproc)
 make run DEBUG=1 CFG_CORE_ASLR=n -j$(nproc)
