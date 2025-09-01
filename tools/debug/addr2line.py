@@ -7,9 +7,9 @@ import tempfile
 
 def write_analyzed_data(cover_data, output_file):
     with open(output_file, "w") as f:
-        f.write("Address,Function,File,Line,Count\n")
+        f.write("Address in ELF,Loaded address,Function,File,Line,Count\n")
         for cd in cover_data:
-            f.write(f"{cd['address']},{cd['function']},{cd['file']},{cd['line']}\n")
+            f.write(f"{cd["binaly_offset_address"]},{cd["loaded_address"]},{cd["function"]},{cd["file"]},{cd["line"]}\n")
 
     print(f"[+] Analyzed coverage data written to {output_file}")
 
@@ -17,9 +17,9 @@ def call_addr2line(addr2line, binary, addr_list):
     if not addr_list:
         return []
 
-    with tempfile.NamedTemporaryFile(mode='w+', delete=False) as tf:
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False) as tf:
         for a in addr_list:
-            tf.write(a + '\n')
+            tf.write(a + "\n")
         tf.flush()
 
         result = subprocess.run(
@@ -38,11 +38,14 @@ def run_addr2line(addresses, args):
 
     target_addresses = []
 
+    addr_pair = {}
+
     for addr in addresses:
         if addr >= low and addr <= high:
             actual_addr = hex(addr - int(args.base_addr, 16))
             # print(f"{hex(addr)} - {args.base_addr} = {hex(addr - int(args.base_addr, 16))}")
             target_addresses.append(actual_addr)
+            addr_pair[actual_addr] = hex(addr)
 
     a2r_result = call_addr2line(args.addr2line, args.binary, target_addresses)
 
@@ -59,7 +62,8 @@ def run_addr2line(addresses, args):
             address = int(line.split(":")[0].strip(), 16)
             addr = hex(address)
             results.append({
-                "address": addr,
+                "binaly_offset_address": addr,
+                "loaded_address": addr_pair[addr],
                 "function": func_name,
                 "file": file_path,
                 "line": line_num

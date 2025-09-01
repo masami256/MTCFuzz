@@ -12,16 +12,17 @@ def read_csv(file_path):
     with open(file_path, newline="") as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
-            if len(row) != 4:
+            if len(row) != 5:
                 continue
-            addr, func, src_path, line_str = row
-            if addr == "Address":
+            elf_offset_addr, loaded_addr, func, src_path, line_str = row
+            if elf_offset_addr.startswith("Address"):
                 continue
             try:
                 line_num = int(line_str)
                 key = f"{src_path}:{line_num}"
                 ret[key] = {
-                    "addr": addr,
+                    "binaly_offset_address": elf_offset_addr,
+                    "loaded_address": loaded_addr,
                     "func": func,
                     "line": line_num,
                     "file": src_path,
