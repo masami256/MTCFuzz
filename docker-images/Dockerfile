@@ -32,6 +32,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
     repo \
     python3-pyelftools \
     python3-cryptography \
+    python3-yaml \
     netcat-openbsd \
     tmux
 

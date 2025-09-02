@@ -4,6 +4,7 @@ import argparse
 import subprocess
 import re
 import tempfile
+import yaml
 
 def write_analyzed_data(cover_data, output_file):
     with open(output_file, "w") as f:
@@ -30,60 +31,68 @@ def call_addr2line(addr2line, binary, addr_list):
         )
     return result.stdout.strip().splitlines()
     
-def run_addr2line(addresses, args):
-    results = {}
-
-    low = int(args.min_address, 16)
-    high = int(args.max_address, 16)
-
-    target_addresses = []
-
-    addr_pair = {}
-
-    for addr in addresses:
-        if addr >= low and addr <= high:
-            actual_addr = hex(addr - int(args.base_addr, 16))
-            # print(f"{hex(addr)} - {args.base_addr} = {hex(addr - int(args.base_addr, 16))}")
-            target_addresses.append(actual_addr)
-            addr_pair[actual_addr] = hex(addr)
-
-    a2r_result = call_addr2line(args.addr2line, args.binary, target_addresses)
+def run_addr2line(addresses, config):
+    config = read_config(config)
+    addr2line = config["addr2line"]["binary"]
 
     results = []
 
-    for line in a2r_result:
-        # e.g.:
-        # 0x000000000000a704: tlb_range_check at /path/to/file.c:274
-        match = re.match(r"^0x[0-9a-fA-F]+:\s+(.*?)\s+at\s+(.+):(\d+)(?:\s+\(discriminator\s+\d+\))?$", line)
-        if match:
-            func_name = match.group(1)
-            file_path = match.group(2)
-            line_num = int(match.group(3))
-            address = int(line.split(":")[0].strip(), 16)
-            addr = hex(address)
-            results.append({
-                "binaly_offset_address": addr,
-                "loaded_address": addr_pair[addr],
-                "function": func_name,
-                "file": file_path,
-                "line": line_num
-            })
+    for target in config:
+        if not "elf" in config[target]:
+            continue
+
+        data = config[target]
+        low = data["min_addr"]
+        high = data["max_addr"]
+
+        target_addresses = []
+
+        addr_pair = {}
+
+        base_addr = data["base_addr"]
+        for addr in addresses:
+            if addr >= low and addr <= high:
+                actual_addr = hex(addr - base_addr)
+                # print(f"{hex(addr)} - {hex(base_addr)} = {hex(addr - base_addr)}")
+                target_addresses.append(actual_addr)
+                addr_pair[actual_addr] = hex(addr)
+
+        a2r_result = call_addr2line(addr2line, data["elf"], target_addresses)
+
+        for line in a2r_result:
+            # e.g.:
+            # 0x000000000000a704: tlb_range_check at /path/to/file.c:274
+            match = re.match(r"^0x[0-9a-fA-F]+:\s+(.*?)\s+at\s+(.+):(\d+)(?:\s+\(discriminator\s+\d+\))?$", line)
+            if match:
+                func_name = match.group(1)
+                file_path = match.group(2)
+                line_num = int(match.group(3))
+                address = int(line.split(":")[0].strip(), 16)
+                addr = hex(address)
+                results.append({
+                    "binaly_offset_address": addr,
+                    "loaded_address": addr_pair[addr],
+                    "function": func_name,
+                    "file": file_path,
+                    "line": line_num
+                })
 
     return results
 
+def read_config(filepath):
+    with open(filepath) as f:
+        return yaml.safe_load(f)
+    
 def read_trace_log(trace_log):
     with open(trace_log) as f:
         return sorted(set(int(line.strip(), 16) for line in f if line.strip()))
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Convert virtual addresses to offsets in a binary file.")
-    parser.add_argument("--base-addr", default="0x0", help="base address")
-    parser.add_argument("--min-address", default="0x0", help="lowest address to check")
-    parser.add_argument("--max-address", default="0xffffffffffffffff")
+    parser.add_argument("--config", required=True, help="config file")
     parser.add_argument("--trace-log", required=True, help="qemu trace log file")
     parser.add_argument("--output", default="analyzed_coverage.csv", help="output file name")
     parser.add_argument("--addr2line",default="riscv64-linux-gnu-addr2line", help="path to addr2line binary")
-    parser.add_argument("--binary", required=True, help="Target binary")
     args = parser.parse_args()
 
     return args
@@ -94,7 +103,7 @@ def main():
 
     addresses = read_trace_log(args.trace_log)
 
-    cover_data = run_addr2line(addresses, args)
+    cover_data = run_addr2line(addresses, args.config)
 
     write_analyzed_data(cover_data, args.output)
 
