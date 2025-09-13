@@ -207,12 +207,20 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     await qt.tracer_on(trace_log)
                     tracing = True
                     
+                    exec_result = None
+                    maybe_crashed = False
+                    need_restart = False
                     try:
                         exec_result = fuzzer.run_test(fuzz_params)
                     except SSHError as e:
-                        pass
-                    
-                    await qt.tracer_off()
+                        print("Maybe got a crash")
+                        maybe_crashed = True
+                        need_restart = True
+
+                    if not maybe_crashed:
+                        # We don't have to off the qmp command because we should reboot qemu
+                        await qt.tracer_off()
+
                     tracing = False
                     main_serial.read()
                     main_serial.close()
@@ -235,9 +243,10 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                             f.write(exec_result["stderr"])
                             
                     interesting = False
-                    if is_crashed(console0_log, console1_log):
+                    if maybe_crashed or is_crashed(console0_log, console1_log):
                         print("Found crash!")
-                        crashedTestcaseManager.add_crashed_testcase(seed)
+                        await crashedTestcaseManager.add_crashed_testcase(fuzz_params)
+                        pprint.pprint(fuzz_params)
                     else:
                         exec_result = ssh_client.exec_command("dmesg -c")
                         fuzzer_lib.save_cmd_output(exec_result["stdout"], f"{local_test_dir}/dmesg.log")
@@ -279,16 +288,17 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     tracing = False
 
                     if not fuzzing_done:
-                        if not is_pid_exist(pid):
+                        if need_restart or not is_pid_exist(pid):
+                            if is_pid_exist(pid):
+                                print(f"Stop qemu pid is {pid}")
+                                fuzzer.stop_machine()
+                            
                             print("Restarting machine...")
-                            fuzzer.stop_machine()
-                            time.sleep(3)
-
                             ret = fuzzer.start_machine()
                             if not ret:
                                 print("Failed to launch machine.")
                                 return
-                            fuzzer.wait_for_ready()
+                            fuzzer.wait_for_ready(timeout=qemu_wait_sec)
 
                             ret, pid = await fuzzer.initial_setup(local_work_dir, False)
                             if not ret:
@@ -299,7 +309,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                             print(f"Restarted machine with PID: {pid}")
 
                         elif fuzzer:
-                            # print("Restoring machine state...")
+                            print("Restoring machine state...")
                             ret = await fuzzer.loadvm()
                             # print("Restoring machine state completed.")
 

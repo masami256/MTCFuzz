@@ -41,6 +41,7 @@ class QemuFuzzer(FuzzerBase):
         self.gdb_port = gdb_port
         self.use_gdb = config["fuzzing"].get("use_gdb", False)
         self.working_dir = None
+        self.first_boot = True
 
     def create_snapshot_storage(self) -> bool:
         if not os.path.exists(self.qemu_snapshot_storage):
@@ -49,16 +50,20 @@ class QemuFuzzer(FuzzerBase):
             try:
                 subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 return True
-            except subprocess.CalledProcessError as e:
+            except Exception as e:
                 print(f"Failed to create snapshot storage: {e}")
                 return False
-
+        else:
+            print("QEMU snapshot file exists")
+            return False
+    
     def start_machine(self) -> bool:
         if self.started:
             print("Machine already started, skipping startup.")
             return True
         
         if not self.create_snapshot_storage():
+            print("Create snapshot failed")
             return False
     
         params = [
@@ -92,7 +97,9 @@ class QemuFuzzer(FuzzerBase):
 
         params += self.extra_qemu_params()
 
-        self.copy_files()
+        if self.first_boot:
+            self.copy_files()
+            self.first_boot = False
 
         if "rootfs" in self.config["qemu_params"]:
             self.rootfs_device_name = "rootfs0"
@@ -114,7 +121,7 @@ class QemuFuzzer(FuzzerBase):
         if self.working_dir:
             print(f"Working directory: {self.working_dir}")
         try:
-            process = subprocess.Popen(" ".join(params), stdout=stdout_output_to, stderr=stderr_outpto_to, shell=True, cwd=self.working_dir)
+            process = subprocess.Popen(params, stdout=stdout_output_to, stderr=stderr_outpto_to, shell=False, cwd=self.working_dir)
         except Exception as e:
             print(f"Error launching QEMU: {e}")
             return False
@@ -173,17 +180,20 @@ class QemuFuzzer(FuzzerBase):
         if self.qemu_process is None:
             return
 
-        self.qemu_process.send_signal(signal.SIGTERM)
+        self.qemu_process.send_signal(signal.SIGKILL)
         ret = self.qemu_process.wait(timeout=2)
         print(f"Process exited with code: {ret}")
 
         if self.qemu_process.poll is None:
-            self.qemu_process.send_signal(signal.SIGTERM)
+            self.qemu_process.send_signal(signal.SIGKILL)
             ret = self.qemu_process.wait(timeout=2)
             print(f"Process exited with code: {ret}")
 
-        self.remove_snapshot_created_file()
+        # subprocess.run("pkill -kill $(pgrep qemu-system)", shell=True)
+
+        self.remove_snapshot()
         self.started = False
+        self.qemu_process = None
 
     def generate_snapshot_job_id(self, prefix: str) -> str:
         length = 32
@@ -364,3 +374,9 @@ class QemuFuzzer(FuzzerBase):
         if os.path.exists(self.snapshot_created_file):
             os.remove(self.snapshot_created_file)
 
+    def remove_snapshot(self):
+        if os.path.exists(self.qemu_snapshot_storage):
+            print(f"Remove old snapshot")
+            os.unlink(self.qemu_snapshot_storage)
+        
+        self.remove_snapshot_created_file()
