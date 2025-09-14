@@ -244,8 +244,9 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                             
                     interesting = False
                     if maybe_crashed or is_crashed(console0_log, console1_log):
-                        print("Found crash!")
+                        print(f"[+]Found crash! : Test dir: {local_test_dir}")
                         await crashedTestcaseManager.add_crashed_testcase(fuzz_params)
+                        crashedTestcaseManager.save_params(local_test_dir, fuzz_params)
                         pprint.pprint(fuzz_params)
                     else:
                         exec_result = ssh_client.exec_command("dmesg -c")
@@ -290,7 +291,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     if not fuzzing_done:
                         if need_restart or not is_pid_exist(pid):
                             if is_pid_exist(pid):
-                                print(f"Stop qemu pid is {pid}")
+                                print(f"Stop qemu pid: {pid}")
                                 fuzzer.stop_machine()
                             
                             print("Restarting machine...")
