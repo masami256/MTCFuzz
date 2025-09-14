@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger("mtcfuzz")
+
 import importlib
 
 def coverage_factory(config: dict) -> any:
@@ -7,5 +10,5 @@ def coverage_factory(config: dict) -> any:
 
         return getattr(coverage_module, coverage_class)
     except ImportError as e:
-        print(f"Error importing fuzzer module: {e}")
+        logger.error(f"Error importing fuzzer module: {e}")
         return None

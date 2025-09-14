@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger("mtcfuzz")
+
 import importlib
 
 def seed_manager_factory(config: dict) -> any:
@@ -7,5 +10,5 @@ def seed_manager_factory(config: dict) -> any:
 
         return getattr(seed_manager_module, seed_manager_class)
     except ImportError as e:
-        print(f"Error importing seed manager module: {e}")
+        logger.error(f"Error importing seed manager module: {e}")
         return None

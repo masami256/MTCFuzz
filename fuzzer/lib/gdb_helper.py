@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger("mtcfuzz")
+
 import os
 import subprocess
 import signal
@@ -60,7 +63,7 @@ class GDBHelper:
                 self.target_binary
             ]
         
-        print(f"Running GDB with command: {' '.join(cmd)}")
+        logger.debug(f"Running GDB with command: {' '.join(cmd)}")
         proc = subprocess.Popen(
             cmd,
             stdin=subprocess.DEVNULL,
@@ -69,20 +72,19 @@ class GDBHelper:
         )
 
         self.pid = proc.pid
-        print(f"GDB PID: {self.pid}")
+        logger.info(f"GDB PID: {self.pid}")
 
     def terminate_gdb(self) -> None:
         if self.pid:
             try:
                 os.kill(self.pid, signal.SIGTERM)
-                print(f"GDB with PID {self.pid} terminated.")
+                logger.info(f"GDB with PID {self.pid} terminated.")
                 self.pid = None
             except OSError as e:
-                print(f"Error terminating GDB pid({self.pid}): {e}")
+                logger.error(f"Error terminating GDB pid({self.pid}): {e}")
         else:
-            print("GDB process not found.")
+            logger.error("GDB process not found.")
 
     def write_gdb_data_file(self, data: dict) -> None:
         with open(self.mutator_data_file, 'w') as f:
             json.dump(data, f, indent=4)
-        # print(f"Data written to {self.mutator_data_file}")

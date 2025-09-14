@@ -1,5 +1,4 @@
 from .sbi_fuzzer import SBIFuzzer
-import shutil
 
 class SBIEIDFuzzer(SBIFuzzer):
     def __init__(self, config: dict, task_id: int, ssh_client: "SSHClient", qmp_socket_path: str, 
@@ -44,9 +43,4 @@ class SBIEIDFuzzer(SBIFuzzer):
         ]
 
         args_str = " ".join(args)
-
-        # print(f"Running command: {args_str}")
         return self.ssh_client.exec_command(args_str, retry_max=1)
-        
-        # print(f"stdout: {stdout}")
-        # print(f"stderr: {stderr}")

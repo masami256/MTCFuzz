@@ -1,19 +1,4 @@
-import time
-import sys
-import os
-
 from .fuzzer_lib import *
-
-import subprocess
-import signal
-import asyncio
-import os
-import time
-import shutil
-import random
-import string
-import traceback
-from qemu.qmp import QMPClient
 
 class FuzzerBase:
     def __init__(self, config: dict, task_id: str, ssh_client: "SSHClient") -> None:
@@ -52,18 +37,15 @@ class FuzzerBase:
 
     def create_remote_test_dir(self, test_dir: str) -> None:
         self.test_dir = f"{self.remote_work_dir}/{test_dir}"
-        # print("Creating remote test directory:", self.test_dir)
         self.ssh_client.exec_command(f"mkdir -p {self.test_dir}")
 
     def is_qemu_target(self) -> bool:
         return self.config.get("target_type") == "qemu"
 
     def send_module(self) -> None:
-        # print(f'Send file {self.config["fuzzing"]["kernel_module"]} to {self.remote_module_path}')
         self.ssh_client.send_file(self.config["fuzzing"]["kernel_module"], f"{self.remote_module_path}")
 
     def send_harness(self) -> None:
-        # print(f'Send file {self.config["fuzzing"]["harness"]} to {self.remote_harness_path}')
         self.ssh_client.send_file(self.config["fuzzing"]["harness"], f"{self.remote_harness_path}")
 
     def generate_input(self, seed: dict, **kwargs) -> dict:

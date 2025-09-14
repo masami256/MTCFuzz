@@ -1,8 +1,10 @@
+import logging
+logger = logging.getLogger("mtcfuzz")
+
 from ..qemu_fuzzer import QemuFuzzer
 from .sbi_mutator import SbiMutator
 
 import shutil
-import pprint
 
 class SBIFuzzer(QemuFuzzer):
     def __init__(self, config: dict, task_id: int, ssh_client: "SSHClient", qmp_socket_path: str, 
@@ -22,7 +24,7 @@ class SBIFuzzer(QemuFuzzer):
             copy_from_path = self.config['qemu_params']['rootfs']
             copy_from_name = copy_from_path.split("/")[-1]
         else:
-            print("Error: No initrd or rootfs specified in QEMU parameters.")
+            logger.error("Error: No initrd or rootfs specified in QEMU parameters.")
             return False
         
         copy_to = f"{self.local_work_dir}/{self.task_id}-{copy_from_name}"
@@ -34,7 +36,7 @@ class SBIFuzzer(QemuFuzzer):
     def prepare_harness(self) -> bool:
         exec_result = self.ssh_client.exec_command(f"mkdir -p {self.remote_work_dir}")
         if not exec_result["returncode"] == 0:
-            print(f"Failed to create remote work directory: {self.remote_work_dir}")
+            logger.error(f"Failed to create remote work directory: {self.remote_work_dir}")
             return False
         
         self.send_module()
@@ -42,7 +44,7 @@ class SBIFuzzer(QemuFuzzer):
 
         exec_result = self.ssh_client.exec_command(f"insmod {self.remote_module_path}")
         if not exec_result["returncode"] == 0:
-            print(f"Failed to insert module: {self.remote_module_path}")
+            logger.error(f"Failed to insert module: {self.remote_module_path}")
             return False
 
         return True
@@ -87,9 +89,4 @@ class SBIFuzzer(QemuFuzzer):
         ]
 
         args_str = " ".join(args)
-
-        # print(f"Running command: {args_str}")
         return self.ssh_client.exec_command(args_str, retry_max=1)
-        
-        # print(f"stdout: {stdout}")
-        # print(f"stderr: {stderr}")

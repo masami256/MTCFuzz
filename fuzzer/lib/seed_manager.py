@@ -1,11 +1,12 @@
+import logging
+logger = logging.getLogger("mtcfuzz")
+
 import os
 import random
 import glob
-import copy
 import hashlib
 from .fuzzer_lib import *
 import pprint
-from itertools import zip_longest
 
 class SeedManager:
     def __init__(self, seed_dir: str, task_id: str) -> None:
@@ -41,8 +42,6 @@ class SeedManager:
             }
 
             self.seeds[seed_id] = data
-            # print(f"Loaded seed: {seed_id}")
-            # pprint.pprint(self.seeds[seed_id])
 
     def create_new_seed(self, seed_id: str, fuzz_params: dict) -> dict:
         # Create a new seed based on the original seed and fuzz parameters
@@ -53,14 +52,7 @@ class SeedManager:
         new_seed = self.create_new_seed(seed_id, fuzz_params)
 
         if orig_seed["seed"] == new_seed and coverages == (orig_seed["traced_pcs_a"], orig_seed["traced_pcs_b"]):
-            # print("orig seed")
-            # pprint.pprint(orig_seed["seed"])
-            # print("new seed")
-            # pprint.pprint(new_seed)
-            # print("mutated data")
-            # pprint.pprint(fuzz_params)
             self.update_seed(orig_seed, elapsed_us)
-            # print("seed and coverage are the same, just update tested count")
             return
         
         new_seed_id = self.create_seed_id(new_seed)
@@ -78,10 +70,8 @@ class SeedManager:
         }
         self.seeds[new_seed_id] = data
 
-        print(f"Added new seed: {new_seed_id}")
+        logger.info(f"Added new seed: {new_seed_id}")
         pprint.pprint(new_seed)
-        # print("----------")
-        # pprint.pprint(self.seeds[new_seed_id])
 
     def update_seed(self, seed: dict, elapsed_us: int) -> None:
         if seed["elapsed_us"] == 0:

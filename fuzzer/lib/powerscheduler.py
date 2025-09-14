@@ -1,4 +1,6 @@
 # AFLFast like power scheduler
+import logging
+logger = logging.getLogger("mtcfuzz")
 
 class PowerScheduler:
     def __init__(self, assing_energy_function: str, *, beta: float = 1, M: float = 100) -> None:
@@ -47,13 +49,13 @@ class PowerScheduler:
         # f(i)
         fi = max(seed.get("total_same_coverage_count", 0), 1)
 
-        print(f"Assigning energy for seed {seed['id']} with s(i): {si}, f(i): {fi}")
+        logger.info(f"Assigning energy for seed {seed['id']} with s(i): {si}, f(i): {fi}")
 
         # α(i)
         alpha = self.calculate_alpha(seed, total_tested_count, total_elapsed_us)
 
         e = (alpha / self.beta) * (2 ** si / fi)
-        print(f"Calculated energy for seed {seed['id']}: {e} (α: {alpha}, β: {self.beta}, s(i): {si}, f(i): {fi})")
+        logger.info(f"Calculated energy for seed {seed['id']}: {e} (α: {alpha}, β: {self.beta}, s(i): {si}, f(i): {fi})")
         return min(e, self.M)
 
     def assign_energy_simple(self, seed: dict, total_tested_count: int, total_elapsed_us: int) -> float:

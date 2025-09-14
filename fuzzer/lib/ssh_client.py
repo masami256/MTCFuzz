@@ -1,6 +1,8 @@
+import logging
+logger = logging.getLogger("mtcfuzz")
+
 import subprocess
 import time
-import shlex
 
 from .ssh_error import SSHError
 
@@ -37,7 +39,7 @@ class SSHClient:
         num_retries = retry_max if retry_max is not None else self.ssh_retry_max
         for attempt in range(num_retries):
             try:
-                # print(f"Command: {ssh_cmd}")
+                # logger.debug(f"Command: {ssh_cmd}")
 
                 start = time.perf_counter()
                 result = subprocess.run(
@@ -60,14 +62,14 @@ class SSHClient:
                 }
 
             except subprocess.TimeoutExpired as e:
-                print(f"exec_command(): [SSH] Timeout executing command. Retry {attempt + 1}/{self.ssh_retry_max}...")
-                print("=====================")
-                print(e)
-                print("=====================")
+                logger.warning(f"exec_command(): [SSH] Timeout executing command. Retry {attempt + 1}/{self.ssh_retry_max}...")
+                logger.debug("=====================")
+                logger.debug(e)
+                logger.debug("=====================")
                 time.sleep(attempt + 1)
             
             except Exception as e:
-                print(f"exec_command(): [SSH] Error: {e}. Retry {attempt + 1}/{self.ssh_retry_max}...")
+                logger.warning(f"exec_command(): [SSH] Error: {e}. Retry {attempt + 1}/{self.ssh_retry_max}...")
                 time.sleep(attempt + 1)
         
         raise SSHError(f"exec_command(): Failed to execute command after {self.ssh_retry_max} attempts: {cmd}")
@@ -99,10 +101,10 @@ class SSHClient:
                 )
                 return result.returncode
             except subprocess.TimeoutExpired:
-                print(f"send_file(): [SCP] Timeout sending file. Retry {attempt + 1}/{self.ssh_retry_max}...")
+                logger.warning(f"send_file(): [SCP] Timeout sending file. Retry {attempt + 1}/{self.ssh_retry_max}...")
                 time.sleep(attempt + 1)
             except Exception as e:
-                print(f"send_file(): [SCP] Error: {e}. Retry {attempt + 1}/{self.ssh_retry_max}...")
+                logger.warning(f"send_file(): [SCP] Error: {e}. Retry {attempt + 1}/{self.ssh_retry_max}...")
                 time.sleep(attempt + 1)
 
         raise SSHError(f"send_file(): Failed to execute command after {self.ssh_retry_max} attempts")
@@ -125,7 +127,7 @@ class SSHClient:
             local_path
         ]
 
-        # print(f"scp_cmd: {scp_cmd}")
+        # logger.debug(f"scp_cmd: {scp_cmd}")
         for attempt in range(self.ssh_retry_max):
             try:
                 result = subprocess.run(
@@ -136,10 +138,10 @@ class SSHClient:
                 )
                 return result.returncode
             except subprocess.TimeoutExpired:
-                print(f"send_file(): [SCP] Timeout receiving file. Retry {attempt + 1}/{self.ssh_retry_max}...")
+                logger.warning(f"send_file(): [SCP] Timeout receiving file. Retry {attempt + 1}/{self.ssh_retry_max}...")
                 time.sleep(attempt + 1)
             except Exception as e:
-                print(f"send_file(): [SCP] Error: {e}. Retry {attempt + 1}/{self.ssh_retry_max}...")
+                logger.warning(f"send_file(): [SCP] Error: {e}. Retry {attempt + 1}/{self.ssh_retry_max}...")
                 time.sleep(attempt + 1)
 
         raise SSHError(f"send_file(): Failed to execute command after {self.ssh_retry_max} attempts")

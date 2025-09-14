@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import logging
+logging.basicConfig(level = logging.INFO, format='%(asctime)s:%(levelname)s: %(message)s')
+logger = logging.getLogger("mtcfuzz")
+
 import argparse
 import json
 import traceback
@@ -35,10 +39,10 @@ def read_config(config_path):
             config = json.load(f)
         return config
     except FileNotFoundError:
-        print(f"Configuration file {config_path} not found.")
+        logger.error(f"Configuration file {config_path} not found.")
         return None
     except json.JSONDecodeError:
-        print(f"Error decoding JSON from the configuration file {config_path}.")
+        logger.error(f"Error decoding JSON from the configuration file {config_path}.")
         return None
 
 def is_pid_exist(pid):
@@ -121,7 +125,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
         
         Fuzzer = fuzzer_factory(config)
         if Fuzzer is None:
-            print("Failed to get fuzzer.")
+            logger.error("Failed to get fuzzer.")
             return
         fuzzer = Fuzzer(config, task_id, ssh_client, qmp_socket_path, serial_socket_path0, serial_socket_path1, gdb_port)
 
@@ -131,7 +135,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
 
         ret = fuzzer.start_machine()
         if not ret:
-            print("Failed to launch machine.")
+            logger.error("Failed to launch machine.")
             return
 
         if use_gdb:
@@ -157,13 +161,13 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
             seed_id = seed["id"]
             coverManager.count_other_seeds_with_same_coverage(seed["coverage_hash"], seed_id)
             energy = ps.assign_energy(seed, total_tested_count, total_elapsed_us)
-            print(f"Loop {loop_cnt}, Seed ID: {seed_id}, Energy: {energy}")
+            logger.info(f"Loop {loop_cnt}, Seed ID: {seed_id}, Energy: {energy}")
             # seed loop start
             fuzz_i = 0
             while True:
-                print("===========================")
+                logger.info("===========================")
                 if fuzz_i > energy:
-                    print("Energy exhausted, moving to next seed.")
+                    logger.info("Energy exhausted, moving to next seed.")
                     break
                 try:
                     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -179,12 +183,10 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     fuzzer.create_remote_test_dir(test_dir_name)
                     os.makedirs(local_test_dir)
                     
-                    # print("Running fuzzer...")
-
                     if not snapshot_created:
                         ret = await fuzzer.save_state()
                         if not ret:
-                            print("Failed to save state.")
+                            logger.error("Failed to save state.")
                             return -1
                         snapshot_created = True
 
@@ -213,7 +215,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     try:
                         exec_result = fuzzer.run_test(fuzz_params)
                     except SSHError as e:
-                        print("Maybe got a crash")
+                        logger.info("Maybe got a crash")
                         maybe_crashed = True
                         need_restart = True
 
@@ -231,8 +233,6 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
 
                     total_tested_count += 1
 
-
-                    # print("Fuzzer run completed.")
                     if exec_result:
                         elapsed_us = exec_result["elapsed_us"]
                         total_elapsed_us += elapsed_us
@@ -244,10 +244,9 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                             
                     interesting = False
                     if maybe_crashed or is_crashed(console0_log, console1_log):
-                        print(f"[+]Found crash! : Test dir: {local_test_dir}")
+                        logger.info(f"[+]Found crash! : Test dir: {local_test_dir}")
                         await crashedTestcaseManager.add_crashed_testcase(fuzz_params)
                         crashedTestcaseManager.save_params(local_test_dir, fuzz_params)
-                        pprint.pprint(fuzz_params)
                     else:
                         exec_result = ssh_client.exec_command("dmesg -c")
                         fuzzer_lib.save_cmd_output(exec_result["stdout"], f"{local_test_dir}/dmesg.log")
@@ -265,13 +264,13 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                         total_same_coverage_count = coverManager.count_other_seeds_with_same_coverage(trace_hash, seed_id)
                         seedManager.update_coverage_hash(seed_id, trace_hash, total_same_coverage_count)
 
-                        print(f"kernel coverage: {kcov_found}, firmware coverage: {fcov_found}")
+                        logger.info(f"kernel coverage: {kcov_found}, firmware coverage: {fcov_found}")
 
                 except KeyboardInterrupt:
-                    print("Ctrl-C detected, finish fuzzing loop...")
+                    logger.info("Ctrl-C detected, finish fuzzing loop...")
                     fuzzing_done = True
                 except Exception as e:
-                    print(f"An error occurred: {e}")
+                    logger.error(f"An error occurred: {e}")
                     traceback.print_exc()
                     fuzzing_done = True
                 finally:
@@ -291,31 +290,30 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     if not fuzzing_done:
                         if need_restart or not is_pid_exist(pid):
                             if is_pid_exist(pid):
-                                print(f"Stop qemu pid: {pid}")
+                                logger.info(f"Stop qemu pid: {pid}")
                                 fuzzer.stop_machine()
                             
-                            print("Restarting machine...")
+                            logger.info("Restarting machine...")
                             ret = fuzzer.start_machine()
                             if not ret:
-                                print("Failed to launch machine.")
+                                logger.info("Failed to launch machine.")
                                 return
                             fuzzer.wait_for_ready(timeout=qemu_wait_sec)
 
                             ret, pid = await fuzzer.initial_setup(local_work_dir, False)
                             if not ret:
-                                print("Failed to restart machine.")
+                                logger.info("Failed to restart machine.")
                                 break
 
                             snapshot_created = False
-                            print(f"Restarted machine with PID: {pid}")
+                            logger.info(f"Restarted machine with PID: {pid}")
 
                         elif fuzzer:
-                            print("Restoring machine state...")
+                            logger.info("Restoring machine state...")
                             ret = await fuzzer.loadvm()
-                            # print("Restoring machine state completed.")
 
                     else:
-                        print("Fuzzing done, cleaning up...")
+                        logger.info("Fuzzing done, cleaning up...")
                         await fuzzer.delvm()
                         
                         fuzzer.stop_machine()
@@ -324,16 +322,16 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
             loop_cnt += 1
         # end of main fuzzing loop
     except KeyboardInterrupt:
-        print("Ctrl-C detected, finish fuzzing...")
+        logger.info("Ctrl-C detected, finish fuzzing...")
     except Exception as e:
-        print(f"An error occurred in the main loop: {e}")
+        logger.info(f"An error occurred in the main loop: {e}")
         traceback.print_exc()
     except asyncio.CancelledError:
-        print("Fuzzing cancelled by user.")
+        logger.info("Fuzzing cancelled by user.")
     finally:
-        print(f"check pid {pid}")
+        logger.info(f"check pid {pid}")
         if pid and is_pid_exist(pid):
-            print(f"Process with PID {pid} is still running. Terminating...")
+            logger.info(f"Process with PID {pid} is still running. Terminating...")
             os.kill(pid, signal.SIGTERM)
         
         if gdb:
@@ -356,16 +354,16 @@ async def main():
         ]
         await asyncio.gather(*tasks)
     except KeyboardInterrupt:
-        print("Ctrl-C detected, cancelling tasks...")
+        logger.info("Ctrl-C detected, cancelling tasks...")
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
-        print("All tasks cancelled.")
+        logger.info("All tasks cancelled.")
     except asyncio.CancelledError:
-        print("Fuzzing cancelled by user.")
+        logger.info("Fuzzing cancelled by user.")
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("Ctrl-C detected, cancelling tasks...")
+        logger.info("Ctrl-C detected, cancelling tasks...")

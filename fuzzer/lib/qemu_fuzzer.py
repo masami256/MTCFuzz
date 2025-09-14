@@ -1,4 +1,6 @@
-import sys
+import logging
+logger = logging.getLogger("mtcfuzz")
+
 import os
 
 from .fuzzer_base import FuzzerBase
@@ -6,13 +8,11 @@ from .fuzzer_lib import *
 
 import subprocess
 import signal
-import asyncio
 import os
 import time
 import random
 import string
 import traceback
-import shutil
 
 from qemu.qmp import QMPClient
 
@@ -51,19 +51,19 @@ class QemuFuzzer(FuzzerBase):
                 subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 return True
             except Exception as e:
-                print(f"Failed to create snapshot storage: {e}")
+                logger.error(f"Failed to create snapshot storage: {e}")
                 return False
         else:
-            print("QEMU snapshot file exists")
+            logger.info("QEMU snapshot file exists")
             return False
     
     def start_machine(self) -> bool:
         if self.started:
-            print("Machine already started, skipping startup.")
+            logger.warning("Machine already started, skipping startup.")
             return True
         
         if not self.create_snapshot_storage():
-            print("Create snapshot failed")
+            logger.warning("Create snapshot failed")
             return False
     
         params = [
@@ -116,19 +116,19 @@ class QemuFuzzer(FuzzerBase):
         if self.config["debug"]:
             output_to = subprocess.PIPE
 
-        print(f"Launching QEMU with command: \n{' '.join(params)}\n")
+        logger.info(f"Launching QEMU with command: \n{' '.join(params)}\n")
 
         if self.working_dir:
-            print(f"Working directory: {self.working_dir}")
+            logger.debug(f"Working directory: {self.working_dir}")
         try:
             process = subprocess.Popen(params, stdout=stdout_output_to, stderr=stderr_outpto_to, shell=False, cwd=self.working_dir)
         except Exception as e:
-            print(f"Error launching QEMU: {e}")
+            logger.error(f"Error launching QEMU: {e}")
             return False
 
         self.qemu_process = process
         self.qemu_pid = self.qemu_process.pid
-        print(f"QEMU launched with PID: {self.get_pid()}")
+        logger.info(f"QEMU launched with PID: {self.get_pid()}")
 
         self.started = True
         return True
@@ -151,18 +151,17 @@ class QemuFuzzer(FuzzerBase):
                 save_cmd_output(exec_result["stdout"], f"{local_initial_workdir}/disable_aslr.log")
 
             pid = self.get_pid()
-            print(f"Process with PID {pid} is running.")
+            logger.info(f"Process with PID {pid} is running.")
             return True, pid
         
         except Exception as e:
-            print(f"Error during initial setup: {e}")
+            logger.error(f"Error during initial setup: {e}")
             traceback.print_exc()
             return False, -1
     
     async def save_state(self) -> bool:
         self.ssh_client.exec_command("sync")
         ret = await self.savevm()
-        # print(f"qemu_fuzzer.savevm() result: {ret}")
         return ret
     
     def get_pid(self) -> int:
@@ -173,7 +172,7 @@ class QemuFuzzer(FuzzerBase):
         if self.snapshot_created():
             wait_time = 0.1
         
-        print(f"Waiting for {wait_time} seconds for QEMU to be ready...")
+        logger.info(f"Waiting for {wait_time} seconds for QEMU to be ready...")
         time.sleep(wait_time)
 
     def stop_machine(self) -> None:
@@ -182,12 +181,12 @@ class QemuFuzzer(FuzzerBase):
 
         self.qemu_process.send_signal(signal.SIGKILL)
         ret = self.qemu_process.wait(timeout=2)
-        print(f"Process exited with code: {ret}")
+        logger.info(f"Process exited with code: {ret}")
 
         if self.qemu_process.poll is None:
             self.qemu_process.send_signal(signal.SIGKILL)
             ret = self.qemu_process.wait(timeout=2)
-            print(f"Process exited with code: {ret}")
+            logger.info(f"Process exited with code: {ret}")
 
         # subprocess.run("pkill -kill $(pgrep qemu-system)", shell=True)
 
@@ -209,7 +208,7 @@ class QemuFuzzer(FuzzerBase):
                 await self.qmp.connect(self.qmp_socket_path)
                 return True
             except Exception as e:
-                # print(f"connect_qmp(): Error connecting to QMP: {e}")
+                logger.error(f"connect_qmp(): Error connecting to QMP: {e}")
                 return False
         # If already connected, return True
         return True
@@ -218,62 +217,55 @@ class QemuFuzzer(FuzzerBase):
         try:
             if self.qmp is not None:
                 await self.qmp.disconnect()
-                # print(f"qemu_fuzzer.disconnect_qmp: QMP disconnect")
         except Exception as e:
-            # print(f"Error disconnecting QMP: {e}")
+            logger.error(f"Error disconnecting QMP: {e}")
             pass
         finally:
             self.qmp = None
 
     async def find_block_device(self) -> str | None:
-        # print("Connecting to QMP...")
         ret = await self.connect_qmp()
         if not ret:
             return None
         
-        # print("Querying QMP status...")
         # TODO: do we need to check the status?
         #res = await self.qmp.execute('query-status')
 
-        # print("Finding block device...")
         node_name = None
         try:
             res = await self.qmp.execute('query-block')
 
             for dev in res:
-                # print(f"Block device: {dev['device']}")
+                # logger.debug(f"Block device: {dev['device']}")
                 if dev["device"] == self.snapshot_device_name:
                     node_name = dev["inserted"]["node-name"]
             
             if node_name is None:
-                print("Error: node-name not found")
+                logger.error("Error: node-name not found")
                 return None
             
             return node_name
         
         except Exception as e:
-            print(f"find_block_device Error: {e}")
+            logger.error(f"find_block_device Error: {e}")
             raise(e)
     
     async def stopvm(self) -> None:
-        res = await self.qmp.execute("stop")
-        # print(f"Stop result: {res}")
+        await self.qmp.execute("stop")
 
     async def contvm(self) -> None:
-        res = await self.qmp.execute("cont")
-        # print(f"Continue result: {res}")
+        await self.qmp.execute("cont")
 
     async def savevm(self) -> bool:
         
         ret = False
         try:
             await self.connect_qmp()
-            # print("checking block device...")
             if self.node_name is None:
                 self.node_name = await self.find_block_device()
 
             if self.node_name is None:
-                print("Error: node_name is None, cannot save snapshot")
+                logger.error("Error: node_name is None, cannot save snapshot")
                 return False
             
             await self.stopvm()
@@ -289,21 +281,19 @@ class QemuFuzzer(FuzzerBase):
                 "devices": devices,
             }
 
-            print("saving snapshot...")
-            # print(args)
+            logger.info("saving snapshot...")
 
             res = await self.qmp.execute("snapshot-save", args)
-            # print(f"Snapshot save result: {res}")
 
             with open(self.snapshot_created_file, "w") as f:
                 f.write("snapshot created")
 
-            print(f"Snapshot was created successfully: {self.snapshot_created_file}")
+            logger.info(f"Snapshot was created successfully: {self.snapshot_created_file}")
 
             await self.contvm()
             ret = True
         except Exception as e:
-            print(f"savevm() Error: {e}")
+            logger.error(f"savevm() Error: {e}")
             traceback.print_exc()
         finally:
             await self.disconnect_qmp()
@@ -313,7 +303,6 @@ class QemuFuzzer(FuzzerBase):
         ret = False
 
         try:
-            # print("Connecting to QMP...")
             ret = await self.connect_qmp()
             if not ret:
                 return False
@@ -323,7 +312,6 @@ class QemuFuzzer(FuzzerBase):
             
             await self.stopvm()
 
-            # print("loading snapshot...")
             args = {
                 "job-id": self.generate_snapshot_job_id("load"), 
                 "tag": "mtcfuzz-snapshot", 
@@ -332,18 +320,17 @@ class QemuFuzzer(FuzzerBase):
             }
 
             res = await self.qmp.execute("snapshot-load", args)
-            # print(f"Snapshot load result: {res}")
 
             await self.contvm()
             ret = True
         except Exception as e:
-            print(f"loadvm Error: {e}")
+            logger.error(f"loadvm Error: {e}")
         finally:
             await self.disconnect_qmp()
             return ret
         
     async def delvm(self) -> bool:
-        print("Deleting snapshot...")
+        logger.info("Deleting snapshot...")
         ret = False
         try:
             await self.connect_qmp()
@@ -357,10 +344,9 @@ class QemuFuzzer(FuzzerBase):
             }
 
             res = await self.qmp.execute("snapshot-delete", args)
-            # print(f"Snapshot delete result: {res}")
             ret = True
         except Exception as e:
-            print(f"delvm Error: {e}")
+            logger.error(f"delvm Error: {e}")
         finally:
             await self.disconnect_qmp()
             if os.path.exists(self.snapshot_created_file):
@@ -376,7 +362,7 @@ class QemuFuzzer(FuzzerBase):
 
     def remove_snapshot(self):
         if os.path.exists(self.qemu_snapshot_storage):
-            print(f"Remove old snapshot")
+            logger.info(f"Remove old snapshot")
             os.unlink(self.qemu_snapshot_storage)
         
         self.remove_snapshot_created_file()
