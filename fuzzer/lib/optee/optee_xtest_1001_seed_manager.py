@@ -12,4 +12,5 @@ class OPTEEXtest1001SeedManager(SeedManager):
 
         seed["input_len"]["value"] = hex(fuzz_params["input_len"])
         seed["buffer_len"]["value"] = hex(fuzz_params["buffer_len"])
+        
         return seed

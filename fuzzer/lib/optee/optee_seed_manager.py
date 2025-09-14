@@ -10,5 +10,7 @@ class OPTEESeedManager(SeedManager):
         data = copy.deepcopy(self.seeds[seed_id])
         seed = data["seed"]
 
-        seed["cmd_id"]["value"] = hex(fuzz_params["cmd_id"])
+        for key in fuzz_params:
+            seed[key]["value"] = hex(fuzz_params[key])
+
         return seed
