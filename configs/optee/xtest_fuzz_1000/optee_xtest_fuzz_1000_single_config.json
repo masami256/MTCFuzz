@@ -32,8 +32,7 @@
         "ignore_kernel_coverage": false,
         "ignore_firmware_coverage": true,
         "hostshare_9p": "/root/hostshare",
-        "tag_9p": "hostshare",
-        "xtest_number": 1000
+        "tag_9p": "hostshare"
     },
     "address_filters": {
         "kernel": [

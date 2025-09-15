@@ -19,8 +19,8 @@
         "firmware_binary": "/home/build/projects/srcs/optee/optee_os/out/arm/core/tee.elf",
         "wait_for_qemu_seconds": 5,
         "remote_command_exec_timeout": 10,
-        "fuzzer_module": "lib.optee.optee_xtest_1001_fuzzer",
-        "fuzzer_class": "OpteeXtest1001Fuzzer",
+        "fuzzer_module": "lib.optee.optee_fuzzer",
+        "fuzzer_class": "OpteeFuzzer",
         "coverage_module": "lib.optee.optee_coverage",
         "coverage_class": "OPTEECoverage",
         "seed_manager": "lib.optee.optee_seed_manager",
@@ -32,8 +32,7 @@
         "ignore_kernel_coverage": false,
         "ignore_firmware_coverage": false,
         "hostshare_9p": "/root/hostshare",
-        "tag_9p": "hostshare",
-        "xtest_number": 1001
+        "tag_9p": "hostshare"
     },
     "address_filters": {
         "kernel": [

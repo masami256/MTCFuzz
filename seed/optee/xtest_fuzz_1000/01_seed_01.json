@@ -1,4 +1,9 @@
 {
+    "xtest_number": {
+        "fixed": true,
+        "value": 1000,
+        "type": "integer"
+    },
     "cmd_id": {
         "fixed": false,
         "value": "0xff",

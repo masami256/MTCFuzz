@@ -49,4 +49,11 @@ class FuzzerBase:
         self.ssh_client.send_file(self.config["fuzzing"]["harness"], f"{self.remote_harness_path}")
 
     def generate_input(self, seed: dict, **kwargs) -> dict:
-        raise NotImplementedError("generate_input() must be implemented in the subclass")
+        result = {}
+        for key in seed:
+            if seed[key]["fixed"]:
+                result[key] = seed[key]["value"]
+            else:
+                result[key] = self.mutator.mutate(seed[key]["value"])
+
+        return result

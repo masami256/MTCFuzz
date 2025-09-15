@@ -175,6 +175,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     test_dir_name = f"{task_id}-{uuid_str}"
                     local_test_dir = f"{local_work_dir}/{test_dir_name}"
 
+                    logger.info(f"Test: {test_dir_name}")
                     console0_log = f"{local_test_dir}/console0.log"
                     console1_log = None
 
@@ -205,7 +206,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                         extra_serial = Serial(serial_socket_path1, console1_log)
                         extra_serial.open()
                     
-                    pprint.pprint(f"test: {test_no}, params: {fuzz_params}")
+                    # pprint.pprint(f"test: {test_no}, params: {fuzz_params}")
                     await qt.tracer_on(trace_log)
                     tracing = True
                     

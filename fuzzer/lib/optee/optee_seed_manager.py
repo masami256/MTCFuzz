@@ -1,7 +1,6 @@
 from ..seed_manager import SeedManager
 import copy
 
-import pprint
 class OPTEESeedManager(SeedManager):
     def __init__(self, seed_dir: str, task_id: int) -> None:
         super().__init__(seed_dir, task_id)
@@ -11,6 +10,6 @@ class OPTEESeedManager(SeedManager):
         seed = data["seed"]
 
         for key in fuzz_params:
-            seed[key]["value"] = hex(fuzz_params[key])
+            seed[key]["value"] = fuzz_params[key]
 
         return seed

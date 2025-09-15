@@ -20,7 +20,7 @@ class OpteeFuzzer(QemuFuzzer):
 
         self.mutator = OPTeeMutator()
 
-        self.xtest_number = str(self.config["fuzzing"]["xtest_number"])
+        #self.xtest_number = str(self.config["fuzzing"]["xtest_number"])
     def extra_qemu_params(self) -> list[str]:
         return [
             "-cpu", "max,sme=on,pauth-impdef=on",
@@ -73,23 +73,22 @@ class OpteeFuzzer(QemuFuzzer):
 
         return True
 
-    def generate_input(self, seed: dict, **kwargs) -> dict:
-        params = {}
-        if not seed["cmd_id"]["fixed"]:
-            params["cmd_id"] = self.mutator.mutate(seed["cmd_id"]["value"])
-        else:
-            params["cmd_id"] = int(seed["cmd_id"]["value"], 16)
-
-        return params
+    def write_xtest_parameters(self, fuzz_data: dict) -> None:
+        arr = []
+        for key in fuzz_data:
+            if not key == "xtest_number":
+                arr.append(str(fuzz_data[key]))
+        
+        data = ",".join(arr)
+        with open(self.fuzz_input_file, "w") as f:  
+            f.write(data)
 
     def run_test(self, fuzz_data: dict) -> dict:
-        with open(self.fuzz_input_file, "w") as f:
-            f.write(hex(fuzz_data["cmd_id"]))
-
+        self.write_xtest_parameters(fuzz_data)
         args = [
             "xtest",
             "-t", "fuzz",
-            self.xtest_number,
+            str(fuzz_data["xtest_number"]),
         ]
 
         args_str = " ".join(args)
