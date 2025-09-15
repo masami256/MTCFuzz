@@ -78,7 +78,7 @@ class OpteeFuzzer(QemuFuzzer):
         for key in fuzz_data:
             if not key == "xtest_number":
                 arr.append(str(fuzz_data[key]))
-        
+
         data = ",".join(arr)
         with open(self.fuzz_input_file, "w") as f:  
             f.write(data)

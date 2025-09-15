@@ -2,16 +2,19 @@
     "xtest_number": {
         "fixed": true,
         "value": 1001,
-        "type": "integer"
+        "type": "integer",
+        "order": 0
     },
     "input_len": {
         "fixed": false,
         "value": "0xffff",
-        "type": "hex"
+        "type": "hex",
+        "order": 1
     },
     "buffer_len": {
         "fixed": false,
         "value": "0xffff",
-        "type": "hex"
+        "type": "hex",
+        "order": 2
     }
 }

@@ -2,11 +2,13 @@
     "xtest_number": {
         "fixed": true,
         "value": 1000,
-        "type": "integer"
+        "type": "integer",
+        "order": 0
     },
     "cmd_id": {
         "fixed": false,
         "value": "0xff",
-        "type": "integer"
+        "type": "integer",
+        "order": 1
     }
 }
