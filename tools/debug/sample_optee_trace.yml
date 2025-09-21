@@ -1,0 +1,27 @@
+addr2line:
+  binary: /home/build/projects/srcs/optee/toolchains/aarch64/bin/aarch64-none-linux-gnu-addr2line
+linux:
+  elf: /home/build/projects/srcs/optee/linux/vmlinux 
+  min_addr: 0xffff800000000000
+  max_addr: 0xffffffffffffffff
+  base_addr: 0x0
+optee_os:
+  elf: /home/build/projects/srcs/optee/optee_os/out/arm/core/tee.elf
+  min_addr: 0xe100000
+  max_addr: 0xeffffff
+  base_addr: 0x0
+xtest:
+  elf: /home/build/projects/srcs/optee/out-br/build/optee_test_ext-1.0/host/xtest/xtest
+  min_addr: 0xaaaaaaaaa000
+  max_addr: 0xaaaaaaba1000
+  base_addr: 0xaaaaaaaaa000
+libckteec:
+  elf: /home/build/projects/srcs/optee/out-br/build/optee_client_ext-1.0/libckteec/libckteec.so.0.1.0
+  min_addr: 0xfffff7a33000
+  max_addr: 0xfffff7a47000
+  base_addr: 0xfffff7a2f8a0
+libteec:
+  elf: /home/build/projects/srcs/optee/out-br/build/optee_client_ext-1.0/libteec/libteec.so.2.0.0
+  min_addr: 0xfffff7ff1000
+  max_addr: 0xfffff7ff6000
+  base_addr: 0xfffff7ff01d0
