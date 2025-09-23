@@ -1,0 +1,12 @@
+services:
+  debian13-arm64:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: debian13-arm64
+    container_name: debian13-arm64
+    command: /bin/bash
+    volumes:
+      - .:/home/build:rw
+    privileged: true
+    user: build
