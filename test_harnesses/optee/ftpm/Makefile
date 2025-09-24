@@ -1,7 +1,18 @@
-target=ftpm_nv_test
+target = ftpm_fuzz
 
-$(target):
-	gcc -Wall $(target).c -o $(target) -lteec -ltss2-mu -ltss2-sys -ltss2-tctildr -ltss2-tcti-device
+CC = gcc
+CFALGS = -Wall -g -I.
+
+objs = main.o \
+	common.o \
+	ftpm_ta.o \
+	ftpm_nv.o
+
+$(target): $(objs)
+	$(CC) $(CFALGS) $(objs) -o $(target) -lteec -ltss2-mu -ltss2-sys -ltss2-tctildr -ltss2-tcti-device
+
+.c.o:
+	$(CC) $(CFALGS) -c $<
 
 clean:
 	rm -fr $(target)

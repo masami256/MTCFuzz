@@ -16,6 +16,8 @@ test_harnesses/opensbi/ecall_fuzzing/driver/.Module.symvers.cmd
 test_harnesses/opensbi/ecall_fuzzing/driver/sbi_fuzz.ko
 test_harnesses/opensbi/ecall_fuzzing/driver/.sbi_fuzz*
 test_harnesses/opensbi/ecall_fuzzing/driver/sbi_fuzz.mod*
-test_harnesses/optee/ftpm/ftpm_nv_test
+test_harnesses/optee/ftpm/ftpm_test
 tmp/
 .vscode
+.bash_history
+
