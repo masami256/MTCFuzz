@@ -34,12 +34,16 @@ int send_tpm_cmd_mu(int fd,
 {
     // Transmit command
     ssize_t w = write(fd, in, in_len);
-    if (w != (ssize_t)in_len) return -1;
+    if (w != (ssize_t)in_len) {
+        return -1;
+    }
 
     // Read fixed-size response header (10 bytes)
     uint8_t hdr_buf[10];
     ssize_t r = read(fd, hdr_buf, sizeof(hdr_buf));
-    if (r != (ssize_t)sizeof(hdr_buf)) return -1;
+    if (r != (ssize_t)sizeof(hdr_buf)) {
+        return -1;
+    }
 
     // Unmarshal: tag (TPM2_ST), paramSize (UINT32), responseCode (UINT32)
     size_t off = 0;
@@ -53,13 +57,17 @@ int send_tpm_cmd_mu(int fd,
 
     if (tpm_rc_out) *tpm_rc_out = rc;
 
-    if (paramSize < sizeof(hdr_buf) || paramSize > *out_len) return -1;
+    if (paramSize < sizeof(hdr_buf) || paramSize > *out_len) {
+        return -1;
+    }
 
     memcpy(out, hdr_buf, sizeof(hdr_buf));
     size_t remaining = paramSize - sizeof(hdr_buf);
     if (remaining) {
         ssize_t r2 = read(fd, out + sizeof(hdr_buf), remaining);
-        if (r2 != (ssize_t)remaining) return -1;
+        if (r2 != (ssize_t)remaining) {
+            return -1;
+        }
     }
     *out_len = paramSize;
 
@@ -78,7 +86,9 @@ int marshal_pwap_auth(uint8_t *buf, size_t buf_sz, size_t *autharea_len)
 
     size_t off = 0;
     TSS2_RC rc = Tss2_MU_TPMS_AUTH_COMMAND_Marshal(&a, buf, buf_sz, &off);
-    if (rc != TSS2_RC_SUCCESS) return -1;
+    if (rc != TSS2_RC_SUCCESS) {
+        return -1;
+    }
     *autharea_len = off;
     return 0;
 }
@@ -88,11 +98,17 @@ int begin_cmd_sessions(UINT32 cc, uint8_t *buf, size_t buf_sz,
                               size_t *off_io, size_t *size_off_out)
 {
     size_t off = *off_io;
-    if (Tss2_MU_TPM2_ST_Marshal(TPM2_ST_SESSIONS, buf, buf_sz, &off)) return -1;
+    if (Tss2_MU_TPM2_ST_Marshal(TPM2_ST_SESSIONS, buf, buf_sz, &off)) {
+        return -1;
+    }
     UINT32 size_placeholder = 0;
     size_t size_off = off;
-    if (Tss2_MU_UINT32_Marshal(size_placeholder, buf, buf_sz, &off)) return -1;
-    if (Tss2_MU_UINT32_Marshal(cc, buf, buf_sz, &off)) return -1;
+    if (Tss2_MU_UINT32_Marshal(size_placeholder, buf, buf_sz, &off)) {
+        return -1;
+    }
+    if (Tss2_MU_UINT32_Marshal(cc, buf, buf_sz, &off)) {
+        return -1;
+    }
     *off_io = off;
     *size_off_out = size_off;
     return 0;

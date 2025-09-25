@@ -76,7 +76,9 @@ int main(void)
             for (int i = 0; i < attempts && rc_base(last_rc) == 0x01DAu; i++) {
                 usleep(delay_ms * 1000);
                 if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc) == 0) { ok = 1; break; }
-                if (delay_ms < 1000) delay_ms <<= 1;
+                if (delay_ms < 1000) {
+                    delay_ms <<= 1;
+                }
             }
             if (!ok) {
                 printf("[*]NV_Write failed (rc=0x%08x)\n", last_rc);

@@ -14,24 +14,36 @@ int build_cmd_nv_definespace(uint32_t nv_index,
     }
     
     // Handles: authHandle = TPM_RH_OWNER
-    if (Tss2_MU_UINT32_Marshal(TPM2_RH_OWNER, buf, buf_sz, &off)) return -1;
+    if (Tss2_MU_UINT32_Marshal(TPM2_RH_OWNER, buf, buf_sz, &off)) {
+        return -1;
+    }
 
     // authorizationSize + AuthArea(PWAP)
     size_t auth_size_off = off;
-    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off)) return -1;  // placeholder
+    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off)) {
+        return -1;  // placeholder
+    }
+
     size_t auth_len = 0;
-    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len)) return -1;
+    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len)) {
+        return -1;
+    }
+
     off += auth_len;
     // backfill authorizationSize
     {
         size_t tmp = auth_size_off;
-        if (Tss2_MU_UINT32_Marshal((UINT32)auth_len, buf, buf_sz, &tmp)) return -1;
+        if (Tss2_MU_UINT32_Marshal((UINT32)auth_len, buf, buf_sz, &tmp)) {
+            return -1;
+        }
     }
 
     // Parameters:
     //  - TPM2B_AUTH auth = "" (size=0)
     TPM2B_AUTH auth = { .size = 0 };
-    if (Tss2_MU_TPM2B_AUTH_Marshal(&auth, buf, buf_sz, &off)) return -1;
+    if (Tss2_MU_TPM2B_AUTH_Marshal(&auth, buf, buf_sz, &off)) {
+        return -1;
+    }
 
     //  - TPM2B_NV_PUBLIC publicInfo
     //    Fill TPMS_NV_PUBLIC then wrap as TPM2B_NV_PUBLIC with correct size
@@ -52,17 +64,26 @@ int build_cmd_nv_definespace(uint32_t nv_index,
     // First, marshal TPMS_NV_PUBLIC into a temp to know its length
     uint8_t tmp_pub[256];
     size_t tmp_off = 0;
-    if (Tss2_MU_TPMS_NV_PUBLIC_Marshal(&p, tmp_pub, sizeof(tmp_pub), &tmp_off))
+    if (Tss2_MU_TPMS_NV_PUBLIC_Marshal(&p, tmp_pub, sizeof(tmp_pub), &tmp_off)) {
         return -1;
+    }
 
     // Now write size and the body
-    if (Tss2_MU_UINT16_Marshal((UINT16)tmp_off, buf, buf_sz, &off)) return -1;
+    if (Tss2_MU_UINT16_Marshal((UINT16)tmp_off, buf, buf_sz, &off)) {
+        return -1;
+    }
+
     // Copy the marshaled body
-    if (off + tmp_off > buf_sz) return -1;
+    if (off + tmp_off > buf_sz) {
+        return -1;
+    }
+
     memcpy(buf + off, tmp_pub, tmp_off);
     off += tmp_off;
 
-    if (finalize_cmd_size(buf, buf_sz, size_off, off)) return -1;
+    if (finalize_cmd_size(buf, buf_sz, size_off, off)) {
+        return -1;
+    }
     *out_len = off;
     return 0;
 }
@@ -73,34 +94,54 @@ int build_cmd_nv_write(uint32_t nv_index,
                               uint8_t *buf, size_t buf_sz, size_t *out_len)
 {
     size_t off = 0, size_off = 0;
-    if (begin_cmd_sessions(TPM2_CC_NV_Write, buf, buf_sz, &off, &size_off)) return -1;
+    if (begin_cmd_sessions(TPM2_CC_NV_Write, buf, buf_sz, &off, &size_off)) {
+        return -1;
+    }
 
     // Handles: authHandle (index auth) + nvIndex
-    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) return -1;  // authHandle = nvIndex (AUTHWRITE)
-    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) return -1;  // nvIndex
+    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) {
+        return -1;  // authHandle = nvIndex (AUTHWRITE)
+    }
+    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) {
+        return -1;  // nvIndex
+    }
 
     // authorizationSize + AuthArea(PWAP)
     size_t auth_size_off = off;
-    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off)) return -1;  // placeholder
+    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off)) {
+        return -1;  // placeholder
+    }
     size_t auth_len = 0;
-    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len)) return -1;
+    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len)) {
+        return -1;
+    }
     off += auth_len;
     // backfill authorizationSize
     {
         size_t tmp = auth_size_off;
-        if (Tss2_MU_UINT32_Marshal((UINT32)auth_len, buf, buf_sz, &tmp)) return -1;
+        if (Tss2_MU_UINT32_Marshal((UINT32)auth_len, buf, buf_sz, &tmp)) {
+            return -1;
+        }
     }
 
     // Parameters: TPM2B_MAX_NV_BUFFER data, UINT16 offset
     TPM2B_MAX_NV_BUFFER nvdata;
-    if (data_len > sizeof(nvdata.buffer)) return -1;
+    if (data_len > sizeof(nvdata.buffer)) {
+        return -1;
+    }
     nvdata.size = data_len;
     memcpy(nvdata.buffer, data, data_len);
 
-    if (Tss2_MU_TPM2B_MAX_NV_BUFFER_Marshal(&nvdata, buf, buf_sz, &off)) return -1;
-    if (Tss2_MU_UINT16_Marshal(0 /*offset*/, buf, buf_sz, &off)) return -1;
+    if (Tss2_MU_TPM2B_MAX_NV_BUFFER_Marshal(&nvdata, buf, buf_sz, &off)) {
+        return -1;
+    }
+    if (Tss2_MU_UINT16_Marshal(0 /*offset*/, buf, buf_sz, &off)) {
+        return -1;
+    }
 
-    if (finalize_cmd_size(buf, buf_sz, size_off, off)) return -1;
+    if (finalize_cmd_size(buf, buf_sz, size_off, off)) {
+        return -1;
+    }
     *out_len = off;
     return 0;
 }
@@ -111,29 +152,47 @@ int build_cmd_nv_read(uint32_t nv_index,
                              uint8_t *buf, size_t buf_sz, size_t *out_len)
 {
     size_t off = 0, size_off = 0;
-    if (begin_cmd_sessions(TPM2_CC_NV_Read, buf, buf_sz, &off, &size_off)) return -1;
+    if (begin_cmd_sessions(TPM2_CC_NV_Read, buf, buf_sz, &off, &size_off)) {
+        return -1;
+    }
 
     // Handles: authHandle (index auth) + nvIndex
-    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) return -1;  // authHandle = nvIndex (AUTHREAD)
-    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) return -1;  // nvIndex
+    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) {
+        return -1;  // authHandle = nvIndex (AUTHREAD)
+    }
+    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) {
+        return -1;  // nvIndex
+    }
 
     // authorizationSize + AuthArea(PWAP)
     size_t auth_size_off = off;
-    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off)) return -1;  // placeholder
+    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off)) {
+        return -1;  // placeholder
+    }
     size_t auth_len = 0;
-    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len)) return -1;
+    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len)) {
+        return -1;
+    }
     off += auth_len;
     // backfill authorizationSize
     {
         size_t tmp = auth_size_off;
-        if (Tss2_MU_UINT32_Marshal((UINT32)auth_len, buf, buf_sz, &tmp)) return -1;
+        if (Tss2_MU_UINT32_Marshal((UINT32)auth_len, buf, buf_sz, &tmp)) {
+            return -1;
+        }
     }
 
     // Parameters: UINT16 size, UINT16 offset
-    if (Tss2_MU_UINT16_Marshal(read_size, buf, buf_sz, &off)) return -1;
-    if (Tss2_MU_UINT16_Marshal(0 /*offset*/, buf, buf_sz, &off)) return -1;
+    if (Tss2_MU_UINT16_Marshal(read_size, buf, buf_sz, &off)) {
+        return -1;
+    }
+    if (Tss2_MU_UINT16_Marshal(0 /*offset*/, buf, buf_sz, &off)) {
+        return -1;
+    }
 
-    if (finalize_cmd_size(buf, buf_sz, size_off, off)) return -1;
+    if (finalize_cmd_size(buf, buf_sz, size_off, off)) {
+        return -1;
+    }
     *out_len = off;
     return 0;
 }
@@ -143,25 +202,39 @@ int build_cmd_nv_undefinespace(uint32_t nv_index,
                                       uint8_t *buf, size_t buf_sz, size_t *out_len)
 {
     size_t off = 0, size_off = 0;
-    if (begin_cmd_sessions(TPM2_CC_NV_UndefineSpace, buf, buf_sz, &off, &size_off)) return -1;
+    if (begin_cmd_sessions(TPM2_CC_NV_UndefineSpace, buf, buf_sz, &off, &size_off)) {
+        return -1;
+    }
 
     // Handles: authHandle = TPM_RH_OWNER, nvIndex
-    if (Tss2_MU_UINT32_Marshal(TPM2_RH_OWNER, buf, buf_sz, &off)) return -1;
-    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) return -1;
+    if (Tss2_MU_UINT32_Marshal(TPM2_RH_OWNER, buf, buf_sz, &off)) {
+        return -1;
+    }
+    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) {
+        return -1;
+    }
 
     // authorizationSize + AuthArea(PWAP)
     size_t auth_size_off = off;
-    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off)) return -1;  // placeholder
+    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off)) {
+        return -1;  // placeholder
+    }
     size_t auth_len = 0;
-    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len)) return -1;
+    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len)) {
+        return -1;
+    }
     off += auth_len;
     // backfill authorizationSize
     {
         size_t tmp = auth_size_off;
-        if (Tss2_MU_UINT32_Marshal((UINT32)auth_len, buf, buf_sz, &tmp)) return -1;
+        if (Tss2_MU_UINT32_Marshal((UINT32)auth_len, buf, buf_sz, &tmp)) {
+            return -1;
+        }
     }
 
-    if (finalize_cmd_size(buf, buf_sz, size_off, off)) return -1;
+    if (finalize_cmd_size(buf, buf_sz, size_off, off)) {
+        return -1;
+    }
     *out_len = off;
     return 0;
 }
