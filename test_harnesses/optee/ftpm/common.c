@@ -5,23 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
-
 #include <errno.h>
-
-int open_tpm_dev(void)
-{
-    int fd = open(DEV_TPMRM0, O_RDWR | O_CLOEXEC);
-    if (fd < 0) {
-        printf("[*]Failed to open %s: %s\n", DEV_TPMRM0, strerror(errno));
-        return -1;
-    }
-    return fd;
-}
-
-void close_tpm_dev(int fd)
-{
-    close(fd);
-}
 
 /* Send a raw TPM command, unmarshal the 10-byte response header with MU,
  * read the remaining bytes, and optionally return the TPM RC.
@@ -120,4 +104,19 @@ int finalize_cmd_size(uint8_t *buf, size_t buf_sz, size_t size_off, size_t total
     UINT32 total = (UINT32)total_off;
     size_t tmp = size_off;
     return (Tss2_MU_UINT32_Marshal(total, buf, buf_sz, &tmp) == TSS2_RC_SUCCESS) ? 0 : -1;
+}
+
+int open_tpm_dev(void)
+{
+    int fd = open(DEV_TPMRM0, O_RDWR | O_CLOEXEC);
+    if (fd < 0) {
+        printf("[*]Failed to open %s: %s\n", DEV_TPMRM0, strerror(errno));
+        return -1;
+    }
+    return fd;
+}
+
+void close_tpm_dev(int fd)
+{
+    close(fd);
 }

@@ -2,6 +2,7 @@
 #include "ftpm_nv.h"
 
 #include <string.h>
+#include <unistd.h>
 
 /* Build NV_DefineSpace (PWAP, Owner auth handle, empty authValue, ORDINARY/AUTHREAD|AUTHWRITE). */
 int build_cmd_nv_definespace(uint32_t nv_index,
@@ -280,4 +281,103 @@ void dump_nv_read_response(const uint8_t *rsp, size_t rsp_len)
         putchar((c >= 32 && c <= 126) ? c : '.');
     }
     putchar('\n');
+}
+
+int nv_write_start_fuzz_test(options_t *fuzz_opt)
+{
+    int rc = 0;
+    int fd = fuzz_opt->fd;
+    
+    // Small settle delay helps some fTPM builds right after boot
+    usleep(500 * 1000); // 500ms
+
+    // 1) Define NV index (size=6, for "foobar"), ORDINARY with AUTHREAD/AUTHWRITE, empty auth
+    {
+        uint8_t cmd[512], rsp[256];
+        size_t cmd_len = 0, rsp_len = sizeof(rsp);
+        TPM2_RC last_rc = 0;
+
+        if (build_cmd_nv_definespace(NV_INDEX, 6, cmd, sizeof(cmd), &cmd_len)) {
+            printf("[*]Failed to build NV_DefineSpace\n");
+            return -1;
+        }
+
+        if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc)) {
+            printf("[*]NV_DefineSpace failed (rc=0x%08x)\n", last_rc);
+            return -1;
+        }
+        printf("[+]NV_DefineSpace OK (rsp_len=0x%zx)\n", rsp_len);
+    }
+
+    // 2) NV_Write "foobar"
+    {
+        const uint8_t payload[] = { 'f','o','o','b','a','r' };
+        uint8_t cmd[512], rsp[256];
+        size_t cmd_len = 0, rsp_len = sizeof(rsp);
+        TPM2_RC last_rc = 0;
+        
+        if (build_cmd_nv_write(NV_INDEX, payload, (uint16_t)sizeof(payload),
+                               cmd, sizeof(cmd), &cmd_len)) {
+            printf("[*]Failed to build NV_Write\n");
+            rc = -1;
+            goto undefine;
+        }
+        if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc)) {
+            // Retry on TESTING just in case (rare here)
+            int delay_ms = 100, attempts = 10, ok = 0;
+            for (int i = 0; i < attempts && rc_base(last_rc) == 0x01DAu; i++) {
+                usleep(delay_ms * 1000);
+                if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc) == 0) { ok = 1; break; }
+                if (delay_ms < 1000) {
+                    delay_ms <<= 1;
+                }
+            }
+            if (!ok) {
+                printf("[*]NV_Write failed (rc=0x%08x)\n", last_rc);
+                rc = -1;
+                goto undefine;
+            }
+        }
+        printf("[+]NV_Write OK (wrote \"%s\")\n", "foobar");
+    }
+
+    // 3) NV_Read 6 bytes
+    {
+        uint8_t cmd[512], rsp[256];
+        size_t cmd_len = 0, rsp_len = sizeof(rsp);
+        TPM2_RC last_rc = 0;
+
+        if (build_cmd_nv_read(NV_INDEX, 6, cmd, sizeof(cmd), &cmd_len)) {
+            printf("[*]Failed to build NV_Read\n");
+            rc = -1;
+            goto undefine;
+        }
+        if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc)) {
+            printf("[*]NV_Read failed (rc=0x%08x)\n", last_rc);
+            rc = -1;
+            goto undefine;
+        }
+        printf("[+]NV_Read OK (rsp_len=0x%zx)\n", rsp_len);
+
+        dump_nv_read_response(rsp, rsp_len);
+    }
+
+undefine:
+    // 4) Undefine NV index (owner auth)
+    {
+        uint8_t cmd[512], rsp[256];
+        size_t cmd_len = 0, rsp_len = sizeof(rsp);
+        TPM2_RC last_rc = 0;
+
+        if (build_cmd_nv_undefinespace(NV_INDEX, cmd, sizeof(cmd), &cmd_len)) {
+            printf("[*]Failed to build NV_UndefineSpace\n");
+            rc = -1;
+        } else if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc)) {
+            printf("[*]NV_UndefineSpace failed (rc=0x%08x)\n", last_rc);
+            rc = -1;
+        } else {
+            printf("[+]NV_UndefineSpace OK\n");
+        }
+    }
+    return rc;
 }
