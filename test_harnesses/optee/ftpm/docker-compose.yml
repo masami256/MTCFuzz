@@ -1,10 +1,10 @@
 services:
-  debian13-arm64:
+  mtcfuzz_optee_test_harness_builder:
     build:
       context: .
       dockerfile: Dockerfile
-    image: debian13-arm64
-    container_name: debian13-arm64
+    image: mtcfuzz_optee_test_harness_builder
+    container_name: mtcfuzz_optee_test_harness_builder
     command: /bin/bash
     volumes:
       - .:/home/build:rw
