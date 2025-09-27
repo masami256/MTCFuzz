@@ -4,7 +4,103 @@
 #include <string.h>
 #include <unistd.h>
 
-/* Build NV_DefineSpace (PWAP, Owner auth handle, empty authValue, ORDINARY/AUTHREAD|AUTHWRITE). */
+static int hexstr_to_bytes(const char *s, uint8_t **out, uint16_t *out_len) {
+    size_t len = strlen(s);
+    if (len % 2 != 0) {
+        return -1;
+    }
+
+    size_t n = len / 2;
+    if (n > 0xFFFF) {
+        n = 0xFFFF; // fits into uint16_t
+    }
+
+    uint8_t *buf = (uint8_t *)malloc(n);
+    if (!buf) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < n; i++) {
+        char tmp[3] = { s[i * 2], s[i * 2 + 1], 0 };
+        buf[i] = (uint8_t) strtoul(tmp, NULL, 16);
+    }
+    *out = buf;
+    *out_len = (uint16_t)n;
+    return 0;
+}
+
+static int nvwrite_load_fuzz_text_file(const char *path, nvwrite_fuzz_input_t *out)
+{
+    memset(out, 0, sizeof(*out));
+    out->payload = NULL;
+
+    FILE *fp = fopen(path, "r");
+    if (!fp) {
+        return -1;
+    }
+
+    char line[4096];
+    char *lines[8] = {0};
+    int ok = -1; /* assume failure */
+
+    /* Read 8 lines from the text file */
+    for (int i = 0; i < 8; i++) {
+        if (!fgets(line, sizeof(line), fp)) {
+            goto cleanup;
+        }
+        line[strcspn(line, "\r\n")] = 0; /* trim newline */
+        lines[i] = strdup(line);
+        if (!lines[i]) {
+            goto cleanup;
+        }
+    }
+
+    fclose(fp);
+    fp = NULL;
+
+    /* Parse numeric values from text lines */
+    out->flags0              = (uint8_t)  strtoul(lines[0], NULL, 16);
+    out->flags1              = (uint8_t)  strtoul(lines[1], NULL, 16);
+    out->declared_size_delta = (int16_t) strtol (lines[2], NULL, 16);
+    out->offset_delta        = (int16_t) strtol (lines[3], NULL, 16);
+    out->authsize_delta      = (int16_t) strtol (lines[4], NULL, 16);
+    out->swap_handles        = (uint32_t) strtoul(lines[5], NULL, 16);
+    out->payload_len         = (uint16_t) strtoul(lines[6], NULL, 16); /* declared length */
+
+    uint16_t actual_len = 0;
+    if (hexstr_to_bytes(lines[7], &out->payload, &actual_len)) {
+        goto cleanup;
+    }
+
+    /* Do not fail if declared length and actual length mismatch */
+    if (actual_len != out->payload_len) {
+        printf("[*] Warning: declared_len=%u, actual_len=%u (mismatch allowed)\n",
+               out->payload_len, actual_len);
+    }
+
+    ok = 0;
+
+cleanup:
+    /* Free all temporary line buffers */
+    for (int i = 0; i < 8; i++) {
+        if (lines[i]) {
+            free(lines[i]);
+        }
+    }
+
+    if (fp) {
+        fclose(fp);
+    }
+
+    if (ok != 0) {
+        free(out->payload);
+        out->payload = NULL;
+    }
+
+    return ok;
+}
+
+// Build NV_DefineSpace (PWAP, Owner auth handle, empty authValue, ORDINARY/AUTHREAD|AUTHWRITE).
 int build_cmd_nv_definespace(uint32_t nv_index,
                                     uint16_t data_size,
                                     uint8_t *buf, size_t buf_sz, size_t *out_len)
@@ -89,7 +185,7 @@ int build_cmd_nv_definespace(uint32_t nv_index,
     return 0;
 }
 
-/* Build NV_Write with PWAP (authHandle = nvIndex, nvIndex). Writes 'data' at offset 0. */
+// Build NV_Write with PWAP (authHandle = nvIndex, nvIndex). Writes 'data' at offset 0.
 int build_cmd_nv_write(uint32_t nv_index,
                               const uint8_t *data, uint16_t data_len,
                               uint8_t *buf, size_t buf_sz, size_t *out_len)
@@ -147,7 +243,7 @@ int build_cmd_nv_write(uint32_t nv_index,
     return 0;
 }
 
-/* Build NV_Read with PWAP (authHandle = nvIndex, nvIndex). Reads 'size' at offset 0. */
+// Build NV_Read with PWAP (authHandle = nvIndex, nvIndex). Reads 'size' at offset 0.
 int build_cmd_nv_read(uint32_t nv_index,
                              uint16_t read_size,
                              uint8_t *buf, size_t buf_sz, size_t *out_len)
@@ -198,7 +294,7 @@ int build_cmd_nv_read(uint32_t nv_index,
     return 0;
 }
 
-/* Build NV_UndefineSpace (PWAP, Owner auth, target nvIndex). */
+// Build NV_UndefineSpace (PWAP, Owner auth, target nvIndex).
 int build_cmd_nv_undefinespace(uint32_t nv_index,
                                       uint8_t *buf, size_t buf_sz, size_t *out_len)
 {
@@ -240,7 +336,7 @@ int build_cmd_nv_undefinespace(uint32_t nv_index,
     return 0;
 }
 
-/* Unmarshal NV_Read response payload and print it as string/hex. */
+// Unmarshal NV_Read response payload and print it as string/hex.
 void dump_nv_read_response(const uint8_t *rsp, size_t rsp_len)
 {
     // SESSIONS response layout:
@@ -287,6 +383,14 @@ int nv_write_start_fuzz_test(options_t *fuzz_opt)
 {
     int rc = 0;
     int fd = fuzz_opt->fd;
+    nvwrite_fuzz_input_t input = { };
+
+    if (nvwrite_load_fuzz_text_file(fuzz_opt->infile, &input)) {
+        printf("[*]Failxed to parse input text %s\n", fuzz_opt->infile);
+        return -1;
+    }
+
+    printf("[+]Loading input text %s succeeded\n", fuzz_opt->infile);
     
     // Small settle delay helps some fTPM builds right after boot
     usleep(500 * 1000); // 500ms
@@ -381,3 +485,4 @@ undefine:
     }
     return rc;
 }
+

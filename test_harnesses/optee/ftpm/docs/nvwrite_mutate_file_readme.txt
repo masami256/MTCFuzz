@@ -1,0 +1,8 @@
+05          # line1: flags0 (bit0=nvbuf.size tweak, bit2=offset tweak)
+00          # line2: flags1 (no advanced mutation)
+FFFF        # line3: declared_size_delta (signed 16-bit: 0xFFFF = -1)
+0010        # line4: offset_delta (signed 16-bit: 0x10 = +16)
+0000        # line5: authsize_delta (signed 16-bit: 0 = no change)
+00000000    # line6: swap_handles (0 = don't swap authHandle/nvIndex)
+0006        # line7: payload_len (explicitly declare 6 bytes)
+666F6F626172 # line8: payload_hex ("foobar" in ASCII)

@@ -1,4 +1,4 @@
-/* Check fTPM TA presence via TEEC (BUSY is OK: kernel owns the TA). */
+// Check fTPM TA presence via TEEC (BUSY is OK: kernel owns the TA).
 #include <stdio.h>
 #include <tee_client_api.h>
 

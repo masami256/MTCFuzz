@@ -36,7 +36,7 @@ static int parse_args(int argc, char **argv, options_t *out) {
     memset(out, 0, sizeof(*out));
 
     const struct option long_opts[] = {
-        /* name       has_arg            flag  val */
+        // name       has_arg            flag  val
         { "target",   required_argument, NULL,  1  },
         { "input",    required_argument, NULL,  2  },
         { "help",     no_argument,       NULL, 'h' },
@@ -47,17 +47,17 @@ static int parse_args(int argc, char **argv, options_t *out) {
     while ((opt = getopt_long(argc, argv, "h", long_opts, &li)) != -1) {
         switch (opt) {
         case 0:
-            /* Should not happen because we don't use flag pointers */
+            // Should not happen because we don't use flag pointers
             break;
-        case 1: /* --target */
+        case 1: // --target
             out->target = parse_target(optarg);
             break;
-        case 2: /* --input */
+        case 2: // --input
             out->infile = optarg;
             break;
         case 'h':
             print_usage(argv[0]);
-            return 1; /* signal: help printed */
+            return 1; // signal: help printed
         default:
             print_usage(argv[0]);
             return -1;

@@ -58,7 +58,7 @@ int send_tpm_cmd_mu(int fd,
     return (rc == TPM2_RC_SUCCESS) ? 0 : -1;
 }
 
-/* Marshal one PWAP AuthArea (TPM_RS_PW, empty hmac) and return its byte size. */
+// Marshal one PWAP AuthArea (TPM_RS_PW, empty hmac) and return its byte size.
 int marshal_pwap_auth(uint8_t *buf, size_t buf_sz, size_t *autharea_len)
 {
     // TPMS_AUTH_COMMAND: sessionHandle, nonce(size=0), sessionAttributes(1B), hmac(size=0)
@@ -77,7 +77,7 @@ int marshal_pwap_auth(uint8_t *buf, size_t buf_sz, size_t *autharea_len)
     return 0;
 }
 
-/* Begin a "SESSIONS" command header: tag, size placeholder, commandCode. */
+// Begin a "SESSIONS" command header: tag, size placeholder, commandCode.
 int begin_cmd_sessions(UINT32 cc, uint8_t *buf, size_t buf_sz,
                               size_t *off_io, size_t *size_off_out)
 {
@@ -98,7 +98,7 @@ int begin_cmd_sessions(UINT32 cc, uint8_t *buf, size_t buf_sz,
     return 0;
 }
 
-/* Backfill the total command size at 'size_off'. */
+// Backfill the total command size at 'size_off'.
 int finalize_cmd_size(uint8_t *buf, size_t buf_sz, size_t size_off, size_t total_off)
 {
     UINT32 total = (UINT32)total_off;

@@ -6,13 +6,13 @@ typedef enum {
     TARGET_NVWRITE,
 } target_t;
 
-/* Forward declaration of struct options_t so that the function pointer can use it */
+// Forward declaration of struct options_t so that the function pointer can use it
 struct options_t;
 
-/* Define function pointer type first */
+// Define function pointer type first
 typedef int (*start_fuzz_test)(struct options_t *fuzz_opt);
 
-/* Now define the struct using the function pointer type */
+// Now define the struct using the function pointer type
 typedef struct options_t {
     target_t target;       // required: --target=nvwrite
     int fd;                // TPM device fd
