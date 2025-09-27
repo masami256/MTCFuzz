@@ -17,6 +17,5 @@ typedef struct options_t {
     target_t target;       // required: --target=nvwrite
     int fd;                // TPM device fd
     start_fuzz_test func;  // pointer to test entry function
-    const char *dev;       // optional: --dev (e.g., /dev/tpmrm0)
     const char *infile;    // optional: --in (mutation text file)
 } options_t;

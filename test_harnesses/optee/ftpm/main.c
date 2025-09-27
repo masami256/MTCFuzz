@@ -23,8 +23,12 @@ static void print_usage(const char *prog) {
 }
 
 static target_t parse_target(const char *s) {
-    if (!s) return TARGET_UNKNOWN;
-    if (strcmp(s, "nvwrite") == 0) return TARGET_NVWRITE;
+    if (!s) {
+        return TARGET_UNKNOWN;
+    }
+    if (strcmp(s, "nvwrite") == 0) {
+        return TARGET_NVWRITE;
+    }
     return TARGET_UNKNOWN;
 }
 
@@ -72,11 +76,10 @@ static int parse_args(int argc, char **argv, options_t *out) {
 int main(int argc, char **argv)
 {
     int rc = 0;
-    options_t opt;
-    int ret = parse_args(argc, argv, &opt);
-    if (ret != 0) {
-        /* rc==1 means help was printed; rc<0 means error */
-        return (ret < 0) ? 2 : 0;
+    options_t opt = {};
+
+    if (parse_args(argc, argv, &opt)) {
+        return -1;
     }
 
     switch (opt.target) {
