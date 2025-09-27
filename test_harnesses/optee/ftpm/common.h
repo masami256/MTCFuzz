@@ -30,9 +30,6 @@ extern int verbose;
                     __func__, __LINE__, ##__VA_ARGS__); \
             } \
     } while (0)
-    
-// Choose an NV index in the NV handle range (0x01000000 - 0x01FFFFFF)
-#define NV_INDEX   0x0100F00Du
 
 // Normalize a TPM RC to its 16-bit base (strip format/layer bits)
 static inline uint32_t rc_base(uint32_t rc) 

@@ -4,6 +4,80 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <tss2/tss2_tctildr.h>
+#include <tss2/tss2_sys.h>
+
+#define NV_INDEX_START_OFFSET 0x01010000
+static int find_free_nv_index(TSS2_SYS_CONTEXT *sys, uint32_t *out_idx) {
+    TPMS_CAPABILITY_DATA cap = {0};
+    TPMI_YES_NO more = 0;
+    uint32_t prop = TPM2_HR_NV_INDEX; // 0x01000000
+    uint32_t candidate = NV_INDEX_START_OFFSET;
+
+    do {
+        TSS2_RC rc = Tss2_Sys_GetCapability(sys, 0,
+                                            TPM2_CAP_HANDLES,
+                                            prop, 32,
+                                            &more, &cap, 0);
+        if (rc != TSS2_RC_SUCCESS) {
+            return -1;
+        }
+        for (UINT32 i = 0; i < cap.data.handles.count; i++) {
+            if (cap.data.handles.handle[i] >= candidate) {
+                candidate = cap.data.handles.handle[i] + 1;
+            }
+        }
+        prop = candidate;
+    } while (more && candidate <= 0x01FFFFFF);
+
+    if (candidate > 0x01FFFFFF) {
+        return -1; // no space found
+    }
+
+    *out_idx = candidate;
+
+    printf("[+]Foudn NV index 0x%x\n", *out_idx);
+    return 0;
+}
+
+// Return a ready-to-use Sys API context, or NULL on failure.
+// The caller is responsible for calling Tss2_Sys_Finalize() and Tss2_TctiLdr_Finalize().
+TSS2_SYS_CONTEXT *init_sys_context(TSS2_TCTI_CONTEXT **out_tcti)
+{
+    if (out_tcti == NULL) {
+        return NULL;
+    }
+
+    TSS2_TCTI_CONTEXT *tcti_ctx = NULL;
+    TSS2_ABI_VERSION abi_version = TSS2_ABI_VERSION_CURRENT;
+
+    // Initialize TCTI with device:/dev/tpmrm0 (or fall back to /dev/tpm0)
+    TSS2_RC rc = Tss2_TctiLdr_Initialize("device:/dev/tpmrm0", &tcti_ctx);
+    if (rc != TSS2_RC_SUCCESS || tcti_ctx == NULL) {
+        fprintf(stderr, "[*]TctiLdr_Initialize failed: 0x%x\n", rc);
+        return NULL;
+    }
+
+    size_t sys_ctx_size = Tss2_Sys_GetContextSize(0);
+    TSS2_SYS_CONTEXT *sys_ctx = (TSS2_SYS_CONTEXT *)calloc(1, sys_ctx_size);
+    if (!sys_ctx) {
+        fprintf(stderr, "[*]calloc for sys_ctx failed\n");
+        Tss2_TctiLdr_Finalize(&tcti_ctx);
+        return NULL;
+    }
+
+    rc = Tss2_Sys_Initialize(sys_ctx, sys_ctx_size, tcti_ctx, &abi_version);
+    if (rc != TSS2_RC_SUCCESS) {
+        fprintf(stderr, "[*]Tss2_Sys_Initialize failed: 0x%x\n", rc);
+        free(sys_ctx);
+        Tss2_TctiLdr_Finalize(&tcti_ctx);
+        return NULL;
+    }
+
+    *out_tcti = tcti_ctx;
+    return sys_ctx;
+}
+
 static int hexstr_to_bytes(const char *s, uint8_t **out, uint16_t *out_len) {
     size_t len = strlen(s);
     if (len % 2 != 0) {
@@ -480,6 +554,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
     nvwrite_fuzz_input_t input = { 0 };
     int rc = 0;
     int16_t write_offset_used = 0;
+    uint32_t nv_index = 0;
 
     if (nvwrite_load_fuzz_text_file(fuzz_opt->infile, &input) != 0) {
         printf("[*]Failed to parse input text: %s\n", fuzz_opt->infile);
@@ -512,6 +587,19 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
         nv_data_size = 2048;
     }
 
+    TSS2_TCTI_CONTEXT *tcti = NULL;
+    TSS2_SYS_CONTEXT *sys_ctx = init_sys_context(&tcti);
+    if (!sys_ctx) {
+        printf("[*]Failed to init sys context\n");
+        return -1;
+    }
+
+    if (find_free_nv_index(sys_ctx, &nv_index) < 0) {
+        printf("[*]Failed to find NV INDEX\n");
+        rc = -1;
+        goto free_sys_ctx;
+    }
+
     // NV_DefineSpace
     {
         uint8_t cmd[512];
@@ -520,14 +608,16 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
         size_t rsp_len = sizeof(rsp);
         TPM2_RC last_rc = 0;
 
-        if (build_cmd_nv_definespace(NV_INDEX, nv_data_size, cmd, sizeof(cmd), &cmd_len) != 0) {
+        if (build_cmd_nv_definespace(nv_index, nv_data_size, cmd, sizeof(cmd), &cmd_len) != 0) {
             printf("[*]Failed to build NV_DefineSpace\n");
-            return -1;
+            rc = -1;
+            goto free_sys_ctx;
         }
 
         if (send_tpm_cmd_mu(fuzz_opt->fd, cmd, cmd_len, rsp, &rsp_len, &last_rc) != 0) {
             printf("[*]NV_DefineSpace failed (rc=0x%08x)\n", last_rc);
-            return -1;
+            rc = -1;
+            goto free_sys_ctx;
         }
 
         printf("[+]NV_DefineSpace OK (dataSize=%u)\n", nv_data_size);
@@ -542,7 +632,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
         nvwrite_layout_t layout = { 0 };
 
         // Build a correct NV_Write with ACTUAL payload size to avoid MU over-read.
-        if (build_cmd_nv_write(NV_INDEX,
+        if (build_cmd_nv_write(nv_index,
                                input.payload,
                                input.payload_actual_len,
                                cmd, sizeof(cmd), &cmd_len,
@@ -668,7 +758,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
 
         // Build NV_Read (with offset). If your builder does not accept an offset,
         // replace this call with your version and keep offset at 0, or add an offset parameter.
-        if (build_cmd_nv_read(NV_INDEX, want, write_offset_used, cmd, sizeof(cmd), &cmd_len) != 0) {
+        if (build_cmd_nv_read(nv_index, want, write_offset_used, cmd, sizeof(cmd), &cmd_len) != 0) {
             printf("[*]Failed to build NV_Read\n");
             rc = -1;
             goto cleanup_undefine;
@@ -727,7 +817,7 @@ cleanup_undefine:
         size_t rsp_len = sizeof(rsp);
         TPM2_RC last_rc = 0;
 
-        if (build_cmd_nv_undefinespace(NV_INDEX, cmd, sizeof(cmd), &cmd_len) == 0) {
+        if (build_cmd_nv_undefinespace(nv_index, cmd, sizeof(cmd), &cmd_len) == 0) {
             if (send_tpm_cmd_mu(fuzz_opt->fd, cmd, cmd_len, rsp, &rsp_len, &last_rc) == 0) {
                 printf("[+]NV_UndefineSpace OK\n");
             } else {
@@ -738,5 +828,14 @@ cleanup_undefine:
         }
     }
 
+free_sys_ctx:
+    if (sys_ctx) {
+        Tss2_Sys_Finalize(sys_ctx);
+        free(sys_ctx);
+    }
+
+    if (tcti) {
+        Tss2_TctiLdr_Finalize(&tcti);
+    }
     return rc;
 }
