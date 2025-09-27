@@ -7,10 +7,9 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-/* Send a raw TPM command, unmarshal the 10-byte response header with MU,
- * read the remaining bytes, and optionally return the TPM RC.
- * Returns 0 if TPM_RC_SUCCESS, otherwise -1 (caller can inspect tpm_rc_out).
- */
+// Send a raw TPM command, unmarshal the 10-byte response header with MU,
+// read the remaining bytes, and optionally return the TPM RC.
+// Returns 0 if TPM_RC_SUCCESS, otherwise -1 (caller can inspect tpm_rc_out).
 int send_tpm_cmd_mu(int fd,
                            const uint8_t *in, size_t in_len,
                            uint8_t *out, size_t *out_len,

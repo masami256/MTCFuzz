@@ -1,5 +1,7 @@
 #pragma once
 #include <stdint.h>
+#include <string.h>
+#include <arpa/inet.h>  // htons, htonl, ntohs, ntohl
 
 #include <tss2/tss2_mu.h>
 #include <tss2/tss2_tpm2_types.h>
@@ -20,11 +22,13 @@
         } \
     } while (0)
 
+extern int verbose;
 #define DPRINTF(fmt, ...) \
     do { \
-        fprintf(stderr, "[DEBUG] %s:%d: " fmt "\n", \
-                __func__, __LINE__, ##__VA_ARGS__); \
-        } \
+        if (verbose) \
+            fprintf(stderr, "[DEBUG] %s:%d: " fmt "\n", \
+                    __func__, __LINE__, ##__VA_ARGS__); \
+            } \
     } while (0)
     
 // Choose an NV index in the NV handle range (0x01000000 - 0x01FFFFFF)
@@ -34,6 +38,36 @@
 static inline uint32_t rc_base(uint32_t rc) 
 { 
     return rc & 0xFFFFu; 
+}
+
+// Write UINT16 in big-endian
+static inline void be16_write(uint8_t *buf, size_t off, uint16_t v)
+{
+    uint16_t be = htons(v);
+    memcpy(buf + off, &be, sizeof(be));
+}
+
+// Write UINT32 in big-endian
+static inline void be32_write(uint8_t *buf, size_t off, uint32_t v)
+{
+    uint32_t be = htonl(v);
+    memcpy(buf + off, &be, sizeof(be));
+}
+
+// Read UINT16 from big-endian
+static inline uint16_t be16_read(const uint8_t *buf, size_t off)
+{
+    uint16_t be;
+    memcpy(&be, buf + off, sizeof(be));
+    return ntohs(be);
+}
+
+// Read UINT32 from big-endian
+static inline uint32_t be32_read(const uint8_t *buf, size_t off)
+{
+    uint32_t be;
+    memcpy(&be, buf + off, sizeof(be));
+    return ntohl(be);
 }
 
 int open_tpm_dev(void);

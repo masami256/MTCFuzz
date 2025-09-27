@@ -41,14 +41,14 @@ static int nvwrite_load_fuzz_text_file(const char *path, nvwrite_fuzz_input_t *o
 
     char line[4096];
     char *lines[8] = {0};
-    int ok = -1; /* assume failure */
+    int ok = -1; // assume failure
 
-    /* Read 8 lines from the text file */
+    // Read 8 lines from the text file
     for (int i = 0; i < 8; i++) {
         if (!fgets(line, sizeof(line), fp)) {
             goto cleanup;
         }
-        line[strcspn(line, "\r\n")] = 0; /* trim newline */
+        line[strcspn(line, "\r\n")] = 0; // trim newline
         lines[i] = strdup(line);
         if (!lines[i]) {
             goto cleanup;
@@ -58,21 +58,21 @@ static int nvwrite_load_fuzz_text_file(const char *path, nvwrite_fuzz_input_t *o
     fclose(fp);
     fp = NULL;
 
-    /* Parse numeric values from text lines */
+    // Parse numeric values from text lines
     out->flags0              = (uint8_t)  strtoul(lines[0], NULL, 16);
     out->flags1              = (uint8_t)  strtoul(lines[1], NULL, 16);
     out->declared_size_delta = (int16_t) strtol (lines[2], NULL, 16);
     out->offset_delta        = (int16_t) strtol (lines[3], NULL, 16);
     out->authsize_delta      = (int16_t) strtol (lines[4], NULL, 16);
     out->swap_handles        = (uint32_t) strtoul(lines[5], NULL, 16);
-    out->payload_len         = (uint16_t) strtoul(lines[6], NULL, 16); /* declared length */
+    out->payload_len         = (uint16_t) strtoul(lines[6], NULL, 16); // declared length
 
     uint16_t actual_len = 0;
     if (hexstr_to_bytes(lines[7], &out->payload, &actual_len)) {
         goto cleanup;
     }
 
-    /* Do not fail if declared length and actual length mismatch */
+    // Do not fail if declared length and actual length mismatch
     if (actual_len != out->payload_len) {
         printf("[*] Warning: declared_len=%u, actual_len=%u (mismatch allowed)\n",
                out->payload_len, actual_len);
@@ -81,7 +81,7 @@ static int nvwrite_load_fuzz_text_file(const char *path, nvwrite_fuzz_input_t *o
     ok = 0;
 
 cleanup:
-    /* Free all temporary line buffers */
+    // Free all temporary line buffers
     for (int i = 0; i < 8; i++) {
         if (lines[i]) {
             free(lines[i]);
@@ -185,63 +185,121 @@ int build_cmd_nv_definespace(uint32_t nv_index,
     return 0;
 }
 
-// Build NV_Write with PWAP (authHandle = nvIndex, nvIndex). Writes 'data' at offset 0.
+// New prototype (last parameter may be NULL when layout is not needed)
+// Build TPM2_NV_Write command with MU and record field offsets for fuzzing.
+// - nv_index: NV handle to write
+// - data/data_len: ACTUAL payload bytes to marshal into TPM2B_MAX_NV_BUFFER
+// - buf/buf_sz: output command buffer
+// - out_len: resulting total command length
+// - layout: optional (can be NULL). When provided, offsets are filled for later mutation.
+//
+// Note:
+// - All multi-byte fields in the raw command are big-endian. MU handles BE for marshaling.
+// - We still record offsets so the caller can overwrite fields using be16_write/be32_write.
+//
 int build_cmd_nv_write(uint32_t nv_index,
-                              const uint8_t *data, uint16_t data_len,
-                              uint8_t *buf, size_t buf_sz, size_t *out_len)
+                       const uint8_t *data,
+                       uint16_t data_len,
+                       uint8_t *buf,
+                       size_t buf_sz,
+                       size_t *out_len,
+                       nvwrite_layout_t *layout)
 {
-    size_t off = 0, size_off = 0;
-    if (begin_cmd_sessions(TPM2_CC_NV_Write, buf, buf_sz, &off, &size_off)) {
+    if (out_len == NULL) {
+        return -1;
+    }
+    if (buf == NULL || buf_sz == 0) {
+        return -1;
+    }
+    if (data == NULL && data_len != 0) {
         return -1;
     }
 
-    // Handles: authHandle (index auth) + nvIndex
-    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) {
-        return -1;  // authHandle = nvIndex (AUTHWRITE)
-    }
-    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off)) {
-        return -1;  // nvIndex
+    if (layout != NULL) {
+        memset(layout, 0, sizeof(*layout));
+        layout->cc = TPM2_CC_NV_Write;
     }
 
-    // authorizationSize + AuthArea(PWAP)
-    size_t auth_size_off = off;
-    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off)) {
-        return -1;  // placeholder
+    size_t off = 0;
+    size_t size_off = 0;
+
+    // Header (TPM2_ST_SESSIONS) + total size placeholder + commandCode
+    if (begin_cmd_sessions(TPM2_CC_NV_Write, buf, buf_sz, &off, &size_off) != 0) {
+        return -1;
     }
+    if (layout != NULL) {
+        layout->hdr_size_off = size_off;
+    }
+
+    // Handles: authHandle (nvIndex) + nvIndex
+    if (layout != NULL) {
+        layout->handles_off = off;
+    }
+    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off) != TSS2_RC_SUCCESS) {
+        return -1;
+    }
+    if (Tss2_MU_UINT32_Marshal(nv_index, buf, buf_sz, &off) != TSS2_RC_SUCCESS) {
+        return -1;
+    }
+
+    // authorizationSize (UINT32 placeholder) + AuthArea (PWAP empty auth)
+    size_t auth_size_off = off;
+    if (Tss2_MU_UINT32_Marshal(0, buf, buf_sz, &off) != TSS2_RC_SUCCESS) {
+        return -1;
+    }
+    if (layout != NULL) {
+        layout->auth_size_off = auth_size_off;
+        layout->auth_off = off;
+    }
+
     size_t auth_len = 0;
-    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len)) {
+    if (marshal_pwap_auth(buf + off, buf_sz - off, &auth_len) != 0) {
         return -1;
     }
     off += auth_len;
-    // backfill authorizationSize
-    {
-        size_t tmp = auth_size_off;
-        if (Tss2_MU_UINT32_Marshal((UINT32)auth_len, buf, buf_sz, &tmp)) {
-            return -1;
-        }
+
+    // Backfill authorizationSize (big-endian). We use be32_write for clarity.
+    be32_write(buf, auth_size_off, (uint32_t)auth_len);
+
+    // Parameters: TPM2B_MAX_NV_BUFFER (data) + UINT16 offset
+    if (layout != NULL) {
+        layout->params_off = off;
+        layout->nvbuf_size_off = off;  // MU will put TPM2B.size here first
     }
 
-    // Parameters: TPM2B_MAX_NV_BUFFER data, UINT16 offset
     TPM2B_MAX_NV_BUFFER nvdata;
     if (data_len > sizeof(nvdata.buffer)) {
         return -1;
     }
     nvdata.size = data_len;
-    memcpy(nvdata.buffer, data, data_len);
-
-    if (Tss2_MU_TPM2B_MAX_NV_BUFFER_Marshal(&nvdata, buf, buf_sz, &off)) {
-        return -1;
-    }
-    if (Tss2_MU_UINT16_Marshal(0 /*offset*/, buf, buf_sz, &off)) {
-        return -1;
+    if (data_len > 0) {
+        memcpy(nvdata.buffer, data, data_len);
     }
 
-    if (finalize_cmd_size(buf, buf_sz, size_off, off)) {
+    if (Tss2_MU_TPM2B_MAX_NV_BUFFER_Marshal(&nvdata, buf, buf_sz, &off) != TSS2_RC_SUCCESS) {
         return -1;
     }
+
+    if (layout != NULL) {
+        layout->nv_offset_off = off;  // next field is the offset (UINT16)
+    }
+    if (Tss2_MU_UINT16_Marshal(0 /* offset */, buf, buf_sz, &off) != TSS2_RC_SUCCESS) {
+        return -1;
+    }
+
+    // Finalize total command size in header (big-endian handled inside helper)
+    if (finalize_cmd_size(buf, buf_sz, size_off, off) != 0) {
+        return -1;
+    }
+
+    if (layout != NULL) {
+        layout->total_len = off;
+    }
+
     *out_len = off;
     return 0;
 }
+
 
 // Build NV_Read with PWAP (authHandle = nvIndex, nvIndex). Reads 'size' at offset 0.
 int build_cmd_nv_read(uint32_t nv_index,
@@ -283,7 +341,8 @@ int build_cmd_nv_read(uint32_t nv_index,
     if (Tss2_MU_UINT16_Marshal(read_size, buf, buf_sz, &off)) {
         return -1;
     }
-    if (Tss2_MU_UINT16_Marshal(0 /*offset*/, buf, buf_sz, &off)) {
+    if (Tss2_MU_UINT16_Marshal(0 // offset
+                              , buf, buf_sz, &off)) {
         return -1;
     }
 
@@ -379,70 +438,181 @@ void dump_nv_read_response(const uint8_t *rsp, size_t rsp_len)
     putchar('\n');
 }
 
-int nv_write_start_fuzz_test(options_t *fuzz_opt)
+// Decide whether we should retry on this RC
+static int tpm_should_retry(uint32_t rc16)
 {
-    int rc = 0;
-    int fd = fuzz_opt->fd;
-    nvwrite_fuzz_input_t input = { };
+    // Known transient RCs:
+    // - 0x01DA: TPM_RC_TESTING (implementation is in self-test)
+    // - 0x0092: TPM_RC_RETRY
+    // - 0x0098: TPM_RC_YIELDED
+    // Add more if needed.
+    if (rc16 == 0x01DAu) {
+        return 1;
+    }
+    if (rc16 == 0x0092u) {
+        return 1;
+    }
+    if (rc16 == 0x0098u) {
+        return 1;
+    }
+    return 0;
+}
 
-    if (nvwrite_load_fuzz_text_file(fuzz_opt->infile, &input)) {
-        printf("[*]Failxed to parse input text %s\n", fuzz_opt->infile);
+// Entry point for NV_Write fuzz target.
+// - Reads mutation text file into nvwrite_fuzz_input_t
+// - Defines NV space sized for fuzz
+// - Builds a correct NV_Write, then applies mutations (flags0/flags1)
+// - Sends the command and prints basic result
+int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
+{
+    nvwrite_fuzz_input_t input = { 0 };
+    int rc = 0;
+
+    if (nvwrite_load_fuzz_text_file(fuzz_opt->infile, &input) != 0) {
+        printf("[*]Failed to parse input text: %s\n", fuzz_opt->infile);
         return -1;
     }
 
-    printf("[+]Loading input text %s succeeded\n", fuzz_opt->infile);
-    
+    // Safety guard: payload is required
+    if (input.payload == NULL) {
+        printf("[*]Input payload is NULL\n");
+        return -1;
+    }
+    if (input.payload_actual_len == 0) {
+        // Fallback: use declared length if actual length was not set
+        input.payload_actual_len = input.payload_len;
+    }
+
     // Small settle delay helps some fTPM builds right after boot
     usleep(500 * 1000); // 500ms
 
-    // 1) Define NV index (size=6, for "foobar"), ORDINARY with AUTHREAD/AUTHWRITE, empty auth
+    // 1) Define NV index with enough room:
+    //    Choose max(declared, actual), clamp to [64..2048].
+    uint16_t nv_data_size = input.payload_actual_len;
+    if (input.payload_len > nv_data_size) {
+        nv_data_size = input.payload_len;
+    }
+    if (nv_data_size < 64) {
+        nv_data_size = 64;
+    }
+    if (nv_data_size > 2048) {
+        nv_data_size = 2048;
+    }
+
+    // NV_DefineSpace
     {
-        uint8_t cmd[512], rsp[256];
-        size_t cmd_len = 0, rsp_len = sizeof(rsp);
+        uint8_t cmd[512];
+        uint8_t rsp[256];
+        size_t cmd_len = 0;
+        size_t rsp_len = sizeof(rsp);
         TPM2_RC last_rc = 0;
 
-        if (build_cmd_nv_definespace(NV_INDEX, 6, cmd, sizeof(cmd), &cmd_len)) {
+        if (build_cmd_nv_definespace(NV_INDEX, nv_data_size, cmd, sizeof(cmd), &cmd_len) != 0) {
             printf("[*]Failed to build NV_DefineSpace\n");
             return -1;
         }
 
-        if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc)) {
+        if (send_tpm_cmd_mu(fuzz_opt->fd, cmd, cmd_len, rsp, &rsp_len, &last_rc) != 0) {
             printf("[*]NV_DefineSpace failed (rc=0x%08x)\n", last_rc);
             return -1;
         }
-        printf("[+]NV_DefineSpace OK (rsp_len=0x%zx)\n", rsp_len);
+
+        printf("[+]NV_DefineSpace OK (dataSize=%u)\n", nv_data_size);
     }
 
-    // 2) NV_Write "foobar"
+    // 2) NV_Write (build correct frame using ACTUAL bytes, then mutate)
     {
-        const uint8_t payload[] = { 'f','o','o','b','a','r' };
-        uint8_t cmd[512], rsp[256];
-        size_t cmd_len = 0, rsp_len = sizeof(rsp);
-        TPM2_RC last_rc = 0;
-        
-        if (build_cmd_nv_write(NV_INDEX, payload, (uint16_t)sizeof(payload),
-                               cmd, sizeof(cmd), &cmd_len)) {
+        uint8_t cmd[4096];
+        uint8_t rsp[1024];
+        size_t cmd_len = 0;
+
+        nvwrite_layout_t layout = { 0 };
+
+        // Build a correct NV_Write with ACTUAL payload size to avoid MU over-read.
+        if (build_cmd_nv_write(NV_INDEX,
+                               input.payload,
+                               input.payload_actual_len,
+                               cmd, sizeof(cmd), &cmd_len,
+                               &layout) != 0) {
             printf("[*]Failed to build NV_Write\n");
             rc = -1;
-            goto undefine;
+            goto cleanup_undefine;
         }
-        if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc)) {
-            // Retry on TESTING just in case (rare here)
-            int delay_ms = 100, attempts = 10, ok = 0;
-            for (int i = 0; i < attempts && rc_base(last_rc) == 0x01DAu; i++) {
-                usleep(delay_ms * 1000);
-                if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc) == 0) { ok = 1; break; }
+
+        // 2-1) TPM2B_MAX_NV_BUFFER.size
+        if ((layout.nvbuf_size_off + 2) <= cmd_len) {
+            if ((input.flags0 & NV_WRITE_FLAGS0_MUTATE_DECLARED_SIZE_DELTA) != 0u) {
+                uint16_t cur = be16_read(cmd, layout.nvbuf_size_off);
+                uint16_t neu = (uint16_t)(cur + input.declared_size_delta);
+                be16_write(cmd, layout.nvbuf_size_off, neu);
+            } else {
+                be16_write(cmd, layout.nvbuf_size_off, input.payload_len);
+            }
+        }
+
+        // 2-2) authorizationSize
+        if ((input.flags0 & NV_WRITE_FLAGS0_MUTATE_AUTHSIZE_DELTA) != 0u) {
+            if ((layout.auth_size_off + 4) <= cmd_len) {
+                uint32_t cur = be32_read(cmd, layout.auth_size_off);
+                uint32_t neu = (uint32_t)(cur + (int32_t)input.authsize_delta);
+                be32_write(cmd, layout.auth_size_off, neu);
+            }
+        }
+
+        // 2-3) NV offset
+        if ((input.flags0 & NV_WRITE_FLAGS0_MUTATE_OFFSET_DELTA) != 0u) {
+            if ((layout.nv_offset_off + 2) <= cmd_len) {
+                uint16_t cur = be16_read(cmd, layout.nv_offset_off);
+                uint16_t neu = (uint16_t)(cur + input.offset_delta);
+                be16_write(cmd, layout.nv_offset_off, neu);
+            }
+        }
+
+        // 2-4) Swap handles (authHandle <-> nvIndex)
+        if (((input.flags0 & NV_WRITE_FLAGS0_SWAP_HANDLES) != 0u) || (input.swap_handles != 0u)) {
+            if ((layout.handles_off + 8) <= cmd_len) {
+                uint8_t tmp[4];
+                memcpy(tmp,                      &cmd[layout.handles_off],      4);
+                memcpy(&cmd[layout.handles_off], &cmd[layout.handles_off + 4], 4);
+                memcpy(&cmd[layout.handles_off + 4], tmp,                      4);
+            }
+        }
+
+        // Send mutated command with retry on transient RCs
+        {
+            int attempts = 10;
+            int delay_ms = 100;
+            int ok = 0;
+
+            for (int i = 0; i < attempts; i++) {
+                size_t rsp_len_try = sizeof(rsp);
+                TPM2_RC rc_try = 0;
+
+                if (send_tpm_cmd_mu(fuzz_opt->fd, cmd, cmd_len, rsp, &rsp_len_try, &rc_try) == 0) {
+                    ok = 1;
+                    break;
+                }
+
+                if (!tpm_should_retry(rc_base(rc_try))) {
+                    printf("[*]NV_Write failed (rc=0x%08x)\n", rc_try);
+                    break;
+                }
+
+                usleep((useconds_t)delay_ms * 1000);
                 if (delay_ms < 1000) {
                     delay_ms <<= 1;
                 }
             }
+
             if (!ok) {
-                printf("[*]NV_Write failed (rc=0x%08x)\n", last_rc);
                 rc = -1;
-                goto undefine;
+                goto cleanup_undefine;
             }
         }
-        printf("[+]NV_Write OK (wrote \"%s\")\n", "foobar");
+
+        printf("[+]NV_Write OK (declared=%u, actual=%u)\n",
+               (unsigned)input.payload_len,
+               (unsigned)input.payload_actual_len);
     }
 
     // 3) NV_Read 6 bytes
@@ -454,35 +624,37 @@ int nv_write_start_fuzz_test(options_t *fuzz_opt)
         if (build_cmd_nv_read(NV_INDEX, 6, cmd, sizeof(cmd), &cmd_len)) {
             printf("[*]Failed to build NV_Read\n");
             rc = -1;
-            goto undefine;
+            goto cleanup_undefine;
         }
-        if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc)) {
+        if (send_tpm_cmd_mu(fuzz_opt->fd, cmd, cmd_len, rsp, &rsp_len, &last_rc)) {
             printf("[*]NV_Read failed (rc=0x%08x)\n", last_rc);
             rc = -1;
-            goto undefine;
+            goto cleanup_undefine;
         }
         printf("[+]NV_Read OK (rsp_len=0x%zx)\n", rsp_len);
 
         dump_nv_read_response(rsp, rsp_len);
     }
 
-undefine:
-    // 4) Undefine NV index (owner auth)
+cleanup_undefine:
+    // Always attempt to undefine the NV space so the next run starts cleanly.
     {
-        uint8_t cmd[512], rsp[256];
-        size_t cmd_len = 0, rsp_len = sizeof(rsp);
+        uint8_t cmd[512];
+        uint8_t rsp[256];
+        size_t cmd_len = 0;
+        size_t rsp_len = sizeof(rsp);
         TPM2_RC last_rc = 0;
 
-        if (build_cmd_nv_undefinespace(NV_INDEX, cmd, sizeof(cmd), &cmd_len)) {
-            printf("[*]Failed to build NV_UndefineSpace\n");
-            rc = -1;
-        } else if (send_tpm_cmd_mu(fd, cmd, cmd_len, rsp, &rsp_len, &last_rc)) {
-            printf("[*]NV_UndefineSpace failed (rc=0x%08x)\n", last_rc);
-            rc = -1;
+        if (build_cmd_nv_undefinespace(NV_INDEX, cmd, sizeof(cmd), &cmd_len) == 0) {
+            if (send_tpm_cmd_mu(fuzz_opt->fd, cmd, cmd_len, rsp, &rsp_len, &last_rc) == 0) {
+                printf("[+]NV_UndefineSpace OK\n");
+            } else {
+                printf("[*]NV_UndefineSpace failed (rc=0x%08x)\n", last_rc);
+            }
         } else {
-            printf("[+]NV_UndefineSpace OK\n");
+            printf("[*]Failed to build NV_UndefineSpace\n");
         }
     }
+
     return rc;
 }
-

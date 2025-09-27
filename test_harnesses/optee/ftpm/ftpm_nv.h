@@ -27,20 +27,42 @@
 #define NV_WRITE_FLAGS1_RESERVED6                    (1u << 6)
 #define NV_WRITE_FLAGS1_RESERVED7                    (1u << 7)
 
-typedef struct {
-    uint8_t  flags0, flags1;
-    int16_t  declared_size_delta; // signed 16-bit
-    int16_t  offset_delta;        // signed 16-bit
-    int16_t  authsize_delta;      // signed 16-bit
-    uint32_t swap_handles;        // 0 or 1
-    uint16_t payload_len;         // DECLARED length from line7 (do not overwrite)
-    uint8_t *payload;             // heap buffer for actual payload bytes
-} nvwrite_fuzz_input_t;
+// Layout descriptor for a TPM2_NV_Write command built with MU.
+// Records byte offsets of fields that may be mutated by the fuzzer.
+typedef struct nvwrite_layout_s {
+    uint32_t cc;            // commandCode (TPM2_CC_NV_Write)
+    size_t   hdr_size_off;  // offset of header 'size' field (UINT32)
+    size_t   total_len;     // final command length (after finalize_cmd_size)
 
+    size_t   handles_off;   // start of handles array (authHandle, nvIndex)
+
+    size_t   auth_size_off; // offset of authorizationSize (UINT32)
+    size_t   auth_off;      // start offset of first AuthArea (PWAP)
+
+    size_t   params_off;    // start of parameters after AuthArea
+
+    size_t   nvbuf_size_off;// offset of TPM2B_MAX_NV_BUFFER.size (UINT16)
+    size_t   nv_offset_off; // offset of NV offset parameter (UINT16)
+} nvwrite_layout_t;
+
+// Fuzzer input loaded from mutated.txt (8-line text format).
+// payload_len: declared size from line7 (used to overwrite nvbuf.size)
+// payload_actual_len: number of bytes parsed from line8 (safe data size)
+typedef struct {
+    uint8_t  flags0;
+    uint8_t  flags1;
+    int16_t  declared_size_delta;   // signed 16-bit
+    int16_t  offset_delta;          // signed 16-bit
+    int16_t  authsize_delta;        // signed 16-bit
+    uint32_t swap_handles;          // 0 or 1
+    uint16_t payload_len;           // declared size (do not overwrite)
+    uint16_t payload_actual_len;    // parsed payload length from hex string
+    uint8_t *payload;               // heap buffer of actual bytes
+} nvwrite_fuzz_input_t;
 
 int nv_write_start_fuzz_test(options_t *fuzz_opt);
 int build_cmd_nv_definespace(uint32_t nv_index, uint16_t data_size, uint8_t *buf, size_t buf_sz, size_t *out_len);
-int build_cmd_nv_write(uint32_t nv_index, const uint8_t *data, uint16_t data_len, uint8_t *buf, size_t buf_sz, size_t *out_len);
+int build_cmd_nv_write(uint32_t nv_index, const uint8_t *data, uint16_t data_len, uint8_t *buf, size_t buf_sz, size_t *out_len, nvwrite_layout_t *layout);
 int build_cmd_nv_read(uint32_t nv_index, uint16_t read_size, uint8_t *buf, size_t buf_sz, size_t *out_len);
 int build_cmd_nv_undefinespace(uint32_t nv_index, uint8_t *buf, size_t buf_sz, size_t *out_len);
 void dump_nv_read_response(const uint8_t *rsp, size_t rsp_len);

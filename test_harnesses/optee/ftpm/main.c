@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <getopt.h>
 
+int verbose;
+
 static void print_usage(const char *prog) {
     fprintf(stderr,
         "Usage: %s --target=nvwrite [--dev PATH] [--in FILE]\n"
@@ -40,6 +42,7 @@ static int parse_args(int argc, char **argv, options_t *out) {
         { "target",   required_argument, NULL,  1  },
         { "input",    required_argument, NULL,  2  },
         { "help",     no_argument,       NULL, 'h' },
+        { "verbose",  no_argument,       NULL, 'v' },
         { 0,          0,                 0,     0  }
     };
 
@@ -54,6 +57,9 @@ static int parse_args(int argc, char **argv, options_t *out) {
             break;
         case 2: // --input
             out->infile = optarg;
+            break;
+        case 'v': // --verbose
+            verbose = 1;
             break;
         case 'h':
             print_usage(argv[0]);
