@@ -109,7 +109,7 @@ int open_tpm_dev(void)
 {
     int fd = open(DEV_TPMRM0, O_RDWR | O_CLOEXEC);
     if (fd < 0) {
-        printf("[*]Failed to open %s: %s\n", DEV_TPMRM0, strerror(errno));
+        EPRINTF("Failed to open %s: %s\n", DEV_TPMRM0, strerror(errno));
         return -1;
     }
     return fd;

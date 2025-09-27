@@ -10,25 +10,23 @@
 
 #define IPRINTF(fmt, ...) \
     do { \
-        fprintf(stderr, "[INFO] %s:%d: " fmt "\n", \
+        fprintf(stderr, "[+] %s:%d: " fmt, \
                 __func__, __LINE__, ##__VA_ARGS__); \
-        } \
     } while (0)
 
 #define EPRINTF(fmt, ...) \
     do { \
-        fprintf(stderr, "[ERROR] %s:%d: " fmt "\n", \
+        fprintf(stderr, "[*] %s:%d: " fmt, \
                 __func__, __LINE__, ##__VA_ARGS__); \
-        } \
     } while (0)
 
 extern int verbose;
 #define DPRINTF(fmt, ...) \
     do { \
-        if (verbose) \
-            fprintf(stderr, "[DEBUG] %s:%d: " fmt "\n", \
+        if (verbose) { \
+            fprintf(stderr, "[+] %s:%d: " fmt, \
                     __func__, __LINE__, ##__VA_ARGS__); \
-            } \
+        } \
     } while (0)
 
 // Normalize a TPM RC to its 16-bit base (strip format/layer bits)

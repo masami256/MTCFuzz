@@ -1,4 +1,5 @@
 // Check fTPM TA presence via TEEC (BUSY is OK: kernel owns the TA).
+#include "common.h"
 #include <stdio.h>
 #include <tee_client_api.h>
 
@@ -16,14 +17,14 @@ int check_ftpm_ta(void)
 
     ret = TEEC_InitializeContext(NULL, &context);
     if (ret != TEEC_SUCCESS) {
-        printf("[*]TEEC_InitializeContext() failed: 0x%x\n", ret);
+        EPRINTF("[*]TEEC_InitializeContext() failed: 0x%x\n", ret);
         return -1;
     }
 
     ret = TEEC_OpenSession(&context, &session, &uuid,
                            TEEC_LOGIN_PUBLIC, NULL, NULL, &ret_orig);
     if (ret == TEEC_ERROR_ITEM_NOT_FOUND) {
-        printf("[+]skip test, fTPM TA not present\n");
+        EPRINTF("[+]skip test, fTPM TA not present\n");
         TEEC_FinalizeContext(&context);
         return -1;
     }

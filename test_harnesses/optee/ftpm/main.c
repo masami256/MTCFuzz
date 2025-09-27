@@ -71,7 +71,7 @@ static int parse_args(int argc, char **argv, options_t *out) {
     }
 
     if (out->target == TARGET_UNKNOWN) {
-        fprintf(stderr, "[*]Error: --target is required and must be 'nvwrite'\n\n");
+        IPRINTF("--target is required and must be 'nvwrite'\n\n");
         print_usage(argv[0]);
         return -1;
     }
@@ -90,20 +90,20 @@ int main(int argc, char **argv)
 
     switch (opt.target) {
     case TARGET_NVWRITE:
-        printf("[*]Target: nvwrite\n");
+        DPRINTF("Target: nvwrite\n");
         opt.func = nv_write_start_fuzz_test;
         break;
     default:
-        fprintf(stderr, "[*]Unknown target (logic bug)\n");
+        fprintf(stderr, "Unknown target (logic bug)\n");
         return 2;
     }
 
-    printf("[+]Test start\n");
+    DPRINTF("Test start\n");
     if (check_ftpm_ta()) {
          return -1;
     }
        
-    printf("[+]TA check ok\n");
+    DPRINTF("TA check ok\n");
 
     int fd = open_tpm_dev();
     if (fd < 0) {
@@ -112,9 +112,9 @@ int main(int argc, char **argv)
     opt.fd = fd;
     rc = opt.func(&opt);
     if (!rc) {
-        printf("[+]NV write/read test succeeded\n");
+        IPRINTF("NV write/read test succeeded\n");
     } else {
-        printf("[*]NV write/read test failed\n");
+        EPRINTF("NV write/read test failed\n");
     }
 
     close_tpm_dev(fd);

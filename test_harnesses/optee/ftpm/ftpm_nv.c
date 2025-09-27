@@ -36,7 +36,7 @@ static int find_free_nv_index(TSS2_SYS_CONTEXT *sys, uint32_t *out_idx) {
 
     *out_idx = candidate;
 
-    printf("[+]Foudn NV index 0x%x\n", *out_idx);
+    IPRINTF("Foudn NV index 0x%x\n", *out_idx);
     return 0;
 }
 
@@ -54,21 +54,21 @@ TSS2_SYS_CONTEXT *init_sys_context(TSS2_TCTI_CONTEXT **out_tcti)
     // Initialize TCTI with device:/dev/tpmrm0 (or fall back to /dev/tpm0)
     TSS2_RC rc = Tss2_TctiLdr_Initialize("device:/dev/tpmrm0", &tcti_ctx);
     if (rc != TSS2_RC_SUCCESS || tcti_ctx == NULL) {
-        fprintf(stderr, "[*]TctiLdr_Initialize failed: 0x%x\n", rc);
+        EPRINTF("TctiLdr_Initialize failed: 0x%x\n", rc);
         return NULL;
     }
 
     size_t sys_ctx_size = Tss2_Sys_GetContextSize(0);
     TSS2_SYS_CONTEXT *sys_ctx = (TSS2_SYS_CONTEXT *)calloc(1, sys_ctx_size);
     if (!sys_ctx) {
-        fprintf(stderr, "[*]calloc for sys_ctx failed\n");
+        EPRINTF("calloc for sys_ctx failed\n");
         Tss2_TctiLdr_Finalize(&tcti_ctx);
         return NULL;
     }
 
     rc = Tss2_Sys_Initialize(sys_ctx, sys_ctx_size, tcti_ctx, &abi_version);
     if (rc != TSS2_RC_SUCCESS) {
-        fprintf(stderr, "[*]Tss2_Sys_Initialize failed: 0x%x\n", rc);
+        EPRINTF("Tss2_Sys_Initialize failed: 0x%x\n", rc);
         free(sys_ctx);
         Tss2_TctiLdr_Finalize(&tcti_ctx);
         return NULL;
@@ -148,7 +148,7 @@ static int nvwrite_load_fuzz_text_file(const char *path, nvwrite_fuzz_input_t *o
 
     // Do not fail if declared length and actual length mismatch
     if (actual_len != out->payload_len) {
-        printf("[*] Warning: declared_len=%u, actual_len=%u (mismatch allowed)\n",
+        EPRINTF("Warning: declared_len=%u, actual_len=%u (mismatch allowed)\n",
                out->payload_len, actual_len);
     }
 
@@ -491,7 +491,7 @@ void dump_nv_read_response(const uint8_t *rsp, size_t rsp_len)
     // [..end]  : responseAuths
 
     if (rsp_len <= 14) {
-        printf("[*]NV_Read: short response\n");
+        EPRINTF("NV_Read: short response\n");
         return;
     }
 
@@ -499,7 +499,7 @@ void dump_nv_read_response(const uint8_t *rsp, size_t rsp_len)
     UINT32 param_size = 0;
     size_t off = 0;
     if (Tss2_MU_UINT32_Unmarshal(rsp + 10, rsp_len - 10, &off, &param_size) != TSS2_RC_SUCCESS) {
-        printf("[*]NV_Read: failed to read parameterSize\n");
+        EPRINTF("NV_Read: failed to read parameterSize\n");
         return;
     }
 
@@ -508,20 +508,29 @@ void dump_nv_read_response(const uint8_t *rsp, size_t rsp_len)
     size_t off2 = 0; // <-- reset offset for the parameters sub-buffer
     if (Tss2_MU_TPM2B_MAX_NV_BUFFER_Unmarshal(rsp + 14, rsp_len - 14, &off2, &out)
         != TSS2_RC_SUCCESS) {
-        printf("[*]NV_Read: unmarshal failed\n");
+        EPRINTF("NV_Read: unmarshal failed\n");
         return;
     }
 
-    printf("[+]NV_Read data (size=%u): ", out.size);
-    for (uint16_t i = 0; i < out.size; i++) printf("%02x ", out.buffer[i]);
-    printf("\n");
-
-    printf("[+]NV_Read as string: ");
-    for (uint16_t i = 0; i < out.size; i++) {
-        unsigned char c = out.buffer[i];
-        putchar((c >= 32 && c <= 126) ? c : '.');
+    DPRINTF("NV_Read data (size=%u): ", out.size);
+    if (verbose) {
+        for (uint16_t i = 0; i < out.size; i++) {
+            printf("%02x ", out.buffer[i]);
+            if ((i + 1) % 16 == 0) {
+                putchar('\n');
+            }
+        }
+        printf("\n");
     }
-    putchar('\n');
+    
+    if (verbose) {
+        IPRINTF("NV_Read as string: ");
+        for (uint16_t i = 0; i < out.size; i++) {
+            unsigned char c = out.buffer[i];
+            putchar((c >= 32 && c <= 126) ? c : '.');
+        }
+        putchar('\n');
+    }
 }
 
 // Decide whether we should retry on this RC
@@ -557,13 +566,13 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
     uint32_t nv_index = 0;
 
     if (nvwrite_load_fuzz_text_file(fuzz_opt->infile, &input) != 0) {
-        printf("[*]Failed to parse input text: %s\n", fuzz_opt->infile);
+        EPRINTF("Failed to parse input text: %s\n", fuzz_opt->infile);
         return -1;
     }
 
     // Safety guard: payload is required
     if (input.payload == NULL) {
-        printf("[*]Input payload is NULL\n");
+        EPRINTF("Input payload is NULL\n");
         return -1;
     }
     if (input.payload_actual_len == 0) {
@@ -590,12 +599,12 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
     TSS2_TCTI_CONTEXT *tcti = NULL;
     TSS2_SYS_CONTEXT *sys_ctx = init_sys_context(&tcti);
     if (!sys_ctx) {
-        printf("[*]Failed to init sys context\n");
+        EPRINTF("Failed to init sys context\n");
         return -1;
     }
 
     if (find_free_nv_index(sys_ctx, &nv_index) < 0) {
-        printf("[*]Failed to find NV INDEX\n");
+        EPRINTF("Failed to find NV INDEX\n");
         rc = -1;
         goto free_sys_ctx;
     }
@@ -609,18 +618,18 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
         TPM2_RC last_rc = 0;
 
         if (build_cmd_nv_definespace(nv_index, nv_data_size, cmd, sizeof(cmd), &cmd_len) != 0) {
-            printf("[*]Failed to build NV_DefineSpace\n");
+            EPRINTF("Failed to build NV_DefineSpace\n");
             rc = -1;
             goto free_sys_ctx;
         }
 
         if (send_tpm_cmd_mu(fuzz_opt->fd, cmd, cmd_len, rsp, &rsp_len, &last_rc) != 0) {
-            printf("[*]NV_DefineSpace failed (rc=0x%08x)\n", last_rc);
+            EPRINTF("NV_DefineSpace failed (rc=0x%08x)\n", last_rc);
             rc = -1;
             goto free_sys_ctx;
         }
 
-        printf("[+]NV_DefineSpace OK (dataSize=%u)\n", nv_data_size);
+        DPRINTF("NV_DefineSpace OK (dataSize=%u)\n", nv_data_size);
     }
 
     // 2) NV_Write (build correct frame using ACTUAL bytes, then mutate)
@@ -637,7 +646,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
                                input.payload_actual_len,
                                cmd, sizeof(cmd), &cmd_len,
                                &layout) != 0) {
-            printf("[*]Failed to build NV_Write\n");
+            EPRINTF("Failed to build NV_Write\n");
             rc = -1;
             goto cleanup_undefine;
         }
@@ -698,7 +707,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
                 }
 
                 if (!tpm_should_retry(rc_base(rc_try))) {
-                    printf("[*]NV_Write failed (rc=0x%08x)\n", rc_try);
+                    EPRINTF("NV_Write failed (rc=0x%08x)\n", rc_try);
                     break;
                 }
 
@@ -714,7 +723,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
             }
         }
 
-        printf("[+]NV_Write OK (declared=%u, actual=%u)\n",
+        IPRINTF("NV_Write OK (declared=%u, actual=%u)\n",
                (unsigned)input.payload_len,
                (unsigned)input.payload_actual_len);
     }
@@ -751,7 +760,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
         }
 
         if (want == 0) {
-            printf("[*]NV_Read skipped (offset=%u exceeds NV dataSize=%u)\n",
+            EPRINTF("NV_Read skipped (offset=%u exceeds NV dataSize=%u)\n",
                 (unsigned)offset_used, (unsigned)nv_data_size);
             goto after_read;
         }
@@ -759,7 +768,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
         // Build NV_Read (with offset). If your builder does not accept an offset,
         // replace this call with your version and keep offset at 0, or add an offset parameter.
         if (build_cmd_nv_read(nv_index, want, write_offset_used, cmd, sizeof(cmd), &cmd_len) != 0) {
-            printf("[*]Failed to build NV_Read\n");
+            EPRINTF("Failed to build NV_Read\n");
             rc = -1;
             goto cleanup_undefine;
         }
@@ -781,7 +790,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
                 }
 
                 if (!tpm_should_retry(rc_base(rc_try))) {
-                    printf("[*]NV_Read failed (rc=0x%08x)\n", rc_try);
+                    EPRINTF("NV_Read failed (rc=0x%08x)\n", rc_try);
                     rc = -1;
                     goto cleanup_undefine;
                 }
@@ -798,7 +807,7 @@ int nv_write_start_fuzz_test(struct options_t *fuzz_opt)
             }
         }
 
-        printf("[+]NV_Read OK (offset=%u, size=%u, rsp_len=0x%zx)\n",
+        DPRINTF("NV_Read OK (offset=%u, size=%u, rsp_len=0x%zx)\n",
             (unsigned)offset_used, (unsigned)want, rsp_len);
 
         dump_nv_read_response(rsp, rsp_len);
@@ -819,12 +828,12 @@ cleanup_undefine:
 
         if (build_cmd_nv_undefinespace(nv_index, cmd, sizeof(cmd), &cmd_len) == 0) {
             if (send_tpm_cmd_mu(fuzz_opt->fd, cmd, cmd_len, rsp, &rsp_len, &last_rc) == 0) {
-                printf("[+]NV_UndefineSpace OK\n");
+                IPRINTF("NV_UndefineSpace OK\n");
             } else {
-                printf("[*]NV_UndefineSpace failed (rc=0x%08x)\n", last_rc);
+                EPRINTF("NV_UndefineSpace failed (rc=0x%08x)\n", last_rc);
             }
         } else {
-            printf("[*]Failed to build NV_UndefineSpace\n");
+            EPRINTF("Failed to build NV_UndefineSpace\n");
         }
     }
 
