@@ -1,4 +1,5 @@
 from ..mutator import Mutator
+from typing import Any
 
 class SbiMutator(Mutator):
     def __init__(self) -> None:
@@ -12,7 +13,7 @@ class SbiMutator(Mutator):
                 
         super().__init__(mutations)
 
-    def mutate(self, seed: dict) -> dict:
+    def mutate(self, seed: Any) -> Any:
         mutator = self.choose_mutation()
         #print(f"Mutating seed {seed} using {mutator.__name__}")
         return mutator(seed)

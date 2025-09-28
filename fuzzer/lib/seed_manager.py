@@ -75,7 +75,7 @@ class SeedManager:
         self.seeds[new_seed_id] = data
 
         logger.info(f"Added new seed: {new_seed_id}")
-        pprint.pprint(new_seed)
+        #pprint.pprint(new_seed)
 
     def update_seed(self, seed: dict, elapsed_us: int) -> None:
         if seed["elapsed_us"] == 0:

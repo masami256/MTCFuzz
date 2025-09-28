@@ -2,11 +2,11 @@
     "a7": {
         "fixed": true,
         "value": "0x10",
-        "type": "integer"
+        "type": "hex"
     },
     "a6": {
         "fixed": false,
         "value": "0x0",
-        "type": "integer"
+        "type": "hex"
     }
 }

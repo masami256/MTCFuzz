@@ -1,7 +1,7 @@
 from ..seed_manager import SeedManager
 import copy
 
-class OPTEESeedManager(SeedManager):
+class OPTEEFtpmSeedManager(SeedManager):
     def __init__(self, seed_dir: str, task_id: int) -> None:
         super().__init__(seed_dir, task_id)
 

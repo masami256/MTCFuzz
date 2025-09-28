@@ -1,0 +1,53 @@
+{
+    "flag0": {
+        "fixed": false,
+        "value": "0x0",
+        "type": "hex",
+        "order": 0,
+        "mutator": "custom"
+    },
+    "flags1": {
+        "fixed": true,
+        "value": "0x0",
+        "type": "hex",
+        "order": 1
+    },
+    "declared_size_delta": {
+        "fixed": false,
+        "value": "0x0",
+        "type": "hex",
+        "order": 2
+    },
+    "offset_delta": {
+        "fixed": false,
+        "value": "0x0",
+        "type": "hex",
+        "order": 3
+    },
+    "authsize_delta": {
+        "fixed": false,
+        "value": "0x0",
+        "type": "hex",
+        "order": 4
+    },
+    "swap_handles": {
+        "fixed": false,
+        "value": "0x0",
+        "type": "hex",
+        "order": 5
+    },
+    "payload_len": {
+        "fixed": false,
+        "value": "0x0",
+        "type": "hex",
+        "order": 6
+    },
+    "payload": {
+        "fixed": false,
+        "value": "foobar",
+        "min_len": "0x1",
+        "max_len": "0xffff",
+        "type": "str",
+        "order": 7
+    }
+}

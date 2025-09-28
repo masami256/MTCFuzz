@@ -1,4 +1,6 @@
 import random
+import string
+from typing import Any
 
 class Mutator:
     def __init__(self, mutations: list) -> None:
@@ -10,11 +12,18 @@ class Mutator:
     def choose_mutation(self) -> callable:
         return random.choice(self.mutations)
 
-    def mutate(self, seed: dict) -> dict:
+    def mutate(self, seed: Any) -> Any:
         raise NotImplementedError("Mutate method must be implemented by subclasses")
     
+    def custom_mutater(self, key: str, seed: Any) -> Any:
+        raise NotImplementedError("Custom mutate method must be implemented by subclasses")
+
     def hex_to_bytearray(self, seed_str: str, min_bytes: int = 1) -> bytearray:
-        seed_int = int(seed_str, 16)
+        if seed_str.startswith("0x"):
+            base = 16
+        else:
+            base = 10
+        seed_int = int(seed_str, base)
         length = max((seed_int.bit_length() + 7) // 8, min_bytes)
         return bytearray(seed_int.to_bytes(length, byteorder='big'))
 
@@ -79,3 +88,14 @@ class Mutator:
         # Convert back to int
         mutated_int = int.from_bytes(seed_bytes, byteorder='big')
         return mutated_int
+
+    def create_random_string(self, min_len: int, max_len: int) -> str:
+        # Choose a random length between min_len and max_len
+        length = random.randint(min_len, max_len)
+        # Use all printable ASCII characters except whitespace control characters
+        chars = string.printable.strip()  # removes leading/trailing whitespace like \n, \t
+        # Generate a random string of the chosen length
+        return ''.join(random.choice(chars) for _ in range(length))
+
+    def mutate_string(self, seed: Any, min_len: str, max_len: str) -> dict:
+        return seed

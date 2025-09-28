@@ -8,7 +8,7 @@
     "cmd_id": {
         "fixed": false,
         "value": "0xff",
-        "type": "integer",
+        "type": "hex",
         "order": 1
     }
 }

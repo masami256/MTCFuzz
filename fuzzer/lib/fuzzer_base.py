@@ -54,6 +54,11 @@ class FuzzerBase:
             if seed[key]["fixed"]:
                 result[key] = seed[key]["value"]
             else:
-                result[key] = self.mutator.mutate(seed[key]["value"])
+                if "mutaror" in seed[key] and seed[key]["mutator"] == "custom":
+                    result[key] = self.mutator.custom_mutater(key, seed[key])
+                elif seed[key]["type"] == "str":
+                    result[key] = self.mutator.mutate_string(seed[key]["value"], seed[key]["min_len"], seed[key]["max_len"])
+                else:
+                    result[key] = self.mutator.mutate(seed[key]["value"])
 
         return result
