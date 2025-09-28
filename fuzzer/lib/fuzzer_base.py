@@ -35,18 +35,18 @@ class FuzzerBase:
     def extra_qemu_params(self) -> None:
         raise NotImplementedError("extra_qemu_params() must be implemented in the subclass")
 
-    def create_remote_test_dir(self, test_dir: str) -> None:
+    def create_remote_test_dir(self, test_dir: str) -> int:
         self.test_dir = f"{self.remote_work_dir}/{test_dir}"
-        self.ssh_client.exec_command(f"mkdir -p {self.test_dir}")
+        return self.ssh_client.exec_command(f"mkdir -p {self.test_dir}")
 
     def is_qemu_target(self) -> bool:
         return self.config.get("target_type") == "qemu"
 
-    def send_module(self) -> None:
-        self.ssh_client.send_file(self.config["fuzzing"]["kernel_module"], f"{self.remote_module_path}")
+    def send_module(self) -> int:
+        return self.ssh_client.send_file(self.config["fuzzing"]["kernel_module"], f"{self.remote_module_path}")
 
-    def send_harness(self) -> None:
-        self.ssh_client.send_file(self.config["fuzzing"]["harness"], f"{self.remote_harness_path}")
+    def send_harness(self) -> int:
+        return self.ssh_client.send_file(self.config["fuzzing"]["harness"], f"{self.remote_harness_path}")
 
     def generate_input(self, seed: dict, **kwargs) -> dict:
         result = {}

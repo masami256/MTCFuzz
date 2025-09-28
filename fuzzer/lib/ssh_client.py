@@ -90,7 +90,6 @@ class SSHClient:
             local_path,
             f"{self.user}@{self.host}:{remote_path}"
         ]  
-
         for attempt in range(self.ssh_retry_max):
             try:
                 result = subprocess.run(
