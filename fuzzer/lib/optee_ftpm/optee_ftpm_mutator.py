@@ -31,7 +31,7 @@ class OPTeeFtpmMutator(Mutator):
         max_l = int(max_len, 16)
 
 
-        tmp = self.create_random_string(min_l, max_l).encode("utf-8")
+        tmp = self.create_random_string(min_l, max_l, True).encode("utf-8")
         arr = []
         for c in tmp:
             arr.append(f"{c:02x}")

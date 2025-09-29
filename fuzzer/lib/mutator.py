@@ -89,9 +89,13 @@ class Mutator:
         mutated_int = int.from_bytes(seed_bytes, byteorder='big')
         return mutated_int
 
-    def create_random_string(self, min_len: int, max_len: int) -> str:
+    def create_random_string(self, min_len: int, max_len: int, lenght_is_even: bool = False ) -> str:
         # Choose a random length between min_len and max_len
         length = random.randint(min_len, max_len)
+        if lenght_is_even:
+            if not length % 2 == 0:
+                length += 1
+
         # Use all printable ASCII characters except whitespace control characters
         chars = string.printable.strip()  # removes leading/trailing whitespace like \n, \t
         # Generate a random string of the chosen length
