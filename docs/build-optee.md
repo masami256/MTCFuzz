@@ -25,3 +25,8 @@ make DEBUG=1 -j$(nproc)
 make run DEBUG=1 CFG_CORE_ASLR=n -j$(nproc)
 ```
 
+# Build for fTPM test
+
+Goto build directory then apply following patch before build.
+
+git am /home/build/projects/mtcfuzz/patches/optee/ftpm/0001-Enable-Linux-IMA-feature.patch
