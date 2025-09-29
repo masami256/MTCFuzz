@@ -5,8 +5,8 @@
         "machine": "virt,acpi=off,secure=on,mte=off,gic-version=3,virtualization=false",
         "bios": "/home/build/projects/mtcfuzz/work/bin/bl1.bin",
         "kernel": "/home/build/projects/mtcfuzz/work/bin/Image",
-        "append": "console=ttyAMA0,115200 keep_bootcon root=/dev/vda2 nokaslr oops=panic panic_on_warn=1 panic_on_oops=1",
-        "initrd": "/home/build/projects/srcs/optee/out/bin/rootfs.cpio.uboot",
+        "append": "console=ttyAMA0,115200 keep_bootcon root=/dev/vda2 nokaslr oops=panic panic_on_warn=1 panic_on_oops=1 ima=on ima_policy=tcb",
+        "initrd": "/home/build/projects/srcs/optee-ftpm/out/bin/rootfs.cpio.uboot",
         "smp": "2",
         "memory": "2048",
         "extra_serial": false
@@ -14,9 +14,9 @@
     "ssh_params": {
     },
     "fuzzing": {
-        "optee_artifact_dir": "/home/build/projects/srcs/optee/out/bin",
-        "kernel_binary": "/home/build/projects/srcs/optee/linux/vmlinux",
-        "firmware_binary": "/home/build/projects/srcs/optee/optee_os/out/arm/core/tee.elf",
+        "optee_artifact_dir": "/home/build/projects/srcs/optee-ftpm/out/bin",
+        "kernel_binary": "/home/build/projects/srcs/optee-ftpm/linux/vmlinux",
+        "firmware_binary": "/home/build/projects/srcs/optee-ftpm/optee_os/out/arm/core/tee.elf",
         "wait_for_qemu_seconds": 5,
         "remote_command_exec_timeout": 10,
         "fuzzer_module": "lib.optee_ftpm.optee_ftpm_fuzzer",

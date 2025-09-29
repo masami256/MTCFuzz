@@ -1,5 +1,5 @@
 {
-    "flag0": {
+    "flags0": {
         "fixed": false,
         "value": "0x0",
         "type": "hex",
@@ -45,8 +45,8 @@
     "payload": {
         "fixed": false,
         "value": "foobar",
-        "min_len": "0x1",
-        "max_len": "0xffff",
+        "min_len": "0x2",
+        "max_len": "0x6",
         "type": "str",
         "order": 7
     }

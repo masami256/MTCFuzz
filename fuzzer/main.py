@@ -174,7 +174,8 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     uuid_str = f"{timestamp}-{str(uuid.uuid4())}"
                     test_dir_name = f"{task_id}-{uuid_str}"
                     local_test_dir = f"{local_work_dir}/{test_dir_name}"
-
+                    fuzzer.local_test_dir = local_test_dir
+                    
                     logger.info(f"Test: {test_dir_name}")
                     console0_log = f"{local_test_dir}/console0.log"
                     console1_log = None

@@ -1,8 +1,11 @@
 from ..qemu_fuzzer import QemuFuzzer
+import logging
+logger = logging.getLogger("mtcfuzz")
 
 import shutil
 import os
 from .optee_ftpm_mutator import OPTeeFtpmMutator
+import time
 import pprint
 
 class OpteeFtpmFuzzer(QemuFuzzer):
@@ -14,9 +17,11 @@ class OpteeFtpmFuzzer(QemuFuzzer):
 
         self.hostshare_dir = self.local_work_dir + "/hostshare"
         os.makedirs(self.hostshare_dir, exist_ok=True)
+        self.fuzz_input_file = self.hostshare_dir + "/fuzz_input.txt"
 
         self.remote_hostshare_dir = self.config["fuzzing"]["hostshare_9p"]
-        self.fuzz_input_file = self.hostshare_dir + "/fuzz_input.txt"
+        self.fuzz_input_file_on_remote = f"{self.remote_hostshare_dir}/fuzz_input.txt"
+    
 
         self.mutator = OPTeeFtpmMutator()
 
@@ -60,7 +65,11 @@ class OpteeFtpmFuzzer(QemuFuzzer):
 
         args_str = " ".join(args)
 
-        self.ssh_client.exec_command(args_str, retry_max=1)
+        exec_result = self.ssh_client.exec_command(args_str, retry_max=1)
+        if not exec_result["returncode"] == 0:
+            logger.error(f"Failed to create remote 9p file system directory: {self.remote_hostshare_dir}")
+            return False
+        
         args = [
             "mount", "-t", "9p", 
             "-o", "trans=virtio", self.config["fuzzing"]["tag_9p"], 
@@ -69,27 +78,68 @@ class OpteeFtpmFuzzer(QemuFuzzer):
 
         args_str = " ".join(args)
 
-        self.ssh_client.exec_command(args_str, retry_max=1)
-
-        self.send_harness()
+        exec_result = self.ssh_client.exec_command(args_str, retry_max=1)
+        if not exec_result["returncode"] == 0:
+            logger.error(f"Failed to mount 9p file system: {self.remote_work_dir}")
+            return False
+        
+        exec_result = self.ssh_client.exec_command(f"mkdir -p {self.remote_work_dir}")
+        if not exec_result["returncode"] == 0:
+            logger.error(f"Failed to create remote work directory: {self.remote_work_dir}")
+            return False
+        
+        exec_result = self.send_harness()
+        if not exec_result == 0:
+            logger.error(f"Failed to copy test harness")
+            return False
+        
+        if not self.wait_for_tpmrm0_is_ready():
+            return False
 
         return True
 
-    def write_nvwrite_test_parameters(self, fuzz_data: dict) -> None:
-        arr = []
-        for key in fuzz_data:
-            if not key == "xtest_number":
-                arr.append(str(fuzz_data[key]))
+    def wait_for_tpmrm0_is_ready(self) -> bool:
+        args = [
+            "ls", "/dev/tpmrm0"
+        ]
+        args_str = " ".join(args)
 
-        data = ",".join(arr)
+        for i in range(10):
+            exec_result = self.ssh_client.exec_command(args_str)
+            if exec_result["returncode"] == 0:
+                return True
+            time.sleep(1)
+            
+        return False
+    
+    def write_nvwrite_test_parameters(self, fuzz_data: dict) -> None:
+        flags0 = fuzz_data['flags0'] if type(fuzz_data['flags0']) == str else hex(fuzz_data['flags0'])
+        flags1 = fuzz_data['flags1'] if type(fuzz_data['flags1']) == str else hex(fuzz_data['flags1'])
+        declared_size_delta = fuzz_data['declared_size_delta'] if type(fuzz_data['declared_size_delta']) == str else hex(fuzz_data['declared_size_delta'])
+        offset_delta = fuzz_data['offset_delta'] if type(fuzz_data['offset_delta']) == str else hex(fuzz_data['offset_delta'])
+        authsize_delta = fuzz_data['authsize_delta'] if type(fuzz_data['authsize_delta']) == str else hex(fuzz_data['flags0'])
+        swap_handles = fuzz_data['swap_handles'] if type(fuzz_data['swap_handles']) == str else hex(fuzz_data['swap_handles'])
+        payload_len = fuzz_data['payload_len'] if type(fuzz_data['payload_len']) == str else hex(fuzz_data['payload_len'])
+
         with open(self.fuzz_input_file, "w") as f:  
-            f.write(data)
+            f.write(f"{flags0}\n")
+            f.write(f"{flags1}\n")
+            f.write(f"{declared_size_delta}\n")
+            f.write(f"{offset_delta}\n")
+            f.write(f"{authsize_delta}\n")
+            f.write(f"{swap_handles}\n")
+            f.write(f"{payload_len}\n")
+            f.write(f"{fuzz_data['payload']}\n")
+
+        # copy seed file to test dir
+        shutil.copy(self.fuzz_input_file, self.local_test_dir)
 
     def run_test(self, fuzz_data: dict) -> dict:
-        #self.write_nvwrite_test_parameters(fuzz_data)
+        self.write_nvwrite_test_parameters(fuzz_data)
         args = [
-            "./ftpm_fuzz",
-            "--help",
+            f"{self.remote_work_dir}/ftpm_fuzz",
+            "--target", "nvwrite",
+            "--in", self.fuzz_input_file_on_remote,
         ]
 
         args_str = " ".join(args)

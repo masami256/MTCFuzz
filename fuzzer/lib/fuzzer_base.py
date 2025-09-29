@@ -5,6 +5,7 @@ class FuzzerBase:
         self.config = config
         self.remote_work_dir = self.config["fuzzing"].get("remote_work_dir", "/root/work")
         self.local_work_dir = self.config["fuzzing"]["local_work_dir"]
+        self.local_test_dir = None
 
         if self.config["fuzzing"].get("kernel_module") is not None:
             self.module_name = self.config["fuzzing"]["kernel_module"].split("/")[-1]
