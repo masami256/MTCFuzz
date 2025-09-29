@@ -9,7 +9,7 @@
         "initrd": "/home/build/projects/srcs/optee-ftpm/out/bin/rootfs.cpio.uboot",
         "smp": "2",
         "memory": "2048",
-        "extra_serial": false
+        "extra_serial": true
     },
     "ssh_params": {
     },
