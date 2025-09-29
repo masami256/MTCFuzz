@@ -10,13 +10,13 @@
 
 #define IPRINTF(fmt, ...) \
     do { \
-        fprintf(stderr, "[+] %s:%d: " fmt, \
+        fprintf(stdout, "[+] %s:%d: " fmt, \
                 __func__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 
 #define EPRINTF(fmt, ...) \
     do { \
-        fprintf(stderr, "[*] %s:%d: " fmt, \
+        fprintf(stdout, "[*] %s:%d: " fmt, \
                 __func__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 
@@ -24,7 +24,7 @@ extern int verbose;
 #define DPRINTF(fmt, ...) \
     do { \
         if (verbose) { \
-            fprintf(stderr, "[+] %s:%d: " fmt, \
+            fprintf(stdout, "[+] %s:%d: " fmt, \
                     __func__, __LINE__, ##__VA_ARGS__); \
         } \
     } while (0)

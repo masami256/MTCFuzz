@@ -81,6 +81,7 @@ TSS2_SYS_CONTEXT *init_sys_context(TSS2_TCTI_CONTEXT **out_tcti)
 static int hexstr_to_bytes(const char *s, uint8_t **out, uint16_t *out_len) {
     size_t len = strlen(s);
     if (len % 2 != 0) {
+        EPRINTF("string length is not even number : %lu\n", len);
         return -1;
     }
 
@@ -91,6 +92,7 @@ static int hexstr_to_bytes(const char *s, uint8_t **out, uint16_t *out_len) {
 
     uint8_t *buf = (uint8_t *)malloc(n);
     if (!buf) {
+        EPRINTF("Failed to allocate memory: size: 0x%lx\n", n);
         return -1;
     }
 
@@ -110,6 +112,7 @@ static int nvwrite_load_fuzz_text_file(const char *path, nvwrite_fuzz_input_t *o
 
     FILE *fp = fopen(path, "r");
     if (!fp) {
+        EPRINTF("File %s is not found\n", path);
         return -1;
     }
 
@@ -120,11 +123,13 @@ static int nvwrite_load_fuzz_text_file(const char *path, nvwrite_fuzz_input_t *o
     // Read 8 lines from the text file
     for (int i = 0; i < 8; i++) {
         if (!fgets(line, sizeof(line), fp)) {
+            EPRINTF("Failed to read line %d\n", i);
             goto cleanup;
         }
         line[strcspn(line, "\r\n")] = 0; // trim newline
         lines[i] = strdup(line);
         if (!lines[i]) {
+            EPRINTF("LINE %d is empty\n", i);
             goto cleanup;
         }
     }
@@ -143,6 +148,7 @@ static int nvwrite_load_fuzz_text_file(const char *path, nvwrite_fuzz_input_t *o
 
     uint16_t actual_len = 0;
     if (hexstr_to_bytes(lines[7], &out->payload, &actual_len)) {
+        EPRINTF("hexstr_to_bytes is failed\n");
         goto cleanup;
     }
 
