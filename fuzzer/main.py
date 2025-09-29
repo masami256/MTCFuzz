@@ -76,6 +76,12 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
     pid = None
 
     task_id = f"task-{task_num}"
+    local_work_dir = config["fuzzing"]["local_work_dir"]
+
+    file_handler = logging.FileHandler(f"{local_work_dir}/mtcfuzz-{task_id}.log", mode="a", encoding="utf-8")
+    file_handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s: %(message)s"))
+    logger.addHandler(file_handler)
+
     qemu_ssh_port = config["qemu_params"].get("port", 10022) + task_num
     gdb_port =  config["fuzzing"].get("gdb_port", 1234) + task_num
     use_gdb = config["fuzzing"].get("use_gdb", False)
@@ -99,7 +105,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
         SeedManager = seed_manager_factory(config)
         seedManager = SeedManager(seed_dir, task_id)
 
-        local_work_dir = config["fuzzing"]["local_work_dir"]
+        
         if not os.path.exists(local_work_dir):
             os.makedirs(local_work_dir)
 
@@ -175,7 +181,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     test_dir_name = f"{task_id}-{uuid_str}"
                     local_test_dir = f"{local_work_dir}/{test_dir_name}"
                     fuzzer.local_test_dir = local_test_dir
-                    
+
                     logger.info(f"Test: {test_dir_name}")
                     console0_log = f"{local_test_dir}/console0.log"
                     console1_log = None
