@@ -4,7 +4,7 @@ logger = logging.getLogger("mtcfuzz")
 import subprocess
 import time
 
-from .ssh_error import SSHError
+from .ssh_error import SSHError, SSHTimeoutError
 
 class SSHClient:
     def __init__(self, config: dict, qemu_ssh_port: int) -> None:
@@ -20,11 +20,11 @@ class SSHClient:
         self.ssh_retry_max = config["fuzzing"].get("ssh_retry_max", 5)
         self.remote_command_exec_timeout = config["fuzzing"].get("remote_command_exec_timeout", 2)
 
-    def exec_command(self, cmd: str, *, retry_max: int = None) -> dict:
+    def exec_command(self, cmd: str, *,retry_max: int = None, connect_time_out: int = 5, remote_command_exec_timeout: int = None) -> dict:
         ssh_cmd = [
             "ssh",
             "-o", "StrictHostKeyChecking=no",
-            "-o", "ConnectTimeout=5",
+            "-o", f"ConnectTimeout={connect_time_out}",
             "-o", "UserKnownHostsFile=/dev/null",
         ]
 
@@ -37,6 +37,9 @@ class SSHClient:
             cmd
         ]
         num_retries = retry_max if retry_max is not None else self.ssh_retry_max
+        rce_timeout = remote_command_exec_timeout if remote_command_exec_timeout is not None else self.remote_command_exec_timeout
+        timeouted = False
+
         for attempt in range(num_retries):
             try:
                 # logger.debug(f"Command: {ssh_cmd}")
@@ -47,7 +50,7 @@ class SSHClient:
                     # capture_output=False,
                     capture_output=True,
                     text=True,
-                    timeout=self.remote_command_exec_timeout,
+                    timeout=rce_timeout,
                 )
                 end = time.perf_counter()
 
@@ -62,17 +65,22 @@ class SSHClient:
                 }
 
             except subprocess.TimeoutExpired as e:
-                logger.warning(f"exec_command(): [SSH] Timeout executing command. Retry {attempt + 1}/{self.ssh_retry_max}...")
+                logger.warning(f"exec_command(): [SSH] Timeout executing command. Retry {attempt + 1}/{num_retries}...")
                 logger.debug("=====================")
                 logger.debug(e)
                 logger.debug("=====================")
                 time.sleep(attempt + 1)
+                timeouted = True
             
             except Exception as e:
-                logger.warning(f"exec_command(): [SSH] Error: {e}. Retry {attempt + 1}/{self.ssh_retry_max}...")
+                logger.warning(f"exec_command(): [SSH] Error: {e}. Retry {attempt + 1}/{num_retries}...")
                 time.sleep(attempt + 1)
+                timeouted = False
         
-        raise SSHError(f"exec_command(): Failed to execute command after {self.ssh_retry_max} attempts: {cmd}")
+        if timeouted:
+            raise SSHTimeoutError(f"exec_command(): Timeout to execute command after {num_retries} attempts: {cmd}")
+
+        raise SSHError(f"exec_command(): Failed to execute command after {num_retries} attempts: {cmd}")
 
     def send_file(self, local_path: str, remote_path: str) -> int:
         scp_cmd = [

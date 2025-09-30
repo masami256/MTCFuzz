@@ -144,4 +144,4 @@ class OpteeFtpmFuzzer(QemuFuzzer):
 
         args_str = " ".join(args)
         print(f"Run {args_str}")
-        return self.ssh_client.exec_command(args_str, retry_max=1)
+        return self.ssh_client.exec_command(args_str, retry_max=1, remote_command_exec_timeout=5)
