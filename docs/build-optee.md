@@ -29,4 +29,12 @@ make run DEBUG=1 CFG_CORE_ASLR=n -j$(nproc)
 
 Goto build directory then apply following patch before build.
 
+```
 git am /home/build/projects/mtcfuzz/patches/optee/ftpm/0001-Enable-Linux-IMA-feature.patch
+```
+
+Build with higher log level.
+
+```
+make run DEBUG=1 CFG_CORE_ASLR=n -j$(nproc)
+```
