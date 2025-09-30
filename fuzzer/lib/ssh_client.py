@@ -4,7 +4,7 @@ logger = logging.getLogger("mtcfuzz")
 import subprocess
 import time
 
-from .ssh_error import SSHError, SSHTimeoutError
+from .ssh_error import SSHError
 
 class SSHClient:
     def __init__(self, config: dict, qemu_ssh_port: int) -> None:
@@ -38,7 +38,6 @@ class SSHClient:
         ]
         num_retries = retry_max if retry_max is not None else self.ssh_retry_max
         rce_timeout = remote_command_exec_timeout if remote_command_exec_timeout is not None else self.remote_command_exec_timeout
-        timeouted = False
 
         for attempt in range(num_retries):
             try:
@@ -70,15 +69,10 @@ class SSHClient:
                 logger.debug(e)
                 logger.debug("=====================")
                 time.sleep(attempt + 1)
-                timeouted = True
             
             except Exception as e:
                 logger.warning(f"exec_command(): [SSH] Error: {e}. Retry {attempt + 1}/{num_retries}...")
                 time.sleep(attempt + 1)
-                timeouted = False
-        
-        if timeouted:
-            raise SSHTimeoutError(f"exec_command(): Timeout to execute command after {num_retries} attempts: {cmd}")
 
         raise SSHError(f"exec_command(): Failed to execute command after {num_retries} attempts: {cmd}")
 

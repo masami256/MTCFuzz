@@ -20,7 +20,7 @@ from lib.coverage_factory import coverage_factory
 from lib.seed_manager_factory import seed_manager_factory
 from lib.ssh_client import SSHClient
 import lib.fuzzer_lib as fuzzer_lib
-from lib.ssh_error import SSHError, SSHTimeoutError
+from lib.ssh_error import SSHError
 from lib.serial import Serial
 from lib.qemu_tracer import QemuTracer
 from lib.coverage_manager import CoverageManager
@@ -220,17 +220,11 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     exec_result = None
                     maybe_crashed = False
                     need_restart = False
-                    timeouted = False
                     try:
                         exec_result = fuzzer.run_test(fuzz_params)
                     except SSHError as e:
                         logger.info("Maybe got a crash")
                         maybe_crashed = True
-                        need_restart = True
-                    except SSHTimeoutError as e:
-                        logger.info("command takes too many time. Restart qemu.")
-                        maybe_crashed = True
-                        timeouted = True
                         need_restart = True
 
                     if not maybe_crashed:
@@ -256,13 +250,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                         with open(f"{local_test_dir}/stderr.txt", "w") as f:
                             f.write(exec_result["stderr"])
                             
-                    if timeouted:
-                        logger.info(f"[+]Test timeout : Test dir: {local_test_dir}")
-                        timeout_flag_file = f"{local_test_dir}/timeouted.txt"
-                        testdir = os.path.basename(local_test_dir)
-                        with open(timeout_flag_file, "w") as f:
-                            f.write(f"{testdir}")
-                    elif maybe_crashed or is_crashed(console0_log, console1_log) and not timeouted:
+                    if maybe_crashed or is_crashed(console0_log, console1_log):
                         logger.info(f"[+]Found crash! : Test dir: {local_test_dir}")
                         await crashedTestcaseManager.add_crashed_testcase(fuzz_params)
                         crashedTestcaseManager.save_params(local_test_dir, fuzz_params)
