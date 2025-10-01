@@ -160,7 +160,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
         fuzzer.extra_setup(coverage)
 
         save_config(config, local_work_dir)
-        exit(0)
+
         # main fuzzing loop start
         while not fuzzing_done:
             if loop_cnt > max_fuzzing_loop:
