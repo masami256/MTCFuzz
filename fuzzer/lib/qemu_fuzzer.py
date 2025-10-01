@@ -21,7 +21,6 @@ class QemuFuzzer(FuzzerBase):
                  serial_socket_path0: str, serial_socket_path1: str, gdb_port: int) -> None:
         super().__init__(config, task_id, ssh_client)
         self.qemu_process = None
-        self.task_id = task_id
         self.snapshot_name = "mtcfuzz_vm_snapshot"
         self.qmp_socket_path = qmp_socket_path
         self.serial_socket_path0 = serial_socket_path0
@@ -83,7 +82,7 @@ class QemuFuzzer(FuzzerBase):
             "-m", self.config["qemu_params"].get("memory", "1024"),
             # qmp and serial parameters
             "-qmp", f"unix:{self.qmp_socket_path},server,nowait",
-            "-chardev", f"socket,id=con0,path={self.serial_socket_path0},server=on,wait=off,logfile={self.local_work_dir}/console0.log,logappend=on",
+            "-chardev", f"socket,id=con0,path={self.serial_socket_path0},server=on,wait=off,logfile={self.local_work_dir}/{self.task_id}-console0.log,logappend=on",
             "-serial", "chardev:con0",
             # rng parameters
             "-object", "rng-random,filename=/dev/urandom,id=rng0",
@@ -91,7 +90,7 @@ class QemuFuzzer(FuzzerBase):
         ]
 
         if self.serial_socket_path1:
-            params += ["-chardev", f"socket,id=con1,path={self.serial_socket_path1},server=on,wait=off,logfile={self.local_work_dir}/console1.log,logappend=on"]
+            params += ["-chardev", f"socket,id=con1,path={self.serial_socket_path1},server=on,wait=off,logfile={self.local_work_dir}/{self.task_id}-console1.log,logappend=on"]
             params += ["-serial", "chardev:con1"]
 
         if "initrd" in self.config["qemu_params"]:

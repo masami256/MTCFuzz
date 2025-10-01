@@ -12,7 +12,6 @@ import os
 import asyncio
 import uuid
 import signal
-import time
 from datetime import datetime
 
 from lib.fuzzer_factory import fuzzer_factory
@@ -153,6 +152,8 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
         if not ret:
             return -1
         
+        fuzzer.extra_setup(coverage)
+
         # main fuzzing loop start
         while not fuzzing_done:
             if loop_cnt > max_fuzzing_loop:
@@ -172,6 +173,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
             fuzz_i = 0
             while True:
                 logger.info("===========================")
+                need_restart = False
                 if fuzz_i > energy:
                     logger.info("Energy exhausted, moving to next seed.")
                     break
@@ -219,7 +221,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
                     
                     exec_result = None
                     maybe_crashed = False
-                    need_restart = False
+
                     try:
                         exec_result = fuzzer.run_test(fuzz_params)
                     except SSHError as e:

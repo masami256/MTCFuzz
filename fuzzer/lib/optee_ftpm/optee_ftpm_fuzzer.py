@@ -2,11 +2,21 @@ from ..qemu_fuzzer import QemuFuzzer
 import logging
 logger = logging.getLogger("mtcfuzz")
 
+from typing import Any
 import shutil
 import os
 from .optee_ftpm_mutator import OPTeeFtpmMutator
 import time
+import re
 import pprint
+
+ftpm_ta_uuid = "bc50d971-d4c9-42c4-82cb-343fb7f37896"
+ftpm_load_pattern = re.compile(
+    rf"D/LD:\s+ldelf:\d+\s+ELF\s+\({re.escape(ftpm_ta_uuid)}\)\s+at\s+(0x[0-9a-fA-F]+)"
+)
+ftpm_size_pattern = re.compile(
+    rf"D/TC:\d+\s+\d+\s+early_ta_init:\d+\s+Early TA {re.escape(ftpm_ta_uuid)} size \d+ \(compressed, uncompressed (\d+)\)"
+)
 
 class OpteeFtpmFuzzer(QemuFuzzer):
     def __init__(self, config: dict, task_id: int, ssh_client: "SSHClient", 
@@ -69,7 +79,7 @@ class OpteeFtpmFuzzer(QemuFuzzer):
         if not exec_result["returncode"] == 0:
             logger.error(f"Failed to create remote 9p file system directory: {self.remote_hostshare_dir}")
             return False
-        
+
         args = [
             "mount", "-t", "9p", 
             "-o", "trans=virtio", self.config["fuzzing"]["tag_9p"], 
@@ -82,7 +92,7 @@ class OpteeFtpmFuzzer(QemuFuzzer):
         if not exec_result["returncode"] == 0:
             logger.error(f"Failed to mount 9p file system: {self.remote_work_dir}")
             return False
-        
+
         exec_result = self.ssh_client.exec_command(f"mkdir -p {self.remote_work_dir}")
         if not exec_result["returncode"] == 0:
             logger.error(f"Failed to create remote work directory: {self.remote_work_dir}")
@@ -134,6 +144,53 @@ class OpteeFtpmFuzzer(QemuFuzzer):
         # copy seed file to test dir
         shutil.copy(self.fuzz_input_file, self.local_test_dir)
 
+    def extra_setup(self, coverage: Any):
+
+        console1_log = f"{self.local_work_dir}/{self.task_id}-console1.log"
+        with open(console1_log) as f:
+            log = f.read()
+
+        ta_size = None
+        ta_address = None
+
+        match = ftpm_load_pattern.search(log)
+        if match:
+            ta_address = match.group(1)
+            if ta_address is None:
+                logger.info(f"{ftpm_ta_uuid} loaded address is not determined")
+                return
+            ta_address = int(ta_address, 16)
+        else:
+            logger.info(f"{ftpm_ta_uuid} loaded address is not determined")
+            return
+
+        match = ftpm_size_pattern.search(log)
+        if match:
+            ta_size = match.group(1)
+            if ta_size is None:
+                logger.info(f"{ftpm_ta_uuid} size is not determined")
+                return
+        else:
+            logger.info(f"{ftpm_ta_uuid} size is not determined")
+            return
+
+        orig_size = int(ta_size, 16)
+        aligned_size = (orig_size + 4095) & ~4095
+        logger.info(f"fTPM TA({ftpm_ta_uuid}) is located at {hex(ta_address)}. size is {hex(orig_size)} : aligned size: {hex(aligned_size)}")
+
+        orig_filter = coverage.get_firmware_filter()
+        end_address = hex(ta_address + aligned_size)
+        start_address = hex(ta_address)
+
+
+        new_filter = {
+            'lower': start_address,
+            'upper': end_address
+        }
+
+        orig_filter.append(new_filter)
+        coverage.update_firmware_filter(orig_filter)
+
     def run_test(self, fuzz_data: dict) -> dict:
         self.write_nvwrite_test_parameters(fuzz_data)
         args = [
@@ -143,5 +200,4 @@ class OpteeFtpmFuzzer(QemuFuzzer):
         ]
 
         args_str = " ".join(args)
-        print(f"Run {args_str}")
         return self.ssh_client.exec_command(args_str, retry_max=1, remote_command_exec_timeout=5)

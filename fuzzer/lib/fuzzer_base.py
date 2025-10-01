@@ -1,4 +1,5 @@
 from .fuzzer_lib import *
+from typing import Any
 
 class FuzzerBase:
     def __init__(self, config: dict, task_id: str, ssh_client: "SSHClient") -> None:
@@ -20,6 +21,7 @@ class FuzzerBase:
 
         self.started = False
         self.machine_info_dir = f"{task_id}-{self.config['fuzzing'].get('machine_info_dir', 'machine_info')}"
+        self.task_id = task_id
 
     def wait_for_ready(self, *, timeout: int = 5) -> None:
         raise NotImplementedError("wait_for_ready() must be implemented in the subclass")
@@ -63,3 +65,6 @@ class FuzzerBase:
                     result[key] = self.mutator.mutate(seed[key]["value"])
 
         return result
+
+    def extra_setup(self, coverage: Any):
+        pass
