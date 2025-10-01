@@ -83,14 +83,16 @@ class QemuFuzzer(FuzzerBase):
             "-m", self.config["qemu_params"].get("memory", "1024"),
             # qmp and serial parameters
             "-qmp", f"unix:{self.qmp_socket_path},server,nowait",
-            "-serial", f"unix:{self.serial_socket_path0},server,nowait",
+            "-chardev", f"socket,id=con0,path={self.serial_socket_path0},server=on,wait=off,logfile={self.local_work_dir}/console0.log,logappend=on",
+            "-serial", "chardev:con0",
             # rng parameters
             "-object", "rng-random,filename=/dev/urandom,id=rng0",
             "-device", "virtio-rng-device,rng=rng0",
         ]
 
         if self.serial_socket_path1:
-            params += ["-serial", f"unix:{self.serial_socket_path1},server,nowait"]
+            params += ["-chardev", f"socket,id=con1,path={self.serial_socket_path1},server=on,wait=off,logfile={self.local_work_dir}/console1.log,logappend=on"]
+            params += ["-serial", "chardev:con1"]
 
         if "initrd" in self.config["qemu_params"]:
             params += ["-initrd", self.config["qemu_params"]["initrd"]]
@@ -328,7 +330,7 @@ class QemuFuzzer(FuzzerBase):
         finally:
             await self.disconnect_qmp()
             return ret
-        
+
     async def delvm(self) -> bool:
         logger.info("Deleting snapshot...")
         ret = False
