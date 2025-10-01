@@ -55,8 +55,12 @@ def main():
             for line in f:
                 pc_found = False
                 addr_s = line.strip()
-                addr = int(addr_s, 16)
-
+                try:
+                    addr = int(addr_s, 16)
+                except Exception as e:
+                    # print(f"trace_log: {trace_log} , addr_s: {addr_s}")
+                    continue
+                
                 if args.check_kernel_coverage:
                     for kernel_range in filters["kernel"]:
                         lower = int(kernel_range["lower"], 16)
