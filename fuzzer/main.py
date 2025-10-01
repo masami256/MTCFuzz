@@ -69,6 +69,11 @@ def parser_argument():
 
     return parser.parse_args()
 
+def save_config(config: dict, local_work_dir: str) -> None:
+    filename = f"{local_work_dir}/updated-config.json"
+    with open(filename, "w") as f:
+        json.dump(config, f, indent=4)
+
 async def start_fuzzing(config, task_num, crashedTestcaseManager):
     tracing = False
     snapshot_created = False
@@ -154,6 +159,8 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
         
         fuzzer.extra_setup(coverage)
 
+        save_config(config, local_work_dir)
+        exit(0)
         # main fuzzing loop start
         while not fuzzing_done:
             if loop_cnt > max_fuzzing_loop:
@@ -162,7 +169,6 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
             if fuzzing_done:
                 break
 
-            test_no = f"{task_id}-{total_tested_count}"
             seed = seedManager.get_random_seed()
 
             seed_id = seed["id"]

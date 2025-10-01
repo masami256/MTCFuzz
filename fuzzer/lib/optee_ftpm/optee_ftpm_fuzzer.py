@@ -178,7 +178,6 @@ class OpteeFtpmFuzzer(QemuFuzzer):
         aligned_size = (orig_size + 4095) & ~4095
         logger.info(f"fTPM TA({ftpm_ta_uuid}) is located at {hex(ta_address)}. size is {hex(orig_size)} : aligned size: {hex(aligned_size)}")
 
-        orig_filter = coverage.get_firmware_filter()
         end_address = hex(ta_address + aligned_size)
         start_address = hex(ta_address)
 
@@ -188,8 +187,7 @@ class OpteeFtpmFuzzer(QemuFuzzer):
             'upper': end_address
         }
 
-        orig_filter.append(new_filter)
-        coverage.update_firmware_filter(orig_filter)
+        coverage.add_firmware_filter([new_filter])
 
     def run_test(self, fuzz_data: dict) -> dict:
         self.write_nvwrite_test_parameters(fuzz_data)
