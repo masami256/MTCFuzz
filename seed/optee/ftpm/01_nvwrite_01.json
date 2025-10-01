@@ -1,4 +1,10 @@
 {
+    "target": {
+        "fixed": true,
+        "value": "nvwrite",
+        "type": "str",
+        "order": 0
+    },
     "flags0": {
         "fixed": false,
         "value": "0x0",

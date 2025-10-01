@@ -195,7 +195,7 @@ class OpteeFtpmFuzzer(QemuFuzzer):
         self.write_nvwrite_test_parameters(fuzz_data)
         args = [
             f"{self.remote_work_dir}/ftpm_fuzz",
-            "--target", "nvwrite",
+            "--target", fuzz_data["target"],
             "--in", self.fuzz_input_file_on_remote,
         ]
 
