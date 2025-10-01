@@ -34,7 +34,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
     python3-cryptography \
     python3-yaml \
     netcat-openbsd \
-    tmux
+    tmux \
+    jq
 
 RUN sed 's/Types: deb/Types: deb deb-src/g' -i /etc/apt/sources.list.d/ubuntu.sources
 RUN apt update
