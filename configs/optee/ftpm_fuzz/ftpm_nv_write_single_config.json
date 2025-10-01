@@ -1,0 +1,53 @@
+{
+    "target_type": "qemu",
+    "qemu_params": {
+        "qemu_path": "/home/build/projects/srcs/qemu/build/qemu-system-aarch64",
+        "machine": "virt,acpi=off,secure=on,mte=off,gic-version=3,virtualization=false",
+        "bios": "/home/build/projects/mtcfuzz/work/bin/bl1.bin",
+        "kernel": "/home/build/projects/mtcfuzz/work/bin/Image",
+        "append": "console=ttyAMA0,115200 keep_bootcon root=/dev/vda2 nokaslr oops=panic panic_on_warn=1 panic_on_oops=1 ima=on ima_policy=tcb",
+        "initrd": "/home/build/projects/srcs/optee-ftpm/out/bin/rootfs.cpio.uboot",
+        "smp": "2",
+        "memory": "2048",
+        "extra_serial": true
+    },
+    "ssh_params": {
+    },
+    "fuzzing": {
+        "optee_artifact_dir": "/home/build/projects/srcs/optee-ftpm/out/bin",
+        "kernel_binary": "/home/build/projects/srcs/optee-ftpm/linux/vmlinux",
+        "firmware_binary": "/home/build/projects/srcs/optee-ftpm/optee_os/out/arm/core/tee.elf",
+        "wait_for_qemu_seconds": 5,
+        "remote_command_exec_timeout": 10,
+        "fuzzer_module": "lib.optee_ftpm.optee_ftpm_fuzzer",
+        "fuzzer_class": "OpteeFtpmFuzzer",
+        "coverage_module": "lib.optee_ftpm.optee_ftpm_coverage",
+        "coverage_class": "OPTEEFtpmCoverage",
+        "seed_manager": "lib.optee_ftpm.optee_ftpm_seed_manager",
+        "seed_manager_class": "OPTEEFtpmSeedManager",
+        "default_energy": 50,
+        "seed_dir": "/home/build/projects/mtcfuzz/seed/optee/ftpm/",
+        "local_work_dir": "/home/build/projects/mtcfuzz/work",
+        "assign_energy_function": "aflfast",
+        "ignore_kernel_coverage": false,
+        "ignore_firmware_coverage": true,
+        "hostshare_9p": "/root/hostshare",
+        "tag_9p": "hostshare",
+        "harness": "/home/build/projects/mtcfuzz/test_harnesses/optee/ftpm/ftpm_fuzz"
+    },
+    "address_filters": {
+        "kernel": [
+            {
+                "lower": "0xffff800000000000",
+                "upper": "0xffffffffffffffff"
+            }
+        ],
+        "firmware": [
+            {
+                "lower": "0xe100000",
+                "upper": "0xe300000"
+            }
+        ]
+    },
+    "debug": true
+}
