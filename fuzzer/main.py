@@ -69,12 +69,14 @@ def parser_argument():
 
     return parser.parse_args()
 
-def save_config(config: dict, local_work_dir: str) -> None:
-    filename = f"{local_work_dir}/updated-config.json"
+def save_config(config_file_name: str, config: dict, local_work_dir: str) -> None:
+    basename = os.path.basename(config_file_name)
+
+    filename = f"{local_work_dir}/saved-{basename}"
     with open(filename, "w") as f:
         json.dump(config, f, indent=4)
 
-async def start_fuzzing(config, task_num, crashedTestcaseManager):
+async def start_fuzzing(config_file_name, config, task_num, crashedTestcaseManager):
     tracing = False
     snapshot_created = False
     pid = None
@@ -159,7 +161,7 @@ async def start_fuzzing(config, task_num, crashedTestcaseManager):
         
         fuzzer.extra_setup(coverage)
 
-        save_config(config, local_work_dir)
+        save_config(config_file_name, config, local_work_dir)
 
         # main fuzzing loop start
         while not fuzzing_done:
@@ -364,7 +366,7 @@ async def main():
     num_fuzzers = config["fuzzing"].get("num_fuzzers", 1)
     try:
         tasks = [
-            asyncio.create_task(start_fuzzing(config, i, crashedTestcaseManager))
+            asyncio.create_task(start_fuzzing(args.config, config, i, crashedTestcaseManager))
             for i in range(num_fuzzers)
         ]
         await asyncio.gather(*tasks)
