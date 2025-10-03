@@ -36,5 +36,5 @@ git am /home/build/projects/mtcfuzz/patches/optee/ftpm/0001-Enable-Linux-IMA-fea
 Build with higher log level.
 
 ```
-make run DEBUG=1 CFG_CORE_ASLR=n -j$(nproc)
+make run DEBUG=1 CFG_CORE_ASLR=n CFG_TA_ASLR=n -j$(nproc)
 ```
