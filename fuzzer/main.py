@@ -159,8 +159,6 @@ async def start_fuzzing(config_file_name, config, task_num, crashedTestcaseManag
         if not ret:
             return -1
         
-        fuzzer.extra_setup(coverage)
-
         save_config(config_file_name, config, local_work_dir)
 
         # main fuzzing loop start

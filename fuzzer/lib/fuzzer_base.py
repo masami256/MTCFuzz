@@ -1,5 +1,4 @@
 from .fuzzer_lib import *
-from typing import Any
 
 class FuzzerBase:
     def __init__(self, config: dict, task_id: str, ssh_client: "SSHClient") -> None:
@@ -65,6 +64,3 @@ class FuzzerBase:
                     result[key] = self.mutator.mutate(seed[key]["value"])
 
         return result
-
-    def extra_setup(self, coverage: Any):
-        pass

@@ -15,9 +15,6 @@ class Coverage:
         self.firmware_cov = defaultdict(int)
         self.other = defaultdict(int)
 
-    def add_firmware_filter(self, additional_filter: list) -> None:
-        self.firmware_filter += additional_filter
-
     def read_coverage(self, trace_log_file: str) -> list[str]:
         with open(trace_log_file, "r") as f:
             return f.readlines()

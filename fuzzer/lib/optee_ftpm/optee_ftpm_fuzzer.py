@@ -144,51 +144,6 @@ class OpteeFtpmFuzzer(QemuFuzzer):
         # copy seed file to test dir
         shutil.copy(self.fuzz_input_file, self.local_test_dir)
 
-    def extra_setup(self, coverage: Any):
-
-        console1_log = f"{self.local_work_dir}/{self.task_id}-console1.log"
-        with open(console1_log) as f:
-            log = f.read()
-
-        ta_size = None
-        ta_address = None
-
-        match = ftpm_load_pattern.search(log)
-        if match:
-            ta_address = match.group(1)
-            if ta_address is None:
-                logger.info(f"{ftpm_ta_uuid} loaded address is not determined")
-                return
-            ta_address = int(ta_address, 16)
-        else:
-            logger.info(f"{ftpm_ta_uuid} loaded address is not determined")
-            return
-
-        match = ftpm_size_pattern.search(log)
-        if match:
-            ta_size = match.group(1)
-            if ta_size is None:
-                logger.info(f"{ftpm_ta_uuid} size is not determined")
-                return
-        else:
-            logger.info(f"{ftpm_ta_uuid} size is not determined")
-            return
-
-        orig_size = int(ta_size, 16)
-        aligned_size = (orig_size + 4095) & ~4095
-        logger.info(f"fTPM TA({ftpm_ta_uuid}) is located at {hex(ta_address)}. size is {hex(orig_size)} : aligned size: {hex(aligned_size)}")
-
-        end_address = hex(ta_address + aligned_size)
-        start_address = hex(ta_address)
-
-
-        new_filter = {
-            'lower': start_address,
-            'upper': end_address
-        }
-
-        coverage.add_firmware_filter([new_filter])
-
     def run_test(self, fuzz_data: dict) -> dict:
         self.write_nvwrite_test_parameters(fuzz_data)
         args = [
