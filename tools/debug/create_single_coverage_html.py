@@ -14,19 +14,18 @@ def read_csv(file_path):
         for row in reader:
             if len(row) != 5:
                 continue
-            elf_offset_addr, loaded_addr, func, src_path, line_str = row
-            if elf_offset_addr.startswith("Address"):
+            addr, func, src_path, line_str, count = row
+            if addr.startswith("Address"):
                 continue
             try:
                 line_num = int(line_str)
                 key = f"{src_path}:{line_num}"
                 ret[key] = {
-                    "binaly_offset_address": elf_offset_addr,
-                    "loaded_address": loaded_addr,
+                    "addr": addr,
                     "func": func,
                     "line": line_num,
                     "file": src_path,
-                    "count": 1,
+                    "count": int(count),
                 }
             except ValueError:
                 continue
@@ -37,6 +36,7 @@ def create_source_line_map(file_paths):
     result = {}
     for filepath in file_paths:
         try:
+            print(f"Reading source file: {filepath}")
             with open(filepath, "r") as f:
                 lines = f.readlines()
         except FileNotFoundError:
@@ -177,7 +177,7 @@ def main():
 
     all_files = set()
     for key in coverage.keys():
-        src_path, _ = key.rsplit(":", 1)
+        src_path, _ = key.rsplit(":", 4)
         all_files.add(src_path)
 
     source_lines = create_source_line_map(all_files)
