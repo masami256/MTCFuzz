@@ -2,11 +2,13 @@
     "a7": {
         "fixed": false,
         "value": "0xff",
-        "type": "integer"
+        "type": "integer",
+        "order": 0
     },
     "a6": {
         "fixed": false,
         "value": "0xff",
-        "type": "integer"
+        "type": "integer",
+        "order": 1
     }
 }

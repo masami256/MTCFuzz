@@ -4,17 +4,17 @@
 import argparse
 import json
 import glob
+import os
 import pprint
 
 def read_json(file_path):
     with open(file_path, 'r') as file:
         return json.load(file)
     
-def collect_trace_log_files(config):
-    workdir = config["fuzzing"]["local_work_dir"]
+def collect_trace_log_files(test_result_dir):
     files = []
 
-    glob_pattern = f"{workdir}/**/qemu_trace_log.log"
+    glob_pattern = f"{test_result_dir}/**/qemu_trace_log.log"
     for file in glob.glob(glob_pattern, recursive=True):
         files.append(file)
     
@@ -23,6 +23,7 @@ def collect_trace_log_files(config):
 def parse_args():
     parser = argparse.ArgumentParser(description="Generate a report based on the provided arguments.")
     parser.add_argument("--config-json", type=str, required=True, help="config.json file path")
+    parser.add_argument("--test-result-dir", required=True, help="Test result dir")
     parser.add_argument("--check-kernel-coverage", action="store_true", help="Check kernel coverage")
     parser.add_argument("--check-firmware-coverage", action="store_true", help="Check firmware coverage")
     parser.add_argument("--sort-by-count", action="store_true", help="Sort addresses by count")
@@ -41,7 +42,8 @@ def main():
     args = parse_args()
     config = read_json(args.config_json)
 
-    trace_log_files = collect_trace_log_files(config)
+    test_result_dir = os.path.abspath(args.test_result_dir)
+    trace_log_files = collect_trace_log_files(test_result_dir)
     if len(trace_log_files) == 0:
         print("No trace log files found.")
         return
@@ -95,6 +97,7 @@ def main():
     with open(args.output, "w") as output_file:
         for addr, count in address_items:
             output_file.write(f"{addr},{count}\n")
+        print(f"[+]Coverage report written to {args.output}")
 
 if __name__ == "__main__":
     main()

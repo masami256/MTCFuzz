@@ -32,9 +32,9 @@ def parse_arguments():
     return args
 
 def collect_files(directory):
-    pattern = f"{directory}/*.csv"
+    print(f"[+] Collecting files from {directory}")
+    pattern = os.path.join(os.path.abspath(directory), "**/*.csv")
     ret = []
-
     for file in glob.glob(pattern, recursive=True):
         ret.append(file)
     
@@ -61,12 +61,14 @@ def main():
     only_in_multi = {k: anlyzed_multi[k] for k in anlyzed_multi.keys() - anlyzed_single.keys()}
 
     if only_in_single:
-        print("[+] Addresses only in single coverage test:")
-        pprint.pprint(only_in_single)
+        pass
+        #print("[+] Addresses only in single coverage test:")
+        #pprint.pprint(only_in_single)
     
     if only_in_multi:
-        print("[+] Addresses only in multi coverage test:")
-        pprint.pprint(only_in_multi)
+        pass
+        #print("[+] Addresses only in multi coverage test:")
+        #pprint.pprint(only_in_multi)
         
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)

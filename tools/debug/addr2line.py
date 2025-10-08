@@ -85,11 +85,16 @@ def read_config(filepath):
     
 def read_trace_log(trace_log):
     with open(trace_log) as f:
-        return sorted(set(int(line.strip(), 16) for line in f if line.strip()))
+        lines = f.readlines()
+
+    if lines and not lines[0].strip().startswith("0x"):
+        lines = lines[1:]
+
+    return sorted(set(int(line.strip(), 16) for line in lines if line.strip()))
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Convert virtual addresses to offsets in a binary file.")
-    parser.add_argument("--config", required=True, help="config file")
+    parser.add_argument("--config", required=True, help="yaml config file")
     parser.add_argument("--trace-log", required=True, help="qemu trace log file")
     parser.add_argument("--output", default="analyzed_coverage.csv", help="output file name")
     parser.add_argument("--addr2line",default="riscv64-linux-gnu-addr2line", help="path to addr2line binary")

@@ -27,6 +27,7 @@ class SeedManager:
     def read_seed_files(self, seed_dir: str) -> None:
         for seed_file in self.find_seed_files(seed_dir):
             json_data = read_json(seed_file)
+            pprint.pprint(json_data)
             sorted_data = {
                 k: v for k, v in sorted(json_data.items(), key=lambda item: item[1]["order"])
             }
