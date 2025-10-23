@@ -6,7 +6,7 @@ ecall.log
 trace.log
 work
 sshkey/
-test_result_*
+test_results*
 test_harnesses/opensbi/ecall_fuzzing/harness/harness
 test_harnesses/opensbi/ecall_fuzzing/driver/.module*
 test_harnesses/opensbi/ecall_fuzzing/driver/..module-common.o.cmd
@@ -20,4 +20,3 @@ test_harnesses/optee/ftpm/ftpm_fuzz
 tmp/
 .vscode
 .bash_history
-
