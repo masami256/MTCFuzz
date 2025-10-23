@@ -23,8 +23,7 @@ if [ "$1" = "sbi" ]; then
         -fsdev local,id=fsdev0,path=/home/build/projects/mtcfuzz,security_model=none \
         -device virtio-9p-device,fsdev=fsdev0,mount_tag=hostshare \
         -drive file=/home/build/projects/mtcfuzz/work/fuzz-snapshot.qcow2,if=none,format=qcow2,id=snapshot0 \
-        -qmp unix:/tmp/qemu-mtcfuzz.sock,server,nowait \
-        $*
+        -qmp unix:/tmp/qemu-mtcfuzz.sock,server,nowait
 elif [ "$1" = "optee" ]; then
     cd work/bin
     /home/build/projects/srcs/qemu/build/qemu-system-aarch64 \
@@ -41,6 +40,8 @@ elif [ "$1" = "optee" ]; then
         -qmp unix:/tmp/qemu-mtcfuzz.sock,server,nowait \
         -object rng-random,filename=/dev/urandom,id=rng0 -device virtio-rng-device,rng=rng0 \
         -initrd /home/build/projects/srcs/optee/out/bin/rootfs.cpio.uboot \
+        -fsdev local,id=fsdev0,path=/home/build/projects/mtcfuzz,security_model=none \
+        -device virtio-9p-device,fsdev=fsdev0,mount_tag=hostshare \
         -cpu max,sme=on,pauth-impdef=on \
         -d unimp \
         -semihosting-config enable=on,target=native
