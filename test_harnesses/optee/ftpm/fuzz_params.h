@@ -4,6 +4,7 @@
 typedef enum {
     TARGET_UNKNOWN = 0,
     TARGET_NVWRITE,
+    TARGET_FTPM_TPM2_QUOTE,
 } target_t;
 
 // Forward declaration of struct options_t so that the function pointer can use it

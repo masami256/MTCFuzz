@@ -3,6 +3,7 @@
 #include "fuzz_params.h"
 #include "ftpm_ta.h"
 #include "ftpm_nv.h"
+#include "ftpm_tpm2_quote.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -15,10 +16,10 @@ int verbose;
 
 static void print_usage(const char *prog) {
     fprintf(stderr,
-        "Usage: %s --target=nvwrite [--dev PATH] [--in FILE]\n"
+        "Usage: %s --target [nvwrite|tpm2quote] [--dev PATH] [--in FILE]\n"
         "\n"
         "Options:\n"
-        "  --target=nvwrite     Select fuzz target (required for now)\n"
+        "  --target [nvwrite|tpm2quote]     Select fuzz target (required for now)\n"
         "  --in FILE            Mutation text file (8-line hex format)\n"
         "  -h, --help           Show this help\n",
         prog);
@@ -30,6 +31,9 @@ static target_t parse_target(const char *s) {
     }
     if (strcmp(s, "nvwrite") == 0) {
         return TARGET_NVWRITE;
+    }
+    else if (strcmp(s, "tpm2quote") == 0) {
+        return TARGET_FTPM_TPM2_QUOTE;
     }
     return TARGET_UNKNOWN;
 }
@@ -71,7 +75,7 @@ static int parse_args(int argc, char **argv, options_t *out) {
     }
 
     if (out->target == TARGET_UNKNOWN) {
-        IPRINTF("--target is required and must be 'nvwrite'\n\n");
+        IPRINTF("--target is required and must be 'nvwrite|tpm2quote'\n\n");
         print_usage(argv[0]);
         return -1;
     }
@@ -93,6 +97,10 @@ int main(int argc, char **argv)
         DPRINTF("Target: nvwrite\n");
         opt.func = nv_write_start_fuzz_test;
         break;
+    case TARGET_FTPM_TPM2_QUOTE:
+        DPRINTF("Target: tpm2quote\n");
+        opt.func = ftpm_tpm2_quote_start_fuzz_test;
+        break;
     default:
         fprintf(stderr, "Unknown target (logic bug)\n");
         return 2;
@@ -112,9 +120,9 @@ int main(int argc, char **argv)
     opt.fd = fd;
     rc = opt.func(&opt);
     if (!rc) {
-        IPRINTF("NV write/read test succeeded\n");
+        IPRINTF("Fuzz test didn't get error\n");
     } else {
-        EPRINTF("NV write/read test failed\n");
+        EPRINTF("Fuzz test got some error\n");
     }
 
     close_tpm_dev(fd);
