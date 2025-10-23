@@ -1,0 +1,28 @@
+{
+    "fuzz_test_param_target": {
+        "fixed": true,
+        "value": "tpm2quote",
+        "type": "str",
+        "order": 0
+    },
+    "target": {
+        "fixed": true,
+        "value": "qualifyingData",
+        "type": "str",
+        "order": 0
+    },
+    "qualifyingData_size": {
+        "fixed": false,
+        "value": "0x0",
+        "type": "hex",
+        "order": 0
+    },
+    "qualifyingData_value": {
+        "fixed": false,
+        "type": "str",
+        "mutator": "custom",
+        "min_len": "0x1",
+        "max_len": "0xf",
+        "order": 1
+    }
+}

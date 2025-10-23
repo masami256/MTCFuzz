@@ -1,4 +1,6 @@
 from .fuzzer_lib import *
+import logging
+logger = logging.getLogger("mtcfuzz")
 
 class FuzzerBase:
     def __init__(self, config: dict, task_id: str, ssh_client: "SSHClient") -> None:
@@ -48,15 +50,30 @@ class FuzzerBase:
         return self.ssh_client.send_file(self.config["fuzzing"]["kernel_module"], f"{self.remote_module_path}")
 
     def send_harness(self) -> int:
+        # logger.info(f"Sending harness {self.config['fuzzing']['harness']} to remote harness path {self.remote_harness_path}")
         return self.ssh_client.send_file(self.config["fuzzing"]["harness"], f"{self.remote_harness_path}")
 
+    def send_setup_scripts(self) -> int:
+        if "setup_scripts" not in self.config["fuzzing"]:
+            return 0
+
+        for script in self.config["fuzzing"]["setup_scripts"]:
+            try:
+                # logger.info(f"Sending setup script {script} to remote work dir {self.remote_work_dir}")
+                self.ssh_client.send_file(script, self.remote_work_dir)
+            except Exception as e:
+                logger.error(f"Failed to send setup script {script}: {e}")
+                return 1
+
+        return 0
+    
     def generate_input(self, seed: dict, **kwargs) -> dict:
         result = {}
         for key in seed:
             if seed[key]["fixed"]:
                 result[key] = seed[key]["value"]
             else:
-                if "mutaror" in seed[key] and seed[key]["mutator"] == "custom":
+                if "mutator" in seed[key] and seed[key]["mutator"] == "custom":
                     result[key] = self.mutator.custom_mutater(key, seed[key])
                 elif seed[key]["type"] == "str":
                     result[key] = self.mutator.mutate_string(seed[key]["value"], seed[key]["min_len"], seed[key]["max_len"])
