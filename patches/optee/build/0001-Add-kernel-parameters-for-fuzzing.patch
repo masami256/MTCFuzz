@@ -1,4 +1,4 @@
-From 1e49b4b38eea30048cee8edc6eb436b8e298476d Mon Sep 17 00:00:00 2001
+From 7ebfbb305fef0c07d94988e4cebf888cc261ecfb Mon Sep 17 00:00:00 2001
 From: Masami Ichikawa <masami256@gmail.com>
 Date: Fri, 11 Jul 2025 23:19:43 +0900
 Subject: [PATCH] Add kernel parameters for fuzzing
@@ -7,10 +7,45 @@ Add some kernel parameters to make fuzzing friendly.
 
 Signed-off-by: Masami Ichikawa <masami256@gmail.com>
 ---
- kconfigs/u-boot_qemu_v8.conf | 2 +-
- qemu_v8.mk                   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ ...able-debug-info-options-to-qemu.conf.patch | 27 +++++++++++++++++++
+ kconfigs/u-boot_qemu_v8.conf                  |  2 +-
+ qemu_v8.mk                                    |  2 +-
+ 3 files changed, 29 insertions(+), 2 deletions(-)
+ create mode 100644 0001-kconfigs-Enable-debug-info-options-to-qemu.conf.patch
 
+diff --git a/0001-kconfigs-Enable-debug-info-options-to-qemu.conf.patch b/0001-kconfigs-Enable-debug-info-options-to-qemu.conf.patch
+new file mode 100644
+index 0000000..7aa61e9
+--- /dev/null
++++ b/0001-kconfigs-Enable-debug-info-options-to-qemu.conf.patch
+@@ -0,0 +1,27 @@
++From ea058c66f2b48a61605dbf2ec8c3fce20b9ff1e6 Mon Sep 17 00:00:00 2001
++From: Masami Ichikawa <masami256@gmail.com>
++Date: Thu, 10 Jul 2025 21:09:44 +0900
++Subject: [PATCH] kconfigs: Enable debug info options to qemu.conf
++
++Enable debug info options to be able to get source line information.
++
++Signed-off-by: Masami Ichikawa <masami256@gmail.com>
++---
++ kconfigs/qemu.conf | 4 ++++
++ 1 file changed, 4 insertions(+)
++
++diff --git a/kconfigs/qemu.conf b/kconfigs/qemu.conf
++index bd1d256..d3463d5 100644
++--- a/kconfigs/qemu.conf
+++++ b/kconfigs/qemu.conf
++@@ -16,3 +16,7 @@ CONFIG_ARM_FFA_TRANSPORT=y
++ CONFIG_TCG_TPM=y
++ CONFIG_TCG_FTPM_TEE=y
++ CONFIG_IPV6=y
+++CONFIG_DEBUG_INFO=y
+++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+++CONFIG_DEBUG_INFO_REDUCED is not set
+++
++-- 
++2.43.0
++
 diff --git a/kconfigs/u-boot_qemu_v8.conf b/kconfigs/u-boot_qemu_v8.conf
 index 619879c..a532103 100644
 --- a/kconfigs/u-boot_qemu_v8.conf
@@ -21,18 +56,18 @@ index 619879c..a532103 100644
 +CONFIG_BOOTCOMMAND="setenv kernel_addr_r 0x42200000 && setenv ramdisk_addr_r 0x46000000 && load hostfs - ${kernel_addr_r} uImage && load hostfs - ${ramdisk_addr_r} rootfs.cpio.uboot &&  setenv bootargs console=ttyAMA0,115200 earlyprintk=serial,ttyAMA0,115200 nokaslr oops=panic panic_on_warn=1 panic_on_oops=1 root=/dev/ram && bootm ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr}"
  CONFIG_SEMIHOSTING=y
 diff --git a/qemu_v8.mk b/qemu_v8.mk
-index 0589fd1..b3984a6 100644
+index 9c36c8a..d2da663 100644
 --- a/qemu_v8.mk
 +++ b/qemu_v8.mk
-@@ -599,7 +599,7 @@ QEMU_BASE_ARGS += -m $(QEMU_MEM)
+@@ -676,7 +676,7 @@ ifeq ($(PLAT_QEMU),virt)
  QEMU_BASE_ARGS += -bios bl1.bin
  QEMU_BASE_ARGS += -initrd rootfs.cpio.gz
  QEMU_BASE_ARGS += -kernel Image
 -QEMU_BASE_ARGS += -append 'console=ttyAMA0,38400 keep_bootcon root=/dev/vda2 $(QEMU_KERNEL_BOOTARGS)'
 +QEMU_BASE_ARGS += -append 'console=ttyAMA0,38400 keep_bootcon nokaslr oops=panic panic_on_warn=1 panic_on_oops=1 root=/dev/vda2 $(QEMU_KERNEL_BOOTARGS)'
- QEMU_BASE_ARGS += $(QEMU_XEN)
- QEMU_BASE_ARGS += $(QEMU_EXTRA_ARGS)
  QEMU_BASE_ARGS += -machine virt,acpi=off,secure=on,mte=$(QEMU_MTE),gic-version=$(QEMU_GIC_VERSION),virtualization=$(QEMU_VIRT)
+ endif
+ QEMU_BASE_ARGS += $(QEMU_XEN)
 -- 
-2.50.1
+2.43.0
 
