@@ -22,7 +22,7 @@ git am /home/build/projects/mtcfuzz/patches/optee/optee_test/0001-host-xtest-Add
 cd ../build
 make -j$(nproc) toolchains
 make DEBUG=1 -j$(nproc)
-make run DEBUG=1 CFG_CORE_ASLR=n -j$(nproc)
+make run DEBUG=1 CFG_CORE_ASLR=n CFG_TA_ASLR=n -j$(nproc)
 ```
 
 # Build for fTPM test
