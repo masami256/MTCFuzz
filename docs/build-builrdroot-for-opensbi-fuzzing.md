@@ -9,7 +9,7 @@ git checkout fcde5363aa35220a1f201159a05de652ec6f811f
 # Apply patch
 
 ```
-git am <path/to/0001-dropbear-Allow-empty-password-login.patch>
+git am /home/build/projects/mtcfuzz/patches/optee/buildroot/0001-dropbear-Allow-empty-password-login.patch
 ```
 
 # Configuration
