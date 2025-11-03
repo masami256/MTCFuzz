@@ -1,0 +1,29 @@
+{
+    "fuzz_test_param_target": {
+        "fixed": true,
+        "value": "tpm2quote",
+        "type": "str",
+        "order": 0
+    },
+    "target": {
+        "fixed": true,
+        "value": "invalid_sessions",
+        "type": "str",
+        "order": 0
+    },
+    "invalid_sessions_tag": {
+        "fixed": false,
+        "value": "0x0",
+        "type": "hex",
+        "mutator": "custom",
+        "order": 1
+    },
+    "invalid_sessions_value": {
+        "fixed": false,
+        "type": "str",
+        "mutator": "custom",
+        "min_len": "0x0",
+        "max_len": "0xf",
+        "order": 2
+    }
+}

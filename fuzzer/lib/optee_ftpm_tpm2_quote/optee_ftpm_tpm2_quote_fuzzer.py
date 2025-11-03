@@ -148,8 +148,28 @@ class OpteeFtpmTpm2QuoteFuzzer(QemuFuzzer):
         # copy seed file to test dir
         shutil.copy(self.fuzz_input_file, self.local_test_dir)
 
+    def write_tpm2_invalid_sessions_test_parameters(self, fuzz_data: dict) -> None:
+        target = fuzz_data["target"]
+        tag = fuzz_data["invalid_sessions_tag"]
+        values = fuzz_data["invalid_sessions_value"]
+        size = len(values)
+
+        with open(self.fuzz_input_file, "w") as f:  
+            if size == 0:
+                f.write(f"{target},{tag}\n")
+            else:
+                f.write(f"{target},{tag},{values}")
+
+        # copy seed file to test dir
+        shutil.copy(self.fuzz_input_file, self.local_test_dir)
+
     def run_test(self, fuzz_data: dict) -> dict:
-        self.write_tpm2_quote_test_parameters(fuzz_data)
+        target = fuzz_data["target"]
+        if target == "qualifyingData":
+            self.write_tpm2_quote_test_parameters(fuzz_data)
+        elif target == "invalid_sessions":
+            self.write_tpm2_invalid_sessions_test_parameters(fuzz_data)
+
         args = [
             f"{self.remote_work_dir}/ftpm_fuzz",
             "--target", fuzz_data["fuzz_test_param_target"],
