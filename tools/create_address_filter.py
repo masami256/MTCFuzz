@@ -53,8 +53,12 @@ def read_target_list(filepath: str):
     with open(filepath, "r") as f:
         for line in f:
             line = line.strip()
-            if line and not line.startswith("#"):
-                targets.append(line.replace(".c", ".o"))
+            if line.endswith(".c"):
+                if line and not line.startswith("#"):
+                    targets.append(line.replace(".c", ".o"))
+            elif line.endswith(".o"):
+                if line and not line.startswith("#"):
+                    targets.append(line)
     return targets
 
 def merge_address_list(config_path: str, address_list: list, target: str,replace: bool) -> dict:
@@ -84,7 +88,7 @@ def parse_args() -> argparse.Namespace:
     base_group = parser.add_argument_group("Address filter options")
     filter_group = parser.add_argument_group("Config file options")
 
-    base_group.add_argument("--target-list", required=True, help="Target c file name(this file name convert to .o file)")
+    base_group.add_argument("--target-list", required=True, help="Target .c file names(this file name convert to .o file) or .o file names list")
     base_group.add_argument("--objdump", required=True, help="Path to objdump binary")
     base_group.add_argument("--binary", required=True, help="Binary file to analyze. for example: vmlinux")
     base_group.add_argument("--base-address", help="Base address to adjust function addresses", type=str, default="0x0")
