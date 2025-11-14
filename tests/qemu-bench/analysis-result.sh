@@ -96,10 +96,8 @@ MIN=$(head -n1 "$TMP_SORTED")
 MAX=$(tail -n1 "$TMP_SORTED")
 
 # Final summary
-echo "Directory : $LOGDIR"
-echo "Samples   : $N"
-echo "Min       : $MIN"
-echo "Max       : $MAX"
-echo "Mean      : $MEAN"
-echo "Median    : $MEDIAN"
-echo "Stddev    : $STDDEV"
+# CSV header (first line)
+echo "Samples,Min,Max,Mean,Median,Stddev"
+
+# CSV data (second line)
+echo "$N,$MIN,$MAX,$MEAN,$MEDIAN,$STDDEV"
