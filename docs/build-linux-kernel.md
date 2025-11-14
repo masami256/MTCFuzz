@@ -1,7 +1,7 @@
 # Download
 
 ```
-git clone git@github.com:torvalds/linux.git
+git clone https://github.com/torvalds/linux.git
 cd linux
 git checkout 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
 ```
