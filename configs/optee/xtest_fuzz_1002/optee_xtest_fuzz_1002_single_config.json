@@ -1,0 +1,887 @@
+{
+    "target_type": "qemu",
+    "qemu_params": {
+        "qemu_path": "/home/build/projects/srcs/qemu/build/qemu-system-aarch64",
+        "machine": "virt,acpi=off,secure=on,mte=off,gic-version=3,virtualization=false",
+        "bios": "/home/build/projects/mtcfuzz/work/bin/bl1.bin",
+        "kernel": "/home/build/projects/mtcfuzz/work/bin/Image",
+        "append": "console=ttyAMA0,115200 keep_bootcon root=/dev/vda2 nokaslr oops=panic panic_on_warn=1 panic_on_oops=1",
+        "initrd": "/home/build/projects/srcs/optee/out/bin/rootfs.cpio.uboot",
+        "smp": "2",
+        "memory": "2048",
+        "extra_serial": false
+    },
+    "ssh_params": {},
+    "fuzzing": {
+        "optee_artifact_dir": "/home/build/projects/srcs/optee/out/bin",
+        "kernel_binary": "/home/build/projects/srcs/optee/linux/vmlinux",
+        "firmware_binary": "/home/build/projects/srcs/optee/optee_os/out/arm/core/tee.elf",
+        "wait_for_qemu_seconds": 5,
+        "remote_command_exec_timeout": 10,
+        "fuzzer_module": "lib.optee.optee_fuzzer",
+        "fuzzer_class": "OpteeFuzzer",
+        "coverage_module": "lib.optee.optee_coverage",
+        "coverage_class": "OPTEECoverage",
+        "seed_manager": "lib.optee.optee_seed_manager",
+        "seed_manager_class": "OPTEESeedManager",
+        "default_energy": 50,
+        "seed_dir": "/home/build/projects/mtcfuzz/seed/optee/xtest_fuzz_1002",
+        "local_work_dir": "/home/build/projects/mtcfuzz/work",
+        "assign_energy_function": "aflfast",
+        "ignore_kernel_coverage": false,
+        "ignore_firmware_coverage": true,
+        "hostshare_9p": "/root/hostshare",
+        "tag_9p": "hostshare"
+    },
+    "address_filters": {
+        "kernel": [
+            {
+                "name": "jhash",
+                "lower": "0xffff8000810d2688",
+                "upper": "0xffff8000810d284c"
+            },
+            {
+                "name": "rht_key_get_hash.isra.0",
+                "lower": "0xffff800081050bdc",
+                "upper": "0xffff800081050c0c"
+            },
+            {
+                "name": "optee_ctx_match",
+                "lower": "0xffff800080ed1e60",
+                "upper": "0xffff800080ed1e70"
+            },
+            {
+                "name": "notif_pcpu_irq_work_fn",
+                "lower": "0xffff800080ed2b7c",
+                "upper": "0xffff800080ed2b9c"
+            },
+            {
+                "name": "tee_init",
+                "lower": "0xffff800081db3450",
+                "upper": "0xffff800081db3540"
+            },
+            {
+                "name": "match_dev",
+                "lower": "0xffff800080ecc4b8",
+                "upper": "0xffff800080ecc500"
+            },
+            {
+                "name": "tee_release_device",
+                "lower": "0xffff800080ecc60c",
+                "upper": "0xffff800080ecc69c"
+            },
+            {
+                "name": "implementation_id_show",
+                "lower": "0xffff800080ecc69c",
+                "upper": "0xffff800080ecc720"
+            },
+            {
+                "name": "tee_client_device_uevent",
+                "lower": "0xffff800080ecc7d0",
+                "upper": "0xffff800080ecc7fc"
+            },
+            {
+                "name": "tee_client_device_match",
+                "lower": "0xffff800080ecc7fc",
+                "upper": "0xffff800080ecc870"
+            },
+            {
+                "name": "tee_exit",
+                "lower": "0xffff800081dd1a24",
+                "upper": "0xffff800081dd1a6c"
+            },
+            {
+                "name": "params_from_user",
+                "lower": "0xffff800080ecced4",
+                "upper": "0xffff800080ecd090"
+            },
+            {
+                "name": "params_to_user",
+                "lower": "0xffff800080ecd090",
+                "upper": "0xffff800080ecd1fc"
+            },
+            {
+                "name": "tee_ioctl",
+                "lower": "0xffff800080ecd1fc",
+                "upper": "0xffff800080ece134"
+            },
+            {
+                "name": "teedev_open.part.0",
+                "lower": "0xffff800080ece394",
+                "upper": "0xffff800080ece428"
+            },
+            {
+                "name": "tee_open",
+                "lower": "0xffff800080ece498",
+                "upper": "0xffff800080ece534"
+            },
+            {
+                "name": "tee_release",
+                "lower": "0xffff800080ece6a4",
+                "upper": "0xffff800080ece6dc"
+            },
+            {
+                "name": "shm_put_kernel_pages",
+                "lower": "0xffff800080ece830",
+                "upper": "0xffff800080ece8e4"
+            },
+            {
+                "name": "tee_shm_fop_mmap",
+                "lower": "0xffff800080ece8e4",
+                "upper": "0xffff800080ece948"
+            },
+            {
+                "name": "register_shm_helper",
+                "lower": "0xffff800080ece948",
+                "upper": "0xffff800080ecebe8"
+            },
+            {
+                "name": "tee_shm_fop_release",
+                "lower": "0xffff800080ecede0",
+                "upper": "0xffff800080ecee04"
+            },
+            {
+                "name": "shm_alloc_helper",
+                "lower": "0xffff800080eceef0",
+                "upper": "0xffff800080eceffc"
+            },
+            {
+                "name": "pool_op_gen_destroy_pool",
+                "lower": "0xffff800080ecf4e4",
+                "upper": "0xffff800080ecf518"
+            },
+            {
+                "name": "pool_op_gen_free",
+                "lower": "0xffff800080ecf518",
+                "upper": "0xffff800080ecf550"
+            },
+            {
+                "name": "pool_op_gen_alloc",
+                "lower": "0xffff800080ecf550",
+                "upper": "0xffff800080ecf63c"
+            },
+            {
+                "name": "optee_core_init",
+                "lower": "0xffff800081db3540",
+                "upper": "0xffff800081db35a8"
+            },
+            {
+                "name": "rpmb_routing_model_show",
+                "lower": "0xffff800080ecf738",
+                "upper": "0xffff800080ecf788"
+            },
+            {
+                "name": "optee_core_exit",
+                "lower": "0xffff800081dd1a6c",
+                "upper": "0xffff800081dd1ac8"
+            },
+            {
+                "name": "optee_bus_scan",
+                "lower": "0xffff800080ecf788",
+                "upper": "0xffff800080ecf7bc"
+            },
+            {
+                "name": "optee_release_helper.constprop.0",
+                "lower": "0xffff800080ecf7bc",
+                "upper": "0xffff800080ecf868"
+            },
+            {
+                "name": "optee_cq_complete_one",
+                "lower": "0xffff800080ecfb68",
+                "upper": "0xffff800080ecfc20"
+            },
+            {
+                "name": "simple_call_with_arg",
+                "lower": "0xffff800080ed0320",
+                "upper": "0xffff800080ed03e0"
+            },
+            {
+                "name": "handle_rpc_supp_cmd",
+                "lower": "0xffff800080ed1040",
+                "upper": "0xffff800080ed1118"
+            },
+            {
+                "name": "need_supplicant_show",
+                "lower": "0xffff800080ed1e70",
+                "upper": "0xffff800080ed1e78"
+            },
+            {
+                "name": "get_devices",
+                "lower": "0xffff800080ed1e78",
+                "upper": "0xffff800080ed1f7c"
+            },
+            {
+                "name": "optee_release_device",
+                "lower": "0xffff800080ed1f7c",
+                "upper": "0xffff800080ed1f9c"
+            },
+            {
+                "name": "__optee_unregister_device",
+                "lower": "0xffff800080ed1f9c",
+                "upper": "0xffff800080ed2000"
+            },
+            {
+                "name": "optee_fill_pages_list",
+                "lower": "0xffff800080ed22f0",
+                "upper": "0xffff800080ed23b8"
+            },
+            {
+                "name": "optee_shm_unregister_supp",
+                "lower": "0xffff800080ed23b8",
+                "upper": "0xffff800080ed23c0"
+            },
+            {
+                "name": "__optee_disable_shm_cache",
+                "lower": "0xffff800080ed23c0",
+                "upper": "0xffff800080ed24c0"
+            },
+            {
+                "name": "optee_shutdown",
+                "lower": "0xffff800080ed24c0",
+                "upper": "0xffff800080ed24f0"
+            },
+            {
+                "name": "optee_enable_shm_cache",
+                "lower": "0xffff800080ed24f0",
+                "upper": "0xffff800080ed25bc"
+            },
+            {
+                "name": "pool_op_destroy_pool",
+                "lower": "0xffff800080ed25bc",
+                "upper": "0xffff800080ed25d8"
+            },
+            {
+                "name": "optee_shm_register_supp",
+                "lower": "0xffff800080ed25d8",
+                "upper": "0xffff800080ed25fc"
+            },
+            {
+                "name": "optee_get_version",
+                "lower": "0xffff800080ed25fc",
+                "upper": "0xffff800080ed264c"
+            },
+            {
+                "name": "optee_smc_open",
+                "lower": "0xffff800080ed264c",
+                "upper": "0xffff800080ed268c"
+            },
+            {
+                "name": "optee_from_msg_param",
+                "lower": "0xffff800080ed268c",
+                "upper": "0xffff800080ed2820"
+            },
+            {
+                "name": "optee_to_msg_param",
+                "lower": "0xffff800080ed2820",
+                "upper": "0xffff800080ed2980"
+            },
+            {
+                "name": "optee_smccc_smc",
+                "lower": "0xffff800080ed2980",
+                "upper": "0xffff800080ed29ac"
+            },
+            {
+                "name": "optee_smccc_hvc",
+                "lower": "0xffff800080ed29ac",
+                "upper": "0xffff800080ed29d8"
+            },
+            {
+                "name": "pool_op_free",
+                "lower": "0xffff800080ed29d8",
+                "upper": "0xffff800080ed2a1c"
+            },
+            {
+                "name": "optee_shm_unregister",
+                "lower": "0xffff800080ed2a1c",
+                "upper": "0xffff800080ed2b28"
+            },
+            {
+                "name": "optee_cpuhp_disable_pcpu_irq",
+                "lower": "0xffff800080ed2b28",
+                "upper": "0xffff800080ed2b50"
+            },
+            {
+                "name": "optee_cpuhp_enable_pcpu_irq",
+                "lower": "0xffff800080ed2b50",
+                "upper": "0xffff800080ed2b7c"
+            },
+            {
+                "name": "notif_irq_thread_fn",
+                "lower": "0xffff800080ed2b9c",
+                "upper": "0xffff800080ed2bc0"
+            },
+            {
+                "name": "irq_handler",
+                "lower": "0xffff800080ed2bc0",
+                "upper": "0xffff800080ed2c9c"
+            },
+            {
+                "name": "notif_irq_handler",
+                "lower": "0xffff800080ed2c9c",
+                "upper": "0xffff800080ed2cbc"
+            },
+            {
+                "name": "notif_pcpu_irq_handler",
+                "lower": "0xffff800080ed2cbc",
+                "upper": "0xffff800080ed2d18"
+            },
+            {
+                "name": "optee_smc_notif_uninit_irq.part.0",
+                "lower": "0xffff800080ed2d18",
+                "upper": "0xffff800080ed2dac"
+            },
+            {
+                "name": "pool_op_alloc",
+                "lower": "0xffff800080ed2dac",
+                "upper": "0xffff800080ed2df8"
+            },
+            {
+                "name": "optee_shm_register",
+                "lower": "0xffff800080ed37e0",
+                "upper": "0xffff800080ed39d4"
+            },
+            {
+                "name": "optee_probe",
+                "lower": "0xffff800080ed2df8",
+                "upper": "0xffff800080ed3770"
+            },
+            {
+                "name": "optee_smc_remove",
+                "lower": "0xffff800080ed3770",
+                "upper": "0xffff800080ed37e0"
+            },
+            {
+                "name": "optee_smc_do_call_with_arg",
+                "lower": "0xffff800080ed39d4",
+                "upper": "0xffff800080ed3ff8"
+            },
+            {
+                "name": "optee_ffa_get_version",
+                "lower": "0xffff800080ed420c",
+                "upper": "0xffff800080ed4220"
+            },
+            {
+                "name": "optee_ffa_remove",
+                "lower": "0xffff800080ed4220",
+                "upper": "0xffff800080ed428c"
+            },
+            {
+                "name": "rh_free_fn",
+                "lower": "0xffff800080ed428c",
+                "upper": "0xffff800080ed42a8"
+            },
+            {
+                "name": "pool_ffa_op_destroy_pool",
+                "lower": "0xffff800080ed42a8",
+                "upper": "0xffff800080ed42c4"
+            },
+            {
+                "name": "optee_ffa_open",
+                "lower": "0xffff800080ed42c4",
+                "upper": "0xffff800080ed42e4"
+            },
+            {
+                "name": "optee_ffa_to_msg_param",
+                "lower": "0xffff800080ed42e4",
+                "upper": "0xffff800080ed43a8"
+            },
+            {
+                "name": "pool_ffa_op_free",
+                "lower": "0xffff800080ed43a8",
+                "upper": "0xffff800080ed43d0"
+            },
+            {
+                "name": "optee_ffa_shm_unregister",
+                "lower": "0xffff800080ed5328",
+                "upper": "0xffff800080ed5438"
+            },
+            {
+                "name": "pool_ffa_op_alloc",
+                "lower": "0xffff800080ed43d0",
+                "upper": "0xffff800080ed4400"
+            },
+            {
+                "name": "optee_ffa_shm_register",
+                "lower": "0xffff800080ed54d8",
+                "upper": "0xffff800080ed5a20"
+            },
+            {
+                "name": "notif_work_fn",
+                "lower": "0xffff800080ed4400",
+                "upper": "0xffff800080ed4420"
+            },
+            {
+                "name": "notif_callback",
+                "lower": "0xffff800080ed4420",
+                "upper": "0xffff800080ed4470"
+            },
+            {
+                "name": "optee_ffa_probe",
+                "lower": "0xffff800080ed44a0",
+                "upper": "0xffff800080ed49f0"
+            },
+            {
+                "name": "optee_shm_from_ffa_handle",
+                "lower": "0xffff800080ed49f0",
+                "upper": "0xffff800080ed4b14"
+            },
+            {
+                "name": "optee_ffa_from_msg_param",
+                "lower": "0xffff800080ed4b14",
+                "upper": "0xffff800080ed4c34"
+            },
+            {
+                "name": "optee_ffa_do_call_with_arg",
+                "lower": "0xffff800080ed4c34",
+                "upper": "0xffff800080ed4f54"
+            },
+            {
+                "name": "optee_shm_rem_ffa_handle.isra.0",
+                "lower": "0xffff800080ed4f54",
+                "upper": "0xffff800080ed5328"
+            },
+            {
+                "name": "optee_ffa_shm_unregister_supp",
+                "lower": "0xffff800080ed5438",
+                "upper": "0xffff800080ed54d8"
+            },
+            {
+                "name": "tee_shm_register_user_buf",
+                "lower": "0xffff800080ecf2a0",
+                "upper": "0xffff800080ecf414"
+            },
+            {
+                "name": "tee_shm_alloc_priv_buf",
+                "lower": "0xffff800080ecf024",
+                "upper": "0xffff800080ecf04c"
+            },
+            {
+                "name": "tee_shm_alloc_user_buf",
+                "lower": "0xffff800080ecf18c",
+                "upper": "0xffff800080ecf2a0"
+            },
+            {
+                "name": "optee_rpc_cmd",
+                "lower": "0xffff800080ed124c",
+                "upper": "0xffff800080ed16e8"
+            },
+            {
+                "name": "optee_supp_send",
+                "lower": "0xffff800080ed1cb4",
+                "upper": "0xffff800080ed1e60"
+            },
+            {
+                "name": "optee_shm_arg_cache_uninit",
+                "lower": "0xffff800080ecff5c",
+                "upper": "0xffff800080ecfffc"
+            },
+            {
+                "name": "optee_cq_init",
+                "lower": "0xffff800080ecfc20",
+                "upper": "0xffff800080ecfc6c"
+            },
+            {
+                "name": "optee_remove_common",
+                "lower": "0xffff800080ecfae0",
+                "upper": "0xffff800080ecfb64"
+            },
+            {
+                "name": "teedev_ctx_put",
+                "lower": "0xffff800080ece1b8",
+                "upper": "0xffff800080ece270"
+            },
+            {
+                "name": "optee_ffa_abi_unregister",
+                "lower": "0xffff800080ed5a50",
+                "upper": "0xffff800080ed5a74"
+            },
+            {
+                "name": "tee_shm_get_pa",
+                "lower": "0xffff800080ece7b0",
+                "upper": "0xffff800080ece7e0"
+            },
+            {
+                "name": "teedev_close_context",
+                "lower": "0xffff800080ece300",
+                "upper": "0xffff800080ece330"
+            },
+            {
+                "name": "optee_smc_abi_register",
+                "lower": "0xffff800080ed3ff8",
+                "upper": "0xffff800080ed4020"
+            },
+            {
+                "name": "optee_rpmb_intf_rdev",
+                "lower": "0xffff800080ecf8d0",
+                "upper": "0xffff800080ecf900"
+            },
+            {
+                "name": "tee_client_open_session",
+                "lower": "0xffff800080ecc52c",
+                "upper": "0xffff800080ecc564"
+            },
+            {
+                "name": "optee_cq_wait_final",
+                "lower": "0xffff800080ecfe74",
+                "upper": "0xffff800080ecff0c"
+            },
+            {
+                "name": "tee_shm_put",
+                "lower": "0xffff800080ecec6c",
+                "upper": "0xffff800080ecede0"
+            },
+            {
+                "name": "tee_client_system_session",
+                "lower": "0xffff800080ecc59c",
+                "upper": "0xffff800080ecc5d4"
+            },
+            {
+                "name": "optee_close_session_helper",
+                "lower": "0xffff800080ed04d0",
+                "upper": "0xffff800080ed05e4"
+            },
+            {
+                "name": "tee_device_alloc",
+                "lower": "0xffff800080eccaf0",
+                "upper": "0xffff800080ecced4"
+            },
+            {
+                "name": "optee_rpc_cmd_alloc_suppl",
+                "lower": "0xffff800080ed1118",
+                "upper": "0xffff800080ed11d0"
+            },
+            {
+                "name": "optee_msg_arg_size",
+                "lower": "0xffff800080ecfffc",
+                "upper": "0xffff800080ed0014"
+            },
+            {
+                "name": "tee_session_calc_client_uuid",
+                "lower": "0xffff800080ecc870",
+                "upper": "0xffff800080eccaf0"
+            },
+            {
+                "name": "optee_cq_wait_init",
+                "lower": "0xffff800080ecfc6c",
+                "upper": "0xffff800080ecfdfc"
+            },
+            {
+                "name": "tee_shm_get_fd",
+                "lower": "0xffff800080ecf414",
+                "upper": "0xffff800080ecf4e4"
+            },
+            {
+                "name": "tee_device_put",
+                "lower": "0xffff800080ece270",
+                "upper": "0xffff800080ece300"
+            },
+            {
+                "name": "tee_client_open_context",
+                "lower": "0xffff800080ece534",
+                "upper": "0xffff800080ece674"
+            },
+            {
+                "name": "optee_stop_async_notif",
+                "lower": "0xffff800080ed0d1c",
+                "upper": "0xffff800080ed0d3c"
+            },
+            {
+                "name": "tee_client_invoke_func",
+                "lower": "0xffff800080ecc5d4",
+                "upper": "0xffff800080ecc60c"
+            },
+            {
+                "name": "tee_shm_get_va",
+                "lower": "0xffff800080ece788",
+                "upper": "0xffff800080ece7b0"
+            },
+            {
+                "name": "tee_shm_get_from_id",
+                "lower": "0xffff800080ecee20",
+                "upper": "0xffff800080eceef0"
+            },
+            {
+                "name": "optee_supp_thrd_req",
+                "lower": "0xffff800080ed18ac",
+                "upper": "0xffff800080ed1a20"
+            },
+            {
+                "name": "optee_get_msg_arg",
+                "lower": "0xffff800080ed0014",
+                "upper": "0xffff800080ed0230"
+            },
+            {
+                "name": "optee_invoke_func",
+                "lower": "0xffff800080ed08e8",
+                "upper": "0xffff800080ed0ab4"
+            },
+            {
+                "name": "optee_unregister_devices",
+                "lower": "0xffff800080ed22bc",
+                "upper": "0xffff800080ed22f0"
+            },
+            {
+                "name": "optee_open_session",
+                "lower": "0xffff800080ed06a4",
+                "upper": "0xffff800080ed08e8"
+            },
+            {
+                "name": "optee_enumerate_devices",
+                "lower": "0xffff800080ed2000",
+                "upper": "0xffff800080ed22bc"
+            },
+            {
+                "name": "optee_release_supp",
+                "lower": "0xffff800080ecfaa0",
+                "upper": "0xffff800080ecfae0"
+            },
+            {
+                "name": "optee_supp_init",
+                "lower": "0xffff800080ed16e8",
+                "upper": "0xffff800080ed1770"
+            },
+            {
+                "name": "optee_system_session",
+                "lower": "0xffff800080ed03e0",
+                "upper": "0xffff800080ed04d0"
+            },
+            {
+                "name": "optee_bus_scan_rpmb",
+                "lower": "0xffff800080ecf868",
+                "upper": "0xffff800080ecf8d0"
+            },
+            {
+                "name": "tee_shm_register_kernel_buf",
+                "lower": "0xffff800080ecebe8",
+                "upper": "0xffff800080ecec6c"
+            },
+            {
+                "name": "optee_notif_send",
+                "lower": "0xffff800080ed0ef0",
+                "upper": "0xffff800080ed0fc0"
+            },
+            {
+                "name": "tee_shm_pool_alloc_res_mem",
+                "lower": "0xffff800080ecf63c",
+                "upper": "0xffff800080ecf738"
+            },
+            {
+                "name": "tee_client_cancel_req",
+                "lower": "0xffff800080ece748",
+                "upper": "0xffff800080ece788"
+            },
+            {
+                "name": "tee_dyn_shm_free_helper",
+                "lower": "0xffff800080ece7e0",
+                "upper": "0xffff800080ece830"
+            },
+            {
+                "name": "tee_get_drvdata",
+                "lower": "0xffff800080ecc4b0",
+                "upper": "0xffff800080ecc4b8"
+            },
+            {
+                "name": "teedev_open",
+                "lower": "0xffff800080ece428",
+                "upper": "0xffff800080ece498"
+            },
+            {
+                "name": "tee_client_get_version",
+                "lower": "0xffff800080ecc500",
+                "upper": "0xffff800080ecc52c"
+            },
+            {
+                "name": "tee_device_get",
+                "lower": "0xffff800080ece6dc",
+                "upper": "0xffff800080ece748"
+            },
+            {
+                "name": "tee_device_set_dev_groups",
+                "lower": "0xffff800080ecc4a8",
+                "upper": "0xffff800080ecc4b0"
+            },
+            {
+                "name": "optee_notif_wait",
+                "lower": "0xffff800080ed0d3c",
+                "upper": "0xffff800080ed0ef0"
+            },
+            {
+                "name": "tee_client_close_session",
+                "lower": "0xffff800080ecc564",
+                "upper": "0xffff800080ecc59c"
+            },
+            {
+                "name": "optee_notif_uninit",
+                "lower": "0xffff800080ed101c",
+                "upper": "0xffff800080ed103c"
+            },
+            {
+                "name": "optee_smc_abi_unregister",
+                "lower": "0xffff800080ed4020",
+                "upper": "0xffff800080ed4044"
+            },
+            {
+                "name": "tee_dyn_shm_alloc_helper",
+                "lower": "0xffff800080ecf04c",
+                "upper": "0xffff800080ecf18c"
+            },
+            {
+                "name": "optee_rpc_cmd_free_suppl",
+                "lower": "0xffff800080ed11d0",
+                "upper": "0xffff800080ed124c"
+            },
+            {
+                "name": "tee_client_close_context",
+                "lower": "0xffff800080ece674",
+                "upper": "0xffff800080ece6a4"
+            },
+            {
+                "name": "optee_ffa_abi_register",
+                "lower": "0xffff800080ed5a20",
+                "upper": "0xffff800080ed5a50"
+            },
+            {
+                "name": "optee_set_dev_group",
+                "lower": "0xffff800080ecf900",
+                "upper": "0xffff800080ecf944"
+            },
+            {
+                "name": "optee_supp_release",
+                "lower": "0xffff800080ed1790",
+                "upper": "0xffff800080ed18ac"
+            },
+            {
+                "name": "optee_supp_uninit",
+                "lower": "0xffff800080ed1770",
+                "upper": "0xffff800080ed1790"
+            },
+            {
+                "name": "tee_device_register",
+                "lower": "0xffff800080ecc720",
+                "upper": "0xffff800080ecc7d0"
+            },
+            {
+                "name": "optee_close_session",
+                "lower": "0xffff800080ed05e4",
+                "upper": "0xffff800080ed06a4"
+            },
+            {
+                "name": "optee_do_bottom_half",
+                "lower": "0xffff800080ed0cfc",
+                "upper": "0xffff800080ed0d1c"
+            },
+            {
+                "name": "optee_notif_init",
+                "lower": "0xffff800080ed0fc0",
+                "upper": "0xffff800080ed101c"
+            },
+            {
+                "name": "optee_shm_arg_cache_init",
+                "lower": "0xffff800080ecff0c",
+                "upper": "0xffff800080ecff5c"
+            },
+            {
+                "name": "optee_cancel_req",
+                "lower": "0xffff800080ed0ab4",
+                "upper": "0xffff800080ed0be0"
+            },
+            {
+                "name": "optee_open",
+                "lower": "0xffff800080ecf944",
+                "upper": "0xffff800080ecfa84"
+            },
+            {
+                "name": "optee_check_mem_type",
+                "lower": "0xffff800080ed0be0",
+                "upper": "0xffff800080ed0cfc"
+            },
+            {
+                "name": "optee_release",
+                "lower": "0xffff800080ecfa84",
+                "upper": "0xffff800080ecfaa0"
+            },
+            {
+                "name": "optee_free_msg_arg",
+                "lower": "0xffff800080ed0230",
+                "upper": "0xffff800080ed0320"
+            },
+            {
+                "name": "teedev_ctx_get",
+                "lower": "0xffff800080ece134",
+                "upper": "0xffff800080ece1b8"
+            },
+            {
+                "name": "optee_supp_recv",
+                "lower": "0xffff800080ed1a20",
+                "upper": "0xffff800080ed1cb4"
+            },
+            {
+                "name": "tee_shm_free",
+                "lower": "0xffff800080ecee04",
+                "upper": "0xffff800080ecee20"
+            },
+            {
+                "name": "tee_shm_alloc_kernel_buf",
+                "lower": "0xffff800080eceffc",
+                "upper": "0xffff800080ecf024"
+            },
+            {
+                "name": "optee_cq_wait_for_completion",
+                "lower": "0xffff800080ecfdfc",
+                "upper": "0xffff800080ecfe74"
+            },
+            {
+                "name": "tee_device_unregister",
+                "lower": "0xffff800080ece330",
+                "upper": "0xffff800080ece394"
+            }
+        ],
+        "firmware": [
+            {
+                "lower": "0xe1118c4",
+                "upper": "0xe111d24"
+            },
+            {
+                "lower": "0xe111308",
+                "upper": "0xe11187c"
+            },
+            {
+                "lower": "0xe1101a4",
+                "upper": "0xe1111ec"
+            },
+            {
+                "lower": "0xe10e7cc",
+                "upper": "0xe10f70c"
+            },
+            {
+                "lower": "0xe1144f8",
+                "upper": "0xe11572c"
+            },
+            {
+                "lower": "0xe1123cc",
+                "upper": "0xe11429c"
+            },
+            {
+                "lower": "0xe187728",
+                "upper": "0xe18831c"
+            },
+            {
+                "lower": "0xe17b9dc",
+                "upper": "0xe17bca0"
+            },
+            {
+                "lower": "0xe177948",
+                "upper": "0xe177d40"
+            },
+            {
+                "lower": "0xe179d00",
+                "upper": "0xe17a09c"
+            },
+            {
+                "lower": "0xe17e4d8",
+                "upper": "0xe17f808"
+            }
+        ]
+    },
+    "debug": true
+}

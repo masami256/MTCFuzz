@@ -1,0 +1,112 @@
+From 946c5be77dc7b712641b51d837a270e1905ca1bf Mon Sep 17 00:00:00 2001
+From: Masami Ichikawa <masami256@gmail.com>
+Date: Sat, 15 Nov 2025 12:59:39 +0900
+Subject: [PATCH] Add fuzz test case 1002 for shared memory operations
+
+Add fuzz test case 1002 for shared memory operations which based on
+xtest_tee_test_1017.
+---
+ host/xtest/fuzz_test.c | 82 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+
+diff --git a/host/xtest/fuzz_test.c b/host/xtest/fuzz_test.c
+index 6df0dc613634..4fc523f945ff 100644
+--- a/host/xtest/fuzz_test.c
++++ b/host/xtest/fuzz_test.c
+@@ -20,6 +20,7 @@
+ #include "xtest_helpers.h"
+ #include "xtest_uuid_helpers.h"
+ #include "ta_crypt.h"
++#include <ta_os_test.h>
+ 
+ struct xtest_crypto_session {
+ 	ADBG_Case_t *c;
+@@ -213,3 +214,84 @@ static void xtest_fuzz_test_1001(ADBG_Case_t *c)
+ 
+ ADBG_CASE_DEFINE(fuzz, 1001, xtest_fuzz_test_1001,
+ 		 "fuzzing crypto input");
++
++// based on xtest_tee_test_1017
++static void xtest_fuzz_test_1002(ADBG_Case_t *c)
++{
++	size_t num_pages = 0;
++	size_t offset0 = 0;
++	size_t offset2 = 0;
++	size_t offset3 = 0;
++
++	print_func_address();
++	if (read_base_address())
++		return ;
++
++	FILE *fp = fopen("/root/hostshare/fuzz_input.txt", "r");
++	if (!fp) {
++		Do_ADBG_Log("Failed to open fuzz_input.txt");
++		return;
++	}
++
++	if (fscanf(fp, "%x,%x,%x,%x", &num_pages, &offset0, &offset2, &offset3) != 2) {
++		Do_ADBG_Log("Failed to read fuzz_input.txt");
++		fclose(fp);
++		return;
++	}
++
++	fclose(fp);
++
++	TEEC_Session session = { };
++	TEEC_Operation op = TEEC_OPERATION_INITIALIZER;
++	uint32_t ret_orig = 0;
++	TEEC_SharedMemory shm = { };
++	size_t page_size = 4096;
++
++	shm.size = num_pages * page_size;
++	shm.flags = TEEC_MEM_INPUT | TEEC_MEM_OUTPUT;
++	if (!ADBG_EXPECT_TEEC_SUCCESS(c,
++		TEEC_AllocateSharedMemory(&xtest_teec_ctx, &shm)))
++		return;
++
++	if (!ADBG_EXPECT_TEEC_SUCCESS(c,
++		xtest_teec_open_session(&session, &os_test_ta_uuid, NULL,
++		                        &ret_orig)))
++		goto out;
++
++	op.paramTypes = TEEC_PARAM_TYPES(TEEC_MEMREF_PARTIAL_INPUT,
++					 TEEC_MEMREF_PARTIAL_INPUT,
++					 TEEC_MEMREF_PARTIAL_OUTPUT,
++					 TEEC_MEMREF_PARTIAL_OUTPUT);
++
++	/*
++	 * The first two memrefs are supposed to be combined into in
++	 * region and the last two memrefs should have one region each
++	 * when the parameters are mapped for the TA.
++	 */
++	op.params[0].memref.parent = &shm;
++	op.params[0].memref.size = page_size;
++	op.params[0].memref.offset = offset0;
++
++	op.params[1].memref.parent = &shm;
++	op.params[1].memref.size = page_size;
++	op.params[1].memref.offset = page_size;
++
++	op.params[2].memref.parent = &shm;
++	op.params[2].memref.size = page_size;
++	op.params[2].memref.offset = offset2 * page_size;
++
++	op.params[3].memref.parent = &shm;
++	op.params[3].memref.size = 2 * page_size;
++	op.params[3].memref.offset = offset3 * page_size;
++
++	(void)ADBG_EXPECT_TEEC_SUCCESS(c,
++		TEEC_InvokeCommand(&session, TA_OS_TEST_CMD_PARAMS, &op,
++				   &ret_orig));
++
++	TEEC_CloseSession(&session);
++out:
++	TEEC_ReleaseSharedMemory(&shm);
++}
++
++ADBG_CASE_DEFINE(fuzz, 1002, xtest_fuzz_test_1002,
++		 "fuzzing shared memory");
+\ No newline at end of file
+-- 
+2.51.1
+

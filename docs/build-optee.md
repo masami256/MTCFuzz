@@ -18,6 +18,7 @@ cd ../optee_test
 git am /home/build/projects/mtcfuzz/patches/optee/optee_test/0001-add-test.patch
 git am /home/build/projects/mtcfuzz/patches/optee/optee_test/0001-Add-xtest-fuzz-1001.patch
 git am /home/build/projects/mtcfuzz/patches/optee/optee_test/0001-host-xtest-Add-debug-support-function.patch
+git am /home/build/projects/mtcfuzz/patches/optee/optee_test/0001-Add-fuzz-test-case-1002-for-shared-memory-operations.patch
 
 cd ../build
 make -j$(nproc) toolchains
@@ -26,12 +27,6 @@ make run DEBUG=1 CFG_CORE_ASLR=n CFG_TA_ASLR=n -j$(nproc)
 ```
 
 # Build for fTPM test
-
-Goto build directory then apply following patch before build.
-
-```
-git am /home/build/projects/mtcfuzz/patches/optee/ftpm/0001-Enable-Linux-IMA-feature.patch
-```
 
 Build with higher log level.
 

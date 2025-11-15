@@ -37,7 +37,10 @@ def run_addr2line(addresses, addr_count_map, config):
     results = []
 
     for target in config:
-        if not "elf" in config[target]:
+        try:
+            if not "elf" in config[target]:
+                continue
+        except TypeError:
             continue
 
         target_addresses = []

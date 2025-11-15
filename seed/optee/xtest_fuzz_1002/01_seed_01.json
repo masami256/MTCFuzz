@@ -1,0 +1,32 @@
+{
+    "xtest_number": {
+        "fixed": true,
+        "value": 1002,
+        "type": "integer",
+        "order": 0
+    },
+    "num_pages": {
+        "fixed": false,
+        "value": "0x1",
+        "type": "hex",
+        "order": 1
+    },
+    "offset0": {
+        "fixed": false,
+        "value": "0x0",
+        "type": "hex",
+        "order": 2
+    },
+    "offset2": {
+        "fixed": false,
+        "value": "0x2",
+        "type": "hex",
+        "order": 3
+    },
+    "offset3": {
+        "fixed": false,
+        "value": "0x4",
+        "type": "hex",
+        "order": 2
+    }
+}
