@@ -1,0 +1,12 @@
+addr2line:
+  binary: /home/build/projects/srcs/optee/toolchains/aarch64/bin/aarch64-none-linux-gnu-addr2line
+linux:
+  elf: /home/build/projects/srcs/optee/linux/vmlinux 
+  min_addr: 0xffff800000000000
+  max_addr: 0xffffffffffffffff
+  base_addr: 0x0
+optee_os:
+  elf: /home/build/projects/srcs/optee/optee_os/out/arm/core/tee.elf
+  min_addr: 0xe100000
+  max_addr: 0xe300000
+  base_addr: 0x0
