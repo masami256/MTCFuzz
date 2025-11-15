@@ -104,7 +104,7 @@ cd /mnt
 Then run test.
 
 ```
-./run-tests normal
+./run-test normal
 ```
 
 ## test on customized qemu

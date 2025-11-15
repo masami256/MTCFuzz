@@ -22,7 +22,7 @@ for i in $(seq 1 30);
 do
     echo "[+]loop ${i}:Running process test"
     filename="${logdir}/process/test_${i}_${target}_${process}.txt"
-    hackbench -l 1200 -g 10 --process 2>&1 >"${filename}"
+    hackbench -l 600 -g 10 --process 2>&1 >"${filename}"
 done
 
 echo "[+]Finish process test"
@@ -32,7 +32,7 @@ for i in $(seq 1 30);
 do
     echo "[+]loop ${i}:Running thread test"
     filename="${logdir}/thread/test_${i}_${target}_${thread}.txt"
-    hackbench -l 1200 -g 10 --thread 2>&1 >"${filename}"
+    hackbench -l 600 -g 10 --thread 2>&1 >"${filename}"
 done
 echo "[+]Finish thread test"
 
