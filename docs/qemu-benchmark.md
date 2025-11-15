@@ -132,6 +132,6 @@ Start logging from another terminal.
 Then run test.
 
 ```
-./run-tests custom
+./run-test.sh custom
 ```
 
