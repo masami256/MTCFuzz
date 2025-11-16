@@ -2,11 +2,11 @@ addr2line:
   binary: /usr/bin/riscv64-linux-gnu-addr2line
 linux:
   elf: /home/build/projects/srcs/linux/vmlinux
-  min_addr: 0xffffffff8001a512
-  max_addr: 0xffffffff8001b732
+  min_addr: 0xffff800000000000
+  max_addr: 0xffffffffffffffff
   base_addr: 0x0
 opensbi:
   elf: /home/build/projects/srcs/opensbi/build/platform/generic/firmware/fw_jump.elf
   min_addr: 0x80000000
   max_addr: 0x80050000
-  base_addr: 0x0
+  base_addr: 0x80000000
