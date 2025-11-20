@@ -1,11 +1,14 @@
 # AFLFast like power scheduler
 import logging
+import math
+
 logger = logging.getLogger("mtcfuzz")
 
 class PowerScheduler:
     def __init__(self, assing_energy_function: str, *, beta: float = 1, M: float = 100) -> None:
         self.beta = beta
         self.M = M
+        self.MAX_SI = 256 # Maximum value for s(i)
 
         if assing_energy_function == "aflfast":
             self.assing_enrgy_function = self.assign_energy_aflfast
@@ -45,7 +48,8 @@ class PowerScheduler:
 
     def assign_energy_aflfast(self, seed: dict, total_tested_count: int, total_elapsed_us: int) -> float:
         # s(i)
-        si = max(seed.get("total_tested_count", 0), 1)
+        si_raw = max(seed.get("total_tested_count", 0), 1)
+        si = min(si_raw, self.MAX_SI)
         # f(i)
         fi = max(seed.get("total_same_coverage_count", 0), 1)
 
@@ -54,9 +58,24 @@ class PowerScheduler:
         # α(i)
         alpha = self.calculate_alpha(seed, total_tested_count, total_elapsed_us)
 
-        e = (alpha / self.beta) * (2 ** si / fi)
-        logger.info(f"Calculated energy for seed {seed['id']}: {e} (α: {alpha}, β: {self.beta}, s(i): {si}, f(i): {fi})")
-        return min(e, self.M)
+        log_e = (
+            math.log(alpha)
+            - math.log(self.beta)
+            + si * math.log(2.0)
+            - math.log(fi)
+        )
+        log_M = math.log(self.M)
+
+        if log_e >= log_M:
+            e = self.M
+        else:
+            e = math.exp(log_e)
+
+        logger.info(
+            f"Calculated energy for seed {seed['id']}: {e} (α: {alpha}, β: {self.beta}, "
+            f"s(i): {si}, f(i): {fi}, log_e: {log_e:.3f})"
+        )
+        return e
 
     def assign_energy_simple(self, seed: dict, total_tested_count: int, total_elapsed_us: int) -> float:
         return self.M
