@@ -51,7 +51,7 @@ for i in $(seq 1 $num_tests); do
     timeout "${fuzzing_execution_time}" ./main.py --config "${config}" || true
     echo "end: $(date)" > "${workdir}/test_${test_num}_end_time.txt"
 
-    cp -a "${workdir}" "${current_test_result_dir}/test_${test_num}_work_dir"
+    cp -a "${workdir}" "${current_test_result_dir}/test_${test_num}_work_dir" || true
     echo "work directory(${workdir}) was copied to ${current_test_result_dir}/test_${test_num}_work_dir"
 done
 
