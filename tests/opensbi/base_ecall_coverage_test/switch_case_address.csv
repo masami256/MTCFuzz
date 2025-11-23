@@ -1,0 +1,8 @@
+Address, Function, Path, Line
+0x8000a6da,sbi_ecall_base_handler,/home/build/projects/srcs/opensbi/lib/sbi/sbi_ecall_base.c,43
+0x8000a6e4,sbi_ecall_base_handler,/home/build/projects/srcs/opensbi/lib/sbi/sbi_ecall_base.c,50
+0x8000a6f0,sbi_ecall_base_handler,/home/build/projects/srcs/opensbi/lib/sbi/sbi_ecall_base.c,53
+0x8000a71e,sbi_ecall_base_handler,/home/build/projects/srcs/opensbi/lib/sbi/sbi_ecall_base.c,56
+0x8000a6be,sbi_ecall_base_handler,/home/build/projects/srcs/opensbi/lib/sbi/sbi_ecall_base.c,59
+0x8000a6d0,sbi_ecall_base_handler,/home/build/projects/srcs/opensbi/lib/sbi/sbi_ecall_base.c,62
+0x8000a704,sbi_ecall_base_probe,/home/build/projects/srcs/opensbi/lib/sbi/sbi_ecall_base.c,23

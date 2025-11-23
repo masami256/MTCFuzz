@@ -1,0 +1,7 @@
+profile:hz:99 /pid == $1/ {
+  @[ustack] = count();
+}
+
+END {
+  print(@);
+}
