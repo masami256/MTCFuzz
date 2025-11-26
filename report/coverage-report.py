@@ -5,7 +5,7 @@ import argparse
 import json
 import glob
 import os
-import pprint
+from bisect import bisect_right
 
 def read_json(file_path):
     with open(file_path, 'r') as file:
@@ -38,6 +38,24 @@ def parse_args():
         args.sort_by_address = True  # Default to sorting by address if no sort option is specified
     return args
 
+def create_merged_filter(check_kernel_coverage, check_firmware_coverage, address_filters):
+    result = []
+    
+    if check_kernel_coverage:
+        for data in address_filters["kernel"]:
+            lower = int(data["lower"], 16)
+            upper = int(data["upper"], 16)
+            result.append([lower, upper])
+    
+    if check_firmware_coverage:
+        for data in address_filters["firmware"]:
+            lower = int(data["lower"], 16)
+            upper = int(data["upper"], 16)
+            result.append([lower, upper])
+
+    result.sort(key=lambda x: x[0])
+    return result
+
 def main():
     args = parse_args()
     config = read_json(args.config_json)
@@ -48,47 +66,38 @@ def main():
         print("No trace log files found.")
         return
     
-    filters = config["address_filters"]
-
     addresses = {}
+
+    filters = create_merged_filter(args.check_kernel_coverage, args.check_firmware_coverage, config["address_filters"])
+
+    starts = [pair[0] for pair in filters]
+
+    def addr_in_filters(addr, filters, starts):
+        idx = bisect_right(starts, addr) - 1
+        if idx < 0:
+            return False
+        lower, upper = filters[idx]
+        return lower <= addr <= upper
+
 
     for trace_log in trace_log_files:
         with open(trace_log, "r") as f:
             for line in f:
-                pc_found = False
                 addr_s = line.strip()
+
+                if addr_s in addresses:
+                    addresses[addr_s] += 1
+                    continue
+
                 try:
                     addr = int(addr_s, 16)
-                except Exception as e:
-                    # print(f"trace_log: {trace_log} , addr_s: {addr_s}")
+                except Exception:
                     continue
-                
-                if args.check_kernel_coverage:
-                    for kernel_range in filters["kernel"]:
-                        lower = int(kernel_range["lower"], 16)
-                        upper = int(kernel_range["upper"], 16)
 
-                        if lower <= addr <= upper:
-                            pc_found = True
-                            if addr_s not in addresses:
-                                addresses[addr_s] = 1
-                            else:
-                                addresses[addr_s] += 1
-                            break
-                        
-                if not pc_found and args.check_firmware_coverage:
-                    for firmware_range in filters["firmware"]:
-                        lower = int(firmware_range["lower"], 16)
-                        upper = int(firmware_range["upper"], 16)
-                        if lower <= addr <= upper:
-                            pc_found = True
-                            if addr_s not in addresses:
-                                addresses[addr_s] = 1
-                            else:
-                                addresses[addr_s] += 1
-                            break
+                if addr_in_filters(addr, filters, starts):
+                    addresses[addr_s] = 1
 
-    address_items = list(addresses.items())
+    address_items =list(addresses.items())
     if args.sort_by_count:
         address_items.sort(key=lambda x: x[1], reverse=True)
     elif args.sort_by_address:
