@@ -1,25 +1,22 @@
+from collections import defaultdict
+
 class CoverageManager:
     def __init__(self) -> None:
-        self.cover_a = {} 
-        self.cover_b = {}
+        self.cover_a: dict[int, int] = defaultdict(int)
+        self.cover_b: dict[int, int] = defaultdict(int)
         self.cover_hashes = {}
 
     def merge_coverage(self, coverages: tuple[dict, dict]) -> None:
         """
         Merge new coverage dictionaries into global coverage maps.
         """
-        new_coverage_a = coverages[0]
-        new_coverage_b = coverages[1]
+        new_coverage_a, new_coverage_b = coverages
 
-        def merge(target, new_data):
-            for pc, count in new_data.items():
-                if pc not in target:
-                    target[pc] = count
-                else:
-                    target[pc] += count
+        for pc, count in new_coverage_a.items():
+            self.cover_a[pc] += count
 
-        merge(self.cover_a, new_coverage_a)
-        merge(self.cover_b, new_coverage_b)
+        for pc, count in new_coverage_b.items():
+            self.cover_b[pc] += count
 
     def update_coverage_hash(self, seed_id: str, coverage_hash: str) -> None:
         """
