@@ -90,3 +90,10 @@ For each coverage.
 ```
 ./report/create_coverage_result_html_by_each_test.sh ./test_results/compare_each/ 50
 ```
+
+#### Analyze switch case coverage cover rate 
+
+
+```
+./report/analysis_coverage.py --result-dir ./test_results/compare_each/ --address-map-csv ./tests/opensbi/base_ecall_coverage_test/switch_case_address.csv 
+```
