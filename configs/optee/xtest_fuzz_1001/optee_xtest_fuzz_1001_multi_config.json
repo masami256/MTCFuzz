@@ -37,54 +37,14 @@
     "address_filters": {
         "kernel": [
             {
-                "lower": "0xffff800080ecf788",
-                "upper": "0xffff800080ed5a50"
+                "lower": "0xffff800000000000",
+                "upper": "0xffffffffffffffff"
             }
         ],
         "firmware": [
             {
-                "lower": "0xe1118c4",
-                "upper": "0xe111d24"
-            },
-            {
-                "lower": "0xe111308",
-                "upper": "0xe11187c"
-            },
-            {
-                "lower": "0xe1101a4",
-                "upper": "0xe1111ec"
-            },
-            {
-                "lower": "0xe10e7cc",
-                "upper": "0xe10f70c"
-            },
-            {
-                "lower": "0xe1144f8",
-                "upper": "0xe11572c"
-            },
-            {
-                "lower": "0xe1123cc",
-                "upper": "0xe11429c"
-            },
-            {
-                "lower": "0xe187728",
-                "upper": "0xe18831c"
-            },
-            {
-                "lower": "0xe17b9dc",
-                "upper": "0xe17bca0"
-            },            
-            {
-                "lower": "0xe177948",
-                "upper": "0xe177d40"
-            },
-            {
-                "lower": "0xe179d00",
-                "upper": "0xe17a09c"
-            },
-            {
-                "lower": "0xe17e4d8",
-                "upper": "0xe17f808"
+                "lower": "0xe100000",
+                "upper": "0xe300000"
             }
         ]
     },
