@@ -135,3 +135,12 @@ Then run test.
 ./run-test.sh custom
 ```
 
+# Using bpftrace
+
+On your host, use following commands. To create svg file, you need to checkout FlameGraph tools from https://github.com/brendangregg/FlameGraph.git .
+
+```
+sudo bpftrace ./qemu_on_cpu.bt <pid> -o on_cpu_log.txt
+tail -n +2 on_cpu_analysis.csv | awk -F',' '{print $2 " " $1}' > oncpu.folded
+FlameGraph/flamegraph.pl ./oncpu.folded > oncpu.folded.svg
+```
