@@ -10,3 +10,8 @@ services:
       - $HOME/projects:/home/build/projects:rw
     privileged: true
     user: build
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "1.0"
+    # cpuset: "8"
