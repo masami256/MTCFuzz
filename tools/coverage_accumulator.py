@@ -84,7 +84,7 @@ def read_qemu_trace_log(filename: Path) -> list[str]:
         return f.readlines()
 
 
-def create_merged_filter(config: dict) -> list[tuple[int, int]]:
+def create_merged_filter(config: dict, target_filter) -> list[tuple[int, int]]:
     """
     Create a merged filter list from config["address_filters"]["kernel"/"firmware"].
     NOTE: This function assumes the final list is non-overlapping after sort.
@@ -93,7 +93,18 @@ def create_merged_filter(config: dict) -> list[tuple[int, int]]:
     result: list[tuple[int, int]] = []
 
     address_filters = config["address_filters"]
-    for group in ("kernel", "firmware"):
+    targets = None
+    if target_filter == "all":
+        filters = ["kernel", "firmware"]
+    elif target_filter == "kernel":
+        filters = ["kernel"]
+    elif target_filter == "firmware":
+        filters = ["firmware"]
+    else:
+        print(f"Unknown filter type {target_filter}")
+        exit(1)
+
+    for group in filters:
         for data in address_filters[group]:
             lower = int(data["lower"], 16)
             upper = int(data["upper"], 16)
@@ -117,7 +128,7 @@ def main(args: argparse.Namespace) -> None:
 
     config = read_config(args.config)
 
-    filters = create_merged_filter(config)
+    filters = create_merged_filter(config, args.target_filter)
     starts = [lower for (lower, _) in filters]
 
     base_dir = Path(os.path.abspath(args.result_dir))
@@ -136,6 +147,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", required=True, help="Config JSON file")
     parser.add_argument("--result-dir", required=True, help="Path to test result directory")
     parser.add_argument("--output", required=True, help="Output CSV file name")
+    parser.add_argument("--target-filter", default="all", help="all/kernel/firmware")
     return parser.parse_args()
 
 
