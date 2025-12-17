@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 import os
 from pathlib import Path
 import argparse
@@ -7,96 +7,137 @@ from bisect import bisect_right
 
 QEMU_TRACE_LOG_FILE = "qemu_trace_log.log"
 
-def write_csv(output_filename, coverages):
-    t = 0
+
+def write_csv(output_filename: str, coverages: dict[int, dict]) -> None:
+    """
+    Write CSV lines: test_no,new_count,cumulative_count
+    """
+    cumulative = 0
     with open(output_filename, "w") as f:
-        for test_no in coverages:
+        for test_no in sorted(coverages):
             d = coverages[test_no]
-            t += d['new_count']
-            f.write(f"{d['test_no']},{d['new_count']},{t}\n")
+            cumulative += d["new_count"]
+            f.write(f"{d['test_no']},{d['new_count']},{cumulative}\n")
 
 
-def apply_filter(trace_logs, filters, coverages, test_no):
-    starts = [pair[0] for pair in filters]
+def addr_in_filters(addr: int, filters: list[tuple[int, int]], starts: list[int]) -> bool:
+    """
+    Return True if addr is inside any non-overlapping, sorted [lower, upper] ranges.
+    Assumption: filters are merged (non-overlapping) and sorted by lower bound.
+    """
+    idx = bisect_right(starts, addr) - 1
+    if idx < 0:
+        return False
+    lower, upper = filters[idx]
+    return lower <= addr <= upper
 
-    def addr_in_filters(addr, filters, starts):
-        idx = bisect_right(starts, addr) - 1
-        if idx < 0:
-            return False
-        lower, upper = filters[idx]
-        return lower <= addr <= upper
 
-    new_count = 0
+def apply_filter(
+    trace_logs: list[str],
+    filters: list[tuple[int, int]],
+    starts: list[int],
+    coverages: dict[int, dict],
+    test_no: int,
+    seen_addrs: set[int],
+) -> None:
+    """
+    Count newly discovered addresses in this test:
+      - Only addresses inside the filters are considered.
+      - An address is "new" if it has not appeared in any previous test.
+      - Multiple occurrences of the same address in the same test are counted once.
+    """
+    new_addrs: set[int] = set()
+
     for line in trace_logs:
         addr_s = line.strip()
         try:
             addr = int(addr_s, 16)
         except Exception:
+            # Skip malformed lines
             continue
 
-        if (not addr in coverages) and (not addr_in_filters(addr, filters, starts)):
+        # Skip addresses outside of the filter ranges
+        if not addr_in_filters(addr, filters, starts):
             continue
 
-        new_count += 1
+        # Skip addresses already seen in earlier tests
+        if addr in seen_addrs:
+            continue
+
+        # Record as newly discovered in this test (deduplicate within the test)
+        new_addrs.add(addr)
+
+    # Update global seen set after processing this test
+    seen_addrs.update(new_addrs)
+
     coverages[test_no] = {
         "test_no": test_no,
-        "new_count": new_count,
+        "new_count": len(new_addrs),
     }
-    
 
-def read_qemu_trace_log(filename):
+
+def read_qemu_trace_log(filename: Path) -> list[str]:
+    """
+    Read qemu_trace_log.log and return lines.
+    """
     with open(filename) as f:
-       return f.readlines()
+        return f.readlines()
 
 
-def create_merged_filter(config):
-    result = []
-    
+def create_merged_filter(config: dict) -> list[tuple[int, int]]:
+    """
+    Create a merged filter list from config["address_filters"]["kernel"/"firmware"].
+    NOTE: This function assumes the final list is non-overlapping after sort.
+          (User stated filters are already merged/non-overlapping.)
+    """
+    result: list[tuple[int, int]] = []
+
     address_filters = config["address_filters"]
-    for data in address_filters["kernel"]:
-        lower = int(data["lower"], 16)
-        upper = int(data["upper"], 16)
-        result.append([lower, upper])
-    
-    for data in address_filters["firmware"]:
-        lower = int(data["lower"], 16)
-        upper = int(data["upper"], 16)
-        result.append([lower, upper])
+    for group in ("kernel", "firmware"):
+        for data in address_filters[group]:
+            lower = int(data["lower"], 16)
+            upper = int(data["upper"], 16)
+            result.append((lower, upper))
 
     result.sort(key=lambda x: x[0])
     return result
 
 
-def read_config(config_path):
+def read_config(config_path: str) -> dict:
+    """
+    Load JSON config.
+    """
     with open(config_path) as f:
         return json.load(f)
 
 
-def main(args):
-    coverages = {}
+def main(args: argparse.Namespace) -> None:
+    coverages: dict[int, dict] = {}
+    seen_addrs: set[int] = set()
 
     config = read_config(args.config)
 
     filters = create_merged_filter(config)
+    starts = [lower for (lower, _) in filters]
+
     base_dir = Path(os.path.abspath(args.result_dir))
     files = sorted(base_dir.rglob(QEMU_TRACE_LOG_FILE))
 
     for test_no, file in enumerate(files):
-        print(f"[+]Processing {file}")
+        print(f"[+] Processing {file}")
         trace_logs = read_qemu_trace_log(file)
-        apply_filter(trace_logs, filters, coverages, test_no)
-    
+        apply_filter(trace_logs, filters, starts, coverages, test_no, seen_addrs)
+
     write_csv(args.output, coverages)
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description="Coverage Accumlator")
-    parser.add_argument("--config", required=True, help="config json file")
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="New coverage address counter")
+    parser.add_argument("--config", required=True, help="Config JSON file")
     parser.add_argument("--result-dir", required=True, help="Path to test result directory")
-    parser.add_argument("--output", required=True, help="Output file name")
-    args = parser.parse_args()
+    parser.add_argument("--output", required=True, help="Output CSV file name")
+    return parser.parse_args()
 
-    return args
 
 if __name__ == "__main__":
     main(parse_args())
