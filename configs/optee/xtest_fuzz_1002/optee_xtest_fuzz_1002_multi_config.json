@@ -37,13 +37,13 @@
         "kernel": [
             {
                 "name": "jhash",
-                "lower": "0xffff8000810d2688",
-                "upper": "0xffff8000810d284c"
+                "lower": "0xffff800081126048",
+                "upper": "0xffff80008112620c"
             },
             {
                 "name": "rht_key_get_hash.isra.0",
-                "lower": "0xffff800081050bdc",
-                "upper": "0xffff800081050c0c"
+                "lower": "0xffff8000810b97cc",
+                "upper": "0xffff8000810b97fc"
             },
             {
                 "name": "optee_ctx_match",
@@ -57,8 +57,8 @@
             },
             {
                 "name": "tee_init",
-                "lower": "0xffff800081db3450",
-                "upper": "0xffff800081db3540"
+                "lower": "0xffff800081e13450",
+                "upper": "0xffff800081e13540"
             },
             {
                 "name": "match_dev",
@@ -87,8 +87,8 @@
             },
             {
                 "name": "tee_exit",
-                "lower": "0xffff800081dd1a24",
-                "upper": "0xffff800081dd1a6c"
+                "lower": "0xffff800081e32dd4",
+                "upper": "0xffff800081e32e1c"
             },
             {
                 "name": "params_from_user",
@@ -162,8 +162,8 @@
             },
             {
                 "name": "optee_core_init",
-                "lower": "0xffff800081db3540",
-                "upper": "0xffff800081db35a8"
+                "lower": "0xffff800081e13540",
+                "upper": "0xffff800081e135a8"
             },
             {
                 "name": "rpmb_routing_model_show",
@@ -172,8 +172,8 @@
             },
             {
                 "name": "optee_core_exit",
-                "lower": "0xffff800081dd1a6c",
-                "upper": "0xffff800081dd1ac8"
+                "lower": "0xffff800081e32e1c",
+                "upper": "0xffff800081e32e78"
             },
             {
                 "name": "optee_bus_scan",
@@ -838,48 +838,6319 @@
         ],
         "firmware": [
             {
-                "lower": "0xe1118c4",
-                "upper": "0xe111d24"
+                "name": "get_int",
+                "lower": "0xe17cef4",
+                "upper": "0xe17cf18"
             },
             {
-                "lower": "0xe111308",
-                "upper": "0xe11187c"
+                "name": "get_digit",
+                "lower": "0xe17cf18",
+                "upper": "0xe17cf40"
             },
             {
-                "lower": "0xe1101a4",
-                "upper": "0xe1111ec"
+                "name": "mpi_rand",
+                "lower": "0xe17cf40",
+                "upper": "0xe17cf70"
             },
             {
-                "lower": "0xe10e7cc",
-                "upper": "0xe10f70c"
+                "name": "rng_read",
+                "lower": "0xe17cf70",
+                "upper": "0xe17cf98"
             },
             {
-                "lower": "0xe1144f8",
-                "upper": "0xe11572c"
+                "name": "mod",
+                "lower": "0xe17cf98",
+                "upper": "0xe17cfd4"
             },
             {
-                "lower": "0xe1123cc",
-                "upper": "0xe11429c"
+                "name": "isprime",
+                "lower": "0xe17cfd4",
+                "upper": "0xe17d028"
             },
             {
-                "lower": "0xe187728",
-                "upper": "0xe18831c"
+                "name": "set_int",
+                "lower": "0xe17d028",
+                "upper": "0xe17d09c"
             },
             {
-                "lower": "0xe17b9dc",
-                "upper": "0xe17bca0"
+                "name": "copy",
+                "lower": "0xe17d09c",
+                "upper": "0xe17d0c8"
             },
             {
-                "lower": "0xe177948",
-                "upper": "0xe177d40"
+                "name": "neg",
+                "lower": "0xe17d0c8",
+                "upper": "0xe17d108"
             },
             {
-                "lower": "0xe179d00",
-                "upper": "0xe17a09c"
+                "name": "exptmod",
+                "lower": "0xe17d108",
+                "upper": "0xe17d1e8"
             },
             {
-                "lower": "0xe17e4d8",
-                "upper": "0xe17f808"
+                "name": "modi",
+                "lower": "0xe17d1e8",
+                "upper": "0xe17d2ac"
+            },
+            {
+                "name": "montgomery_deinit",
+                "lower": "0xe17d2ac",
+                "upper": "0xe17d2bc"
+            },
+            {
+                "name": "deinit",
+                "lower": "0xe17d2bc",
+                "upper": "0xe17d2e8"
+            },
+            {
+                "name": "compare",
+                "lower": "0xe17d2e8",
+                "upper": "0xe17d308"
+            },
+            {
+                "name": "montgomery_reduce",
+                "lower": "0xe17d308",
+                "upper": "0xe17d418"
+            },
+            {
+                "name": "get_digit_count",
+                "lower": "0xe17d418",
+                "upper": "0xe17d434"
+            },
+            {
+                "name": "init",
+                "lower": "0xe1018f4",
+                "upper": "0xe10193c"
+            },
+            {
+                "name": "init_size",
+                "lower": "0xe17d434",
+                "upper": "0xe17d43c"
+            },
+            {
+                "name": "montgomery_setup",
+                "lower": "0xe17d43c",
+                "upper": "0xe17d488"
+            },
+            {
+                "name": "invmod",
+                "lower": "0xe17d488",
+                "upper": "0xe17d4c4"
+            },
+            {
+                "name": "mul",
+                "lower": "0xe17d4c4",
+                "upper": "0xe17d4f4"
+            },
+            {
+                "name": "mulmod",
+                "lower": "0xe17d4f4",
+                "upper": "0xe17d5d0"
+            },
+            {
+                "name": "sqrmod",
+                "lower": "0xe17d5d0",
+                "upper": "0xe17d5e0"
+            },
+            {
+                "name": "sqr",
+                "lower": "0xe17d5e0",
+                "upper": "0xe17d5ec"
+            },
+            {
+                "name": "gcd",
+                "lower": "0xe17d5ec",
+                "upper": "0xe17d61c"
+            },
+            {
+                "name": "divide",
+                "lower": "0xe17d61c",
+                "upper": "0xe17d660"
+            },
+            {
+                "name": "lcm",
+                "lower": "0xe17d660",
+                "upper": "0xe17d714"
+            },
+            {
+                "name": "sub",
+                "lower": "0xe17d714",
+                "upper": "0xe17d744"
+            },
+            {
+                "name": "subi",
+                "lower": "0xe17d744",
+                "upper": "0xe17d7ac"
+            },
+            {
+                "name": "add",
+                "lower": "0xe18c7ac",
+                "upper": "0xe18c93c"
+            },
+            {
+                "name": "addi",
+                "lower": "0xe17d7dc",
+                "upper": "0xe17d844"
+            },
+            {
+                "name": "unsigned_read",
+                "lower": "0xe17d844",
+                "upper": "0xe17d870"
+            },
+            {
+                "name": "unsigned_write",
+                "lower": "0xe17d870",
+                "upper": "0xe17d8bc"
+            },
+            {
+                "name": "write_radix",
+                "lower": "0xe17d8bc",
+                "upper": "0xe17d92c"
+            },
+            {
+                "name": "read_radix",
+                "lower": "0xe17d92c",
+                "upper": "0xe17d964"
+            },
+            {
+                "name": "twoexpt",
+                "lower": "0xe17d964",
+                "upper": "0xe17d98c"
+            },
+            {
+                "name": "count_lsb_bits",
+                "lower": "0xe17d98c",
+                "upper": "0xe17d9a0"
+            },
+            {
+                "name": "count_bits",
+                "lower": "0xe17d9a0",
+                "upper": "0xe17d9b4"
+            },
+            {
+                "name": "compare_d",
+                "lower": "0xe17d9b4",
+                "upper": "0xe17da4c"
+            },
+            {
+                "name": "montgomery_normalization",
+                "lower": "0xe17da4c",
+                "upper": "0xe17dac0"
+            },
+            {
+                "name": "div_2",
+                "lower": "0xe17dac0",
+                "upper": "0xe17db00"
+            },
+            {
+                "name": "muli",
+                "lower": "0xe17db00",
+                "upper": "0xe17db44"
+            },
+            {
+                "name": "submod",
+                "lower": "0xe17db44",
+                "upper": "0xe17db88"
+            },
+            {
+                "name": "init_copy",
+                "lower": "0xe17db88",
+                "upper": "0xe17dbc8"
+            },
+            {
+                "name": "unsigned_size",
+                "lower": "0xe17dbc8",
+                "upper": "0xe17dbcc"
+            },
+            {
+                "name": "addmod",
+                "lower": "0xe17dbcc",
+                "upper": "0xe17dc10"
+            },
+            {
+                "name": "_assert_trap",
+                "lower": "0xe19f31c",
+                "upper": "0xe19f34c"
+            },
+            {
+                "name": "get_core_pos",
+                "lower": "0xe133bdc",
+                "upper": "0xe133c20"
+            },
+            {
+                "name": "mobj_get_va",
+                "lower": "0xe16a2e8",
+                "upper": "0xe16a358"
+            },
+            {
+                "name": "to_user_ta_ctx",
+                "lower": "0xe15d9b4",
+                "upper": "0xe15da0c"
+            },
+            {
+                "name": "reg_pair_to_64",
+                "lower": "0xe146cdc",
+                "upper": "0xe146d00"
+            },
+            {
+                "name": "high32_from_64",
+                "lower": "0xe146d00",
+                "upper": "0xe146d18"
+            },
+            {
+                "name": "low32_from_64",
+                "lower": "0xe146d18",
+                "upper": "0xe146d2c"
+            },
+            {
+                "name": "reg_pair_from_64",
+                "lower": "0xe146d2c",
+                "upper": "0xe146d74"
+            },
+            {
+                "name": "mobj_get_pa",
+                "lower": "0xe14e33c",
+                "upper": "0xe14e3b4"
+            },
+            {
+                "name": "mobj_put",
+                "lower": "0xe14e414",
+                "upper": "0xe14e464"
+            },
+            {
+                "name": "thread_foreign_intr_disabled",
+                "lower": "0xe198394",
+                "upper": "0xe1983b8"
+            },
+            {
+                "name": "cpu_spin_lock_dldetect",
+                "lower": "0xe1983b8",
+                "upper": "0xe198474"
+            },
+            {
+                "name": "cpu_spin_unlock",
+                "lower": "0xe198474",
+                "upper": "0xe1984c8"
+            },
+            {
+                "name": "cpu_spin_lock_xsave_dldetect",
+                "lower": "0xe1984c8",
+                "upper": "0xe198504"
+            },
+            {
+                "name": "cpu_spin_unlock_xrestore",
+                "lower": "0xe198504",
+                "upper": "0xe198530"
+            },
+            {
+                "name": "mattr_is_cached",
+                "lower": "0xe14e2d0",
+                "upper": "0xe14e31c"
+            },
+            {
+                "name": "core_mmu_is_shm_cached",
+                "lower": "0xe14e31c",
+                "upper": "0xe14e33c"
+            },
+            {
+                "name": "__tee_alg_get_class",
+                "lower": "0xe1532e8",
+                "upper": "0xe1533c4"
+            },
+            {
+                "name": "__tee_alg_get_main_alg",
+                "lower": "0xe1533c4",
+                "upper": "0xe15360c"
+            },
+            {
+                "name": "__ftmn_get_tsd_func_arg_pp",
+                "lower": "0xe180d18",
+                "upper": "0xe180d44"
+            },
+            {
+                "name": "__ftmn_get_tsd_func_arg",
+                "lower": "0xe17ee54",
+                "upper": "0xe17ee70"
+            },
+            {
+                "name": "__tee_alg_get_digest_hash",
+                "lower": "0xe15360c",
+                "upper": "0xe153644"
+            },
+            {
+                "name": "__tee_alg_hash_algo",
+                "lower": "0xe153644",
+                "upper": "0xe153678"
+            },
+            {
+                "name": "atomic_load_uint",
+                "lower": "0xe143608",
+                "upper": "0xe143620"
+            },
+            {
+                "name": "atomic_store_uint",
+                "lower": "0xe143620",
+                "upper": "0xe143644"
+            },
+            {
+                "name": "to_hash_ctx",
+                "lower": "0xe177f1c",
+                "upper": "0xe177f64"
+            },
+            {
+                "name": "to_hmac_ctx",
+                "lower": "0xe17a2d4",
+                "upper": "0xe17a31c"
+            },
+            {
+                "name": "io_write32",
+                "lower": "0xe11abbc",
+                "upper": "0xe11abe0"
+            },
+            {
+                "name": "io_read32",
+                "lower": "0xe11abe0",
+                "upper": "0xe11abf8"
+            },
+            {
+                "name": "chip_to_base",
+                "lower": "0xe11a610",
+                "upper": "0xe11a644"
+            },
+            {
+                "name": "pl011_flush",
+                "lower": "0xe11a644",
+                "upper": "0xe11a69c"
+            },
+            {
+                "name": "pl011_have_rx_data",
+                "lower": "0xe11a69c",
+                "upper": "0xe11a6d8"
+            },
+            {
+                "name": "pl011_getchar",
+                "lower": "0xe11a6d8",
+                "upper": "0xe11a724"
+            },
+            {
+                "name": "pl011_putc",
+                "lower": "0xe11a724",
+                "upper": "0xe11a778"
+            },
+            {
+                "name": "pl011_rx_intr_enable",
+                "lower": "0xe11a778",
+                "upper": "0xe11a7ac"
+            },
+            {
+                "name": "pl011_rx_intr_disable",
+                "lower": "0xe11a7ac",
+                "upper": "0xe11a7e0"
+            },
+            {
+                "name": "pl011_dev_alloc",
+                "lower": "0xe11a8e4",
+                "upper": "0xe11a920"
+            },
+            {
+                "name": "pl011_dev_init",
+                "lower": "0xe11a920",
+                "upper": "0xe11aa60"
+            },
+            {
+                "name": "pl011_dev_free",
+                "lower": "0xe11aa60",
+                "upper": "0xe11aa94"
+            },
+            {
+                "name": "read_mpidr_el1",
+                "lower": "0xe11aac4",
+                "upper": "0xe11aae0"
+            },
+            {
+                "name": "read_icc_ctlr",
+                "lower": "0xe11aae0",
+                "upper": "0xe11aafc"
+            },
+            {
+                "name": "write_icc_ctlr",
+                "lower": "0xe11aafc",
+                "upper": "0xe11ab1c"
+            },
+            {
+                "name": "read_icc_iar1",
+                "lower": "0xe11ab1c",
+                "upper": "0xe11ab38"
+            },
+            {
+                "name": "write_icc_eoir1",
+                "lower": "0xe11ab38",
+                "upper": "0xe11ab58"
+            },
+            {
+                "name": "write_icc_sgi1r",
+                "lower": "0xe11ab58",
+                "upper": "0xe11ab78"
+            },
+            {
+                "name": "write_icc_asgi1r",
+                "lower": "0xe11ab78",
+                "upper": "0xe11ab98"
+            },
+            {
+                "name": "io_write8",
+                "lower": "0xe11ab98",
+                "upper": "0xe11abbc"
+            },
+            {
+                "name": "io_read64",
+                "lower": "0xe11abf8",
+                "upper": "0xe11ac10"
+            },
+            {
+                "name": "io_mask32",
+                "lower": "0xe11ac10",
+                "upper": "0xe11ac64"
+            },
+            {
+                "name": "io_setbits32",
+                "lower": "0xe11ac64",
+                "upper": "0xe11aca0"
+            },
+            {
+                "name": "io_clrbits32",
+                "lower": "0xe11aca0",
+                "upper": "0xe11ace0"
+            },
+            {
+                "name": "fdt32_to_cpu",
+                "lower": "0xe176208",
+                "upper": "0xe17625c"
+            },
+            {
+                "name": "cpu_to_fdt32",
+                "lower": "0xe174e74",
+                "upper": "0xe174ec8"
+            },
+            {
+                "name": "gic_op_configure",
+                "lower": "0xe11c47c",
+                "upper": "0xe11c6f4"
+            },
+            {
+                "name": "gic_op_enable",
+                "lower": "0xe11c6f4",
+                "upper": "0xe11c8b0"
+            },
+            {
+                "name": "gic_op_disable",
+                "lower": "0xe11c8b0",
+                "upper": "0xe11c950"
+            },
+            {
+                "name": "gic_op_raise_pi",
+                "lower": "0xe11c950",
+                "upper": "0xe11c9f0"
+            },
+            {
+                "name": "gic_op_raise_sgi",
+                "lower": "0xe11c9f0",
+                "upper": "0xe11cac4"
+            },
+            {
+                "name": "gic_op_set_affinity",
+                "lower": "0xe11cac4",
+                "upper": "0xe11cb6c"
+            },
+            {
+                "name": "get_gicr_base",
+                "lower": "0xe11adcc",
+                "upper": "0xe11adf4"
+            },
+            {
+                "name": "affinity_routing_is_enabled",
+                "lower": "0xe11adf4",
+                "upper": "0xe11ae24"
+            },
+            {
+                "name": "probe_max_it",
+                "lower": "0xe11ae24",
+                "upper": "0xe11af94"
+            },
+            {
+                "name": "gicr_wait_for_pending_write",
+                "lower": "0xe11af94",
+                "upper": "0xe11afc8"
+            },
+            {
+                "name": "gicv3_sync_redist_config",
+                "lower": "0xe11afc8",
+                "upper": "0xe11b230"
+            },
+            {
+                "name": "gic_legacy_sync_dist_config",
+                "lower": "0xe11b230",
+                "upper": "0xe11b3ac"
+            },
+            {
+                "name": "gic_dt_get_irq",
+                "lower": "0xe11b424",
+                "upper": "0xe11b5d0"
+            },
+            {
+                "name": "probe_redist_base_addrs",
+                "lower": "0xe11b5d0",
+                "upper": "0xe11b744"
+            },
+            {
+                "name": "gic_init_base_addr",
+                "lower": "0xe11b744",
+                "upper": "0xe11b8cc"
+            },
+            {
+                "name": "gic_it_configure",
+                "lower": "0xe11ba1c",
+                "upper": "0xe11bb0c"
+            },
+            {
+                "name": "gic_it_set_cpu_mask",
+                "lower": "0xe11bb0c",
+                "upper": "0xe11bcac"
+            },
+            {
+                "name": "gic_it_set_prio",
+                "lower": "0xe11bcac",
+                "upper": "0xe11bdcc"
+            },
+            {
+                "name": "gic_it_set_type",
+                "lower": "0xe11bdcc",
+                "upper": "0xe11bea0"
+            },
+            {
+                "name": "gic_it_enable",
+                "lower": "0xe11bea0",
+                "upper": "0xe11bf84"
+            },
+            {
+                "name": "gic_it_disable",
+                "lower": "0xe11bf84",
+                "upper": "0xe11c064"
+            },
+            {
+                "name": "gic_it_set_pending",
+                "lower": "0xe11c064",
+                "upper": "0xe11c120"
+            },
+            {
+                "name": "assert_cpu_mask_is_valid",
+                "lower": "0xe11c120",
+                "upper": "0xe11c1b0"
+            },
+            {
+                "name": "gic_it_raise_sgi",
+                "lower": "0xe11c1b0",
+                "upper": "0xe11c2ec"
+            },
+            {
+                "name": "gic_read_iar",
+                "lower": "0xe11c2ec",
+                "upper": "0xe11c338"
+            },
+            {
+                "name": "gic_write_eoir",
+                "lower": "0xe11c338",
+                "upper": "0xe11c390"
+            },
+            {
+                "name": "gic_native_itr_handler",
+                "lower": "0xe11c390",
+                "upper": "0xe11c464"
+            },
+            {
+                "name": "dt_get_gic_chip_cb",
+                "lower": "0xe11cb6c",
+                "upper": "0xe11cce0"
+            },
+            {
+                "name": "gic_probe",
+                "lower": "0xe11cce0",
+                "upper": "0xe11cd40"
+            },
+            {
+                "name": "gic_set_primary_done",
+                "lower": "0xe11cd40",
+                "upper": "0xe11cd58"
+            },
+            {
+                "name": "refcount_set",
+                "lower": "0xe143644",
+                "upper": "0xe14366c"
+            },
+            {
+                "name": "lock_clk",
+                "lower": "0xe11cdd4",
+                "upper": "0xe11cdf4"
+            },
+            {
+                "name": "unlock_clk",
+                "lower": "0xe11cdf4",
+                "upper": "0xe11ce14"
+            },
+            {
+                "name": "clk_check",
+                "lower": "0xe11cf14",
+                "upper": "0xe11cfa8"
+            },
+            {
+                "name": "clk_compute_rate_no_lock",
+                "lower": "0xe11cfa8",
+                "upper": "0xe11d038"
+            },
+            {
+                "name": "clk_init_parent",
+                "lower": "0xe11d038",
+                "upper": "0xe11d0f4"
+            },
+            {
+                "name": "clk_disable_no_lock",
+                "lower": "0xe11d190",
+                "upper": "0xe11d218"
+            },
+            {
+                "name": "clk_enable_no_lock",
+                "lower": "0xe11d218",
+                "upper": "0xe11d2f8"
+            },
+            {
+                "name": "clk_dt_get_by_idx_prop",
+                "lower": "0xe11d40c",
+                "upper": "0xe11d4b8"
+            },
+            {
+                "name": "clk_dt_register_clk_provider",
+                "lower": "0xe14c9e4",
+                "upper": "0xe14ca1c"
+            },
+            {
+                "name": "clk_dt_get_simple_clk",
+                "lower": "0xe11d52c",
+                "upper": "0xe11d554"
+            },
+            {
+                "name": "fixed_clk_get_rate",
+                "lower": "0xe11d5a8",
+                "upper": "0xe11d5d0"
+            },
+            {
+                "name": "fixed_clock_probe",
+                "lower": "0xe11d5d0",
+                "upper": "0xe11d748"
+            },
+            {
+                "name": "gpio_set_direction",
+                "lower": "0xe11d778",
+                "upper": "0xe11d7c4"
+            },
+            {
+                "name": "gpio_set_value",
+                "lower": "0xe11d7c4",
+                "upper": "0xe11d838"
+            },
+            {
+                "name": "rstctrl_dt_get_by_index",
+                "lower": "0xe14cc50",
+                "upper": "0xe14ccfc"
+            },
+            {
+                "name": "cpu_to_fdt64",
+                "lower": "0xe11e4a0",
+                "upper": "0xe11e564"
+            },
+            {
+                "name": "enter_user_access",
+                "lower": "0xe153284",
+                "upper": "0xe15328c"
+            },
+            {
+                "name": "exit_user_access",
+                "lower": "0xe15328c",
+                "upper": "0xe153294"
+            },
+            {
+                "name": "memtag_strip_tag_vaddr",
+                "lower": "0xe16dd7c",
+                "upper": "0xe16dd98"
+            },
+            {
+                "name": "memtag_strip_tag_const",
+                "lower": "0xe1532b0",
+                "upper": "0xe1532cc"
+            },
+            {
+                "name": "memtag_strip_tag",
+                "lower": "0xe15d998",
+                "upper": "0xe15d9b4"
+            },
+            {
+                "name": "refcount_val",
+                "lower": "0xe14366c",
+                "upper": "0xe143688"
+            },
+            {
+                "name": "__ftmn_callee_done_memcmp",
+                "lower": "0xe16a930",
+                "upper": "0xe16a9a0"
+            },
+            {
+                "name": "tee_svc_storage_file_ops",
+                "lower": "0xe16056c",
+                "upper": "0xe1605b8"
+            },
+            {
+                "name": "update_out_param",
+                "lower": "0xe1331d8",
+                "upper": "0xe1332f8"
+            },
+            {
+                "name": "mobj_get",
+                "lower": "0xe14e3b4",
+                "upper": "0xe14e414"
+            },
+            {
+                "name": "asan_tag_access",
+                "lower": "0xe19830c",
+                "upper": "0xe198324"
+            },
+            {
+                "name": "mem_alloc",
+                "lower": "0xe199e84",
+                "upper": "0xe199f08"
+            },
+            {
+                "name": "param_mem_from_mobj",
+                "lower": "0xe14e464",
+                "upper": "0xe14e590"
+            },
+            {
+                "name": "set_tmem_param",
+                "lower": "0xe14e590",
+                "upper": "0xe14e6a0"
+            },
+            {
+                "name": "set_rmem_param",
+                "lower": "0xe14e6a0",
+                "upper": "0xe14e7bc"
+            },
+            {
+                "name": "copy_in_params",
+                "lower": "0xe14e7bc",
+                "upper": "0xe14eb0c"
+            },
+            {
+                "name": "cleanup_shm_refs",
+                "lower": "0xe14eb0c",
+                "upper": "0xe14ebd8"
+            },
+            {
+                "name": "copy_out_param",
+                "lower": "0xe14ebd8",
+                "upper": "0xe14ed80"
+            },
+            {
+                "name": "get_open_session_meta",
+                "lower": "0xe14ed80",
+                "upper": "0xe14eebc"
+            },
+            {
+                "name": "entry_open_session",
+                "lower": "0xe14eebc",
+                "upper": "0xe14f0ec"
+            },
+            {
+                "name": "entry_close_session",
+                "lower": "0xe14f0ec",
+                "upper": "0xe14f17c"
+            },
+            {
+                "name": "entry_invoke_command",
+                "lower": "0xe14f17c",
+                "upper": "0xe14f2e4"
+            },
+            {
+                "name": "entry_cancel",
+                "lower": "0xe14f2e4",
+                "upper": "0xe14f3c0"
+            },
+            {
+                "name": "register_shm",
+                "lower": "0xe14f3c0",
+                "upper": "0xe14f46c"
+            },
+            {
+                "name": "unregister_shm",
+                "lower": "0xe14f46c",
+                "upper": "0xe14f500"
+            },
+            {
+                "name": "default_mobj_init",
+                "lower": "0xe14f674",
+                "upper": "0xe14f71c"
+            },
+            {
+                "name": "__tee_alg_get_digest_size",
+                "lower": "0xe14f71c",
+                "upper": "0xe14fd44"
+            },
+            {
+                "name": "tee_cryp_init",
+                "lower": "0xe15055c",
+                "upper": "0xe1505cc"
+            },
+            {
+                "name": "hkdf_extract",
+                "lower": "0xe150600",
+                "upper": "0xe150798"
+            },
+            {
+                "name": "hkdf_expand",
+                "lower": "0xe150798",
+                "upper": "0xe150a5c"
+            },
+            {
+                "name": "pbkdf2_f",
+                "lower": "0xe150dc8",
+                "upper": "0xe151008"
+            },
+            {
+                "name": "get_prop_tee_dev_id",
+                "lower": "0xe1515c4",
+                "upper": "0xe151734"
+            },
+            {
+                "name": "get_prop_tee_sys_time_prot_level",
+                "lower": "0xe151734",
+                "upper": "0xe1517d8"
+            },
+            {
+                "name": "get_prop_client_id",
+                "lower": "0xe1517d8",
+                "upper": "0xe151840"
+            },
+            {
+                "name": "get_prop_client_endian",
+                "lower": "0xe151840",
+                "upper": "0xe1518e0"
+            },
+            {
+                "name": "get_prop_ta_app_id",
+                "lower": "0xe1518e0",
+                "upper": "0xe151944"
+            },
+            {
+                "name": "get_prop_set",
+                "lower": "0xe151944",
+                "upper": "0xe151a90"
+            },
+            {
+                "name": "get_prop_struct",
+                "lower": "0xe151a90",
+                "upper": "0xe151b80"
+            },
+            {
+                "name": "utee_param_to_param",
+                "lower": "0xe1520bc",
+                "upper": "0xe152408"
+            },
+            {
+                "name": "tee_svc_copy_param",
+                "lower": "0xe152408",
+                "upper": "0xe152688"
+            },
+            {
+                "name": "tee_svc_update_out_param",
+                "lower": "0xe152688",
+                "upper": "0xe15286c"
+            },
+            {
+                "name": "op_u32_to_binary_helper",
+                "lower": "0xe1536d0",
+                "upper": "0xe1537bc"
+            },
+            {
+                "name": "op_u32_from_binary_helper",
+                "lower": "0xe1537bc",
+                "upper": "0xe153888"
+            },
+            {
+                "name": "op_attr_secret_value_from_user",
+                "lower": "0xe153888",
+                "upper": "0xe153908"
+            },
+            {
+                "name": "op_attr_secret_value_to_user",
+                "lower": "0xe153908",
+                "upper": "0xe153a1c"
+            },
+            {
+                "name": "op_attr_secret_value_to_binary",
+                "lower": "0xe153a1c",
+                "upper": "0xe153b50"
+            },
+            {
+                "name": "op_attr_secret_value_from_binary",
+                "lower": "0xe153b50",
+                "upper": "0xe153c84"
+            },
+            {
+                "name": "op_attr_secret_value_from_obj",
+                "lower": "0xe153c84",
+                "upper": "0xe153d08"
+            },
+            {
+                "name": "op_attr_secret_value_clear",
+                "lower": "0xe153d08",
+                "upper": "0xe153d50"
+            },
+            {
+                "name": "op_attr_bignum_from_user",
+                "lower": "0xe153d50",
+                "upper": "0xe153e14"
+            },
+            {
+                "name": "op_attr_bignum_to_user",
+                "lower": "0xe153e14",
+                "upper": "0xe153f80"
+            },
+            {
+                "name": "op_attr_bignum_to_binary",
+                "lower": "0xe153f80",
+                "upper": "0xe1540ac"
+            },
+            {
+                "name": "op_attr_bignum_from_binary",
+                "lower": "0xe1540ac",
+                "upper": "0xe1541c4"
+            },
+            {
+                "name": "op_attr_bignum_from_obj",
+                "lower": "0xe1541c4",
+                "upper": "0xe15420c"
+            },
+            {
+                "name": "op_attr_bignum_clear",
+                "lower": "0xe15420c",
+                "upper": "0xe154238"
+            },
+            {
+                "name": "op_attr_bignum_free",
+                "lower": "0xe154238",
+                "upper": "0xe154260"
+            },
+            {
+                "name": "op_attr_value_from_user",
+                "lower": "0xe154260",
+                "upper": "0xe1542ac"
+            },
+            {
+                "name": "op_attr_value_to_user",
+                "lower": "0xe1542ac",
+                "upper": "0xe154388"
+            },
+            {
+                "name": "op_attr_value_to_binary",
+                "lower": "0xe154388",
+                "upper": "0xe1543c8"
+            },
+            {
+                "name": "op_attr_value_from_binary",
+                "lower": "0xe1543c8",
+                "upper": "0xe154408"
+            },
+            {
+                "name": "op_attr_value_from_obj",
+                "lower": "0xe154408",
+                "upper": "0xe154440"
+            },
+            {
+                "name": "op_attr_value_clear",
+                "lower": "0xe154440",
+                "upper": "0xe154464"
+            },
+            {
+                "name": "op_attr_25519_from_user",
+                "lower": "0xe154464",
+                "upper": "0xe1544c0"
+            },
+            {
+                "name": "op_attr_25519_to_user",
+                "lower": "0xe1544c0",
+                "upper": "0xe1545cc"
+            },
+            {
+                "name": "op_attr_25519_to_binary",
+                "lower": "0xe1545cc",
+                "upper": "0xe154700"
+            },
+            {
+                "name": "op_attr_25519_from_binary",
+                "lower": "0xe154700",
+                "upper": "0xe154824"
+            },
+            {
+                "name": "op_attr_25519_from_obj",
+                "lower": "0xe154824",
+                "upper": "0xe154898"
+            },
+            {
+                "name": "op_attr_25519_clear",
+                "lower": "0xe154898",
+                "upper": "0xe1548f8"
+            },
+            {
+                "name": "op_attr_25519_free",
+                "lower": "0xe1548f8",
+                "upper": "0xe15492c"
+            },
+            {
+                "name": "get_user_u64_as_size_t",
+                "lower": "0xe15492c",
+                "upper": "0xe1549d8"
+            },
+            {
+                "name": "put_user_u64",
+                "lower": "0xe1549d8",
+                "upper": "0xe154a48"
+            },
+            {
+                "name": "tee_svc_cryp_obj_find_type_attr_idx",
+                "lower": "0xe154d00",
+                "upper": "0xe154d7c"
+            },
+            {
+                "name": "tee_svc_find_type_props",
+                "lower": "0xe154d7c",
+                "upper": "0xe154e08"
+            },
+            {
+                "name": "set_attribute",
+                "lower": "0xe154e08",
+                "upper": "0xe154e68"
+            },
+            {
+                "name": "get_attribute",
+                "lower": "0xe154e68",
+                "upper": "0xe154ec0"
+            },
+            {
+                "name": "is_gp_legacy_des_key_size",
+                "lower": "0xe155b90",
+                "upper": "0xe155c04"
+            },
+            {
+                "name": "check_key_size",
+                "lower": "0xe155c04",
+                "upper": "0xe155ce4"
+            },
+            {
+                "name": "copy_in_attrs",
+                "lower": "0xe156400",
+                "upper": "0xe156720"
+            },
+            {
+                "name": "tee_svc_cryp_check_attr",
+                "lower": "0xe156720",
+                "upper": "0xe156984"
+            },
+            {
+                "name": "get_ec_key_size",
+                "lower": "0xe156984",
+                "upper": "0xe156a98"
+            },
+            {
+                "name": "tee_svc_cryp_obj_populate_type",
+                "lower": "0xe156a98",
+                "upper": "0xe156f40"
+            },
+            {
+                "name": "check_pub_rsa_key",
+                "lower": "0xe157384",
+                "upper": "0xe1574c8"
+            },
+            {
+                "name": "tee_svc_obj_generate_key_rsa",
+                "lower": "0xe1574c8",
+                "upper": "0xe15762c"
+            },
+            {
+                "name": "tee_svc_obj_generate_key_dsa",
+                "lower": "0xe15762c",
+                "upper": "0xe1576cc"
+            },
+            {
+                "name": "tee_svc_obj_generate_key_dh",
+                "lower": "0xe1576cc",
+                "upper": "0xe1577f4"
+            },
+            {
+                "name": "tee_svc_obj_generate_key_ecc",
+                "lower": "0xe1577f4",
+                "upper": "0xe1578cc"
+            },
+            {
+                "name": "tee_svc_obj_generate_key_x25519",
+                "lower": "0xe1578cc",
+                "upper": "0xe157988"
+            },
+            {
+                "name": "tee_svc_obj_generate_key_x448",
+                "lower": "0xe157988",
+                "upper": "0xe157a44"
+            },
+            {
+                "name": "tee_svc_obj_generate_key_ed25519",
+                "lower": "0xe157a44",
+                "upper": "0xe157b00"
+            },
+            {
+                "name": "tee_svc_obj_ed25519_parse_params",
+                "lower": "0xe157b00",
+                "upper": "0xe157d0c"
+            },
+            {
+                "name": "tee_svc_obj_ed25519_sign",
+                "lower": "0xe157d0c",
+                "upper": "0xe157e28"
+            },
+            {
+                "name": "tee_svc_obj_ed25519_verify",
+                "lower": "0xe157e28",
+                "upper": "0xe157f44"
+            },
+            {
+                "name": "tee_svc_cryp_get_state",
+                "lower": "0xe158540",
+                "upper": "0xe1585bc"
+            },
+            {
+                "name": "cryp_state_free",
+                "lower": "0xe1585bc",
+                "upper": "0xe15879c"
+            },
+            {
+                "name": "tee_svc_cryp_check_key_type",
+                "lower": "0xe15879c",
+                "upper": "0xe158acc"
+            },
+            {
+                "name": "translate_compat_algo",
+                "lower": "0xe158acc",
+                "upper": "0xe158c94"
+            },
+            {
+                "name": "is_xof_algo",
+                "lower": "0xe159828",
+                "upper": "0xe159874"
+            },
+            {
+                "name": "tee_svc_cipher_update_helper",
+                "lower": "0xe159ee4",
+                "upper": "0xe15a17c"
+            },
+            {
+                "name": "get_hkdf_params",
+                "lower": "0xe15a1fc",
+                "upper": "0xe15a544"
+            },
+            {
+                "name": "get_concat_kdf_params",
+                "lower": "0xe15a544",
+                "upper": "0xe15a6d0"
+            },
+            {
+                "name": "get_pbkdf2_params",
+                "lower": "0xe15a6d0",
+                "upper": "0xe15a8cc"
+            },
+            {
+                "name": "get_sm2_kep_params",
+                "lower": "0xe15a8cc",
+                "upper": "0xe15af5c"
+            },
+            {
+                "name": "pkcs1_get_salt_len",
+                "lower": "0xe15c7e8",
+                "upper": "0xe15c8f0"
+            },
+            {
+                "name": "tee_svc_storage_get_enum",
+                "lower": "0xe15da58",
+                "upper": "0xe15dac0"
+            },
+            {
+                "name": "tee_svc_close_enum",
+                "lower": "0xe15dac0",
+                "upper": "0xe15db88"
+            },
+            {
+                "name": "remove_corrupt_obj",
+                "lower": "0xe15db88",
+                "upper": "0xe15dbe0"
+            },
+            {
+                "name": "tee_svc_storage_read_head",
+                "lower": "0xe15dbe0",
+                "upper": "0xe15df20"
+            },
+            {
+                "name": "tee_svc_storage_init_file",
+                "lower": "0xe15e1f0",
+                "upper": "0xe15e4ac"
+            },
+            {
+                "name": "tee_time_ta_get_offs",
+                "lower": "0xe15fdc0",
+                "upper": "0xe15feb0"
+            },
+            {
+                "name": "tee_time_ta_set_offs",
+                "lower": "0xe15feb0",
+                "upper": "0xe1600e8"
+            },
+            {
+                "name": "file_num_to_str",
+                "lower": "0xe1605b8",
+                "upper": "0xe160624"
+            },
+            {
+                "name": "is_null_uuid",
+                "lower": "0xe160624",
+                "upper": "0xe16069c"
+            },
+            {
+                "name": "ta_operation_open",
+                "lower": "0xe16069c",
+                "upper": "0xe1607f0"
+            },
+            {
+                "name": "ta_operation_remove",
+                "lower": "0xe1607f0",
+                "upper": "0xe1608f0"
+            },
+            {
+                "name": "maybe_grow_files",
+                "lower": "0xe165bb4",
+                "upper": "0xe165d78"
+            },
+            {
+                "name": "set_file",
+                "lower": "0xe165d78",
+                "upper": "0xe165e0c"
+            },
+            {
+                "name": "clear_file",
+                "lower": "0xe165e0c",
+                "upper": "0xe165e9c"
+            },
+            {
+                "name": "test_file",
+                "lower": "0xe165e9c",
+                "upper": "0xe165f0c"
+            },
+            {
+                "name": "read_ent",
+                "lower": "0xe160c48",
+                "upper": "0xe160d0c"
+            },
+            {
+                "name": "write_ent",
+                "lower": "0xe160d0c",
+                "upper": "0xe160d68"
+            },
+            {
+                "name": "tadb_open",
+                "lower": "0xe160d68",
+                "upper": "0xe160ec8"
+            },
+            {
+                "name": "tee_tadb_open",
+                "lower": "0xe160ec8",
+                "upper": "0xe160f98"
+            },
+            {
+                "name": "tadb_put",
+                "lower": "0xe160f98",
+                "upper": "0xe16109c"
+            },
+            {
+                "name": "tadb_authenc_init",
+                "lower": "0xe16109c",
+                "upper": "0xe1611ac"
+            },
+            {
+                "name": "tadb_update_payload",
+                "lower": "0xe1611ac",
+                "upper": "0xe161278"
+            },
+            {
+                "name": "populate_files",
+                "lower": "0xe161278",
+                "upper": "0xe16144c"
+            },
+            {
+                "name": "find_ent",
+                "lower": "0xe161988",
+                "upper": "0xe161ac8"
+            },
+            {
+                "name": "find_free_ent_idx",
+                "lower": "0xe161ac8",
+                "upper": "0xe161b5c"
+            },
+            {
+                "name": "ta_load",
+                "lower": "0xe161f8c",
+                "upper": "0xe16212c"
+            },
+            {
+                "name": "get_instance_id",
+                "lower": "0xe162478",
+                "upper": "0xe1624a8"
+            },
+            {
+                "name": "socket_open",
+                "lower": "0xe1624a8",
+                "upper": "0xe1626a4"
+            },
+            {
+                "name": "socket_close",
+                "lower": "0xe1626a4",
+                "upper": "0xe162790"
+            },
+            {
+                "name": "socket_send",
+                "lower": "0xe162790",
+                "upper": "0xe16297c"
+            },
+            {
+                "name": "socket_recv",
+                "lower": "0xe16297c",
+                "upper": "0xe162bb8"
+            },
+            {
+                "name": "socket_ioctl",
+                "lower": "0xe162bb8",
+                "upper": "0xe162df4"
+            },
+            {
+                "name": "pta_socket_open_session",
+                "lower": "0xe162df4",
+                "upper": "0xe162e68"
+            },
+            {
+                "name": "pta_socket_close_session",
+                "lower": "0xe162e68",
+                "upper": "0xe162f24"
+            },
+            {
+                "name": "pta_socket_invoke_command",
+                "lower": "0xe162f24",
+                "upper": "0xe162f90"
+            },
+            {
+                "name": "do_hmac",
+                "lower": "0xe163254",
+                "upper": "0xe163398"
+            },
+            {
+                "name": "tee_fs_init_key_manager",
+                "lower": "0xe16362c",
+                "upper": "0xe163698"
+            },
+            {
+                "name": "pos_to_block_num",
+                "lower": "0xe1636c8",
+                "upper": "0xe1636e0"
+            },
+            {
+                "name": "get_tmp_block",
+                "lower": "0xe1636e0",
+                "upper": "0xe163704"
+            },
+            {
+                "name": "put_tmp_block",
+                "lower": "0xe163704",
+                "upper": "0xe163730"
+            },
+            {
+                "name": "out_of_place_write",
+                "lower": "0xe163730",
+                "upper": "0xe1639ec"
+            },
+            {
+                "name": "get_offs_size",
+                "lower": "0xe1639ec",
+                "upper": "0xe163ba8"
+            },
+            {
+                "name": "ree_fs_rpc_read_init",
+                "lower": "0xe163ba8",
+                "upper": "0xe163c7c"
+            },
+            {
+                "name": "ree_fs_rpc_write_init",
+                "lower": "0xe163c7c",
+                "upper": "0xe163d50"
+            },
+            {
+                "name": "ree_fs_ftruncate_internal",
+                "lower": "0xe163d50",
+                "upper": "0xe163efc"
+            },
+            {
+                "name": "ree_fs_read_primitive",
+                "lower": "0xe163efc",
+                "upper": "0xe1641c0"
+            },
+            {
+                "name": "ree_fs_read",
+                "lower": "0xe1641c0",
+                "upper": "0xe16421c"
+            },
+            {
+                "name": "ree_fs_write_primitive",
+                "lower": "0xe16421c",
+                "upper": "0xe164318"
+            },
+            {
+                "name": "ree_fs_open_primitive",
+                "lower": "0xe164318",
+                "upper": "0xe1644d8"
+            },
+            {
+                "name": "ree_fs_close_primitive",
+                "lower": "0xe1644d8",
+                "upper": "0xe164528"
+            },
+            {
+                "name": "ree_dirf_commit_writes",
+                "lower": "0xe164528",
+                "upper": "0xe1645a0"
+            },
+            {
+                "name": "dirf_read",
+                "lower": "0xe1645a0",
+                "upper": "0xe1645d8"
+            },
+            {
+                "name": "dirf_write",
+                "lower": "0xe1645d8",
+                "upper": "0xe164610"
+            },
+            {
+                "name": "open_dirh",
+                "lower": "0xe164610",
+                "upper": "0xe164778"
+            },
+            {
+                "name": "commit_dirh_writes",
+                "lower": "0xe164778",
+                "upper": "0xe164878"
+            },
+            {
+                "name": "close_dirh",
+                "lower": "0xe164878",
+                "upper": "0xe1648a4"
+            },
+            {
+                "name": "get_dirh",
+                "lower": "0xe1648a4",
+                "upper": "0xe164994"
+            },
+            {
+                "name": "put_dirh_primitive",
+                "lower": "0xe164994",
+                "upper": "0xe164a3c"
+            },
+            {
+                "name": "put_dirh",
+                "lower": "0xe164a3c",
+                "upper": "0xe164aa4"
+            },
+            {
+                "name": "ree_fs_open",
+                "lower": "0xe164aa4",
+                "upper": "0xe164c38"
+            },
+            {
+                "name": "set_name",
+                "lower": "0xe164c38",
+                "upper": "0xe164db8"
+            },
+            {
+                "name": "ree_fs_close",
+                "lower": "0xe164db8",
+                "upper": "0xe164e14"
+            },
+            {
+                "name": "ree_fs_create",
+                "lower": "0xe164e14",
+                "upper": "0xe16512c"
+            },
+            {
+                "name": "ree_fs_write",
+                "lower": "0xe16512c",
+                "upper": "0xe1652cc"
+            },
+            {
+                "name": "ree_fs_rename",
+                "lower": "0xe1652cc",
+                "upper": "0xe165520"
+            },
+            {
+                "name": "ree_fs_remove",
+                "lower": "0xe165520",
+                "upper": "0xe1656d0"
+            },
+            {
+                "name": "ree_fs_truncate",
+                "lower": "0xe1656d0",
+                "upper": "0xe165824"
+            },
+            {
+                "name": "ree_fs_opendir_rpc",
+                "lower": "0xe165824",
+                "upper": "0xe165980"
+            },
+            {
+                "name": "ree_fs_closedir_rpc",
+                "lower": "0xe165980",
+                "upper": "0xe1659d8"
+            },
+            {
+                "name": "ree_fs_readdir_rpc",
+                "lower": "0xe1659d8",
+                "upper": "0xe165aec"
+            },
+            {
+                "name": "is_free",
+                "lower": "0xe165b1c",
+                "upper": "0xe165bb4"
+            },
+            {
+                "name": "read_dent",
+                "lower": "0xe165f0c",
+                "upper": "0xe165fd4"
+            },
+            {
+                "name": "write_dent",
+                "lower": "0xe165fd4",
+                "upper": "0xe166064"
+            },
+            {
+                "name": "find_empty_idx",
+                "lower": "0xe16665c",
+                "upper": "0xe166758"
+            },
+            {
+                "name": "rpc_read",
+                "lower": "0xe166e68",
+                "upper": "0xe166f80"
+            },
+            {
+                "name": "rpc_read_head",
+                "lower": "0xe166f80",
+                "upper": "0xe166fb8"
+            },
+            {
+                "name": "rpc_read_node",
+                "lower": "0xe166fb8",
+                "upper": "0xe166ffc"
+            },
+            {
+                "name": "rpc_write",
+                "lower": "0xe166ffc",
+                "upper": "0xe1670d4"
+            },
+            {
+                "name": "rpc_write_head",
+                "lower": "0xe1670d4",
+                "upper": "0xe16710c"
+            },
+            {
+                "name": "rpc_write_node",
+                "lower": "0xe16710c",
+                "upper": "0xe167150"
+            },
+            {
+                "name": "traverse_post_order",
+                "lower": "0xe167150",
+                "upper": "0xe1671e8"
+            },
+            {
+                "name": "htree_traverse_post_order",
+                "lower": "0xe1671e8",
+                "upper": "0xe167264"
+            },
+            {
+                "name": "node_id_to_level",
+                "lower": "0xe167264",
+                "upper": "0xe1672c8"
+            },
+            {
+                "name": "find_closest_node",
+                "lower": "0xe1672c8",
+                "upper": "0xe16737c"
+            },
+            {
+                "name": "find_node",
+                "lower": "0xe16737c",
+                "upper": "0xe1673d0"
+            },
+            {
+                "name": "get_node",
+                "lower": "0xe1673d0",
+                "upper": "0xe1675d0"
+            },
+            {
+                "name": "get_idx_from_counter",
+                "lower": "0xe1675d0",
+                "upper": "0xe167648"
+            },
+            {
+                "name": "init_head_from_data",
+                "lower": "0xe167648",
+                "upper": "0xe167894"
+            },
+            {
+                "name": "init_tree_from_data",
+                "lower": "0xe167894",
+                "upper": "0xe1679fc"
+            },
+            {
+                "name": "calc_node_hash",
+                "lower": "0xe1679fc",
+                "upper": "0xe167b48"
+            },
+            {
+                "name": "authenc_init",
+                "lower": "0xe167b48",
+                "upper": "0xe167dc0"
+            },
+            {
+                "name": "authenc_decrypt_final",
+                "lower": "0xe167dc0",
+                "upper": "0xe167ea4"
+            },
+            {
+                "name": "authenc_encrypt_final",
+                "lower": "0xe167ea4",
+                "upper": "0xe167f84"
+            },
+            {
+                "name": "verify_root",
+                "lower": "0xe167f84",
+                "upper": "0xe168078"
+            },
+            {
+                "name": "verify_node",
+                "lower": "0xe168078",
+                "upper": "0xe168168"
+            },
+            {
+                "name": "verify_tree",
+                "lower": "0xe168168",
+                "upper": "0xe168208"
+            },
+            {
+                "name": "init_root_node",
+                "lower": "0xe168208",
+                "upper": "0xe1682cc"
+            },
+            {
+                "name": "create_and_sync",
+                "lower": "0xe1682cc",
+                "upper": "0xe168434"
+            },
+            {
+                "name": "ht_head_is_partially_done",
+                "lower": "0xe168434",
+                "upper": "0xe1684cc"
+            },
+            {
+                "name": "free_node",
+                "lower": "0xe1686c0",
+                "upper": "0xe1686f4"
+            },
+            {
+                "name": "htree_sync_node_to_storage",
+                "lower": "0xe168750",
+                "upper": "0xe1688f8"
+            },
+            {
+                "name": "update_root",
+                "lower": "0xe1688f8",
+                "upper": "0xe1689b8"
+            },
+            {
+                "name": "get_block_node",
+                "lower": "0xe168b78",
+                "upper": "0xe168c14"
+            },
+            {
+                "name": "create_filename",
+                "lower": "0xe169214",
+                "upper": "0xe1692f8"
+            },
+            {
+                "name": "operation_commit",
+                "lower": "0xe1692f8",
+                "upper": "0xe169330"
+            },
+            {
+                "name": "operation_open_dfh",
+                "lower": "0xe169330",
+                "upper": "0xe16948c"
+            },
+            {
+                "name": "pobj_need_usage_lock",
+                "lower": "0xe169a50",
+                "upper": "0xe169a78"
+            },
+            {
+                "name": "tee_pobj_check_access",
+                "lower": "0xe169ae8",
+                "upper": "0xe169bf8"
+            },
+            {
+                "name": "copy_in_reg",
+                "lower": "0xe16ddc0",
+                "upper": "0xe16ddf0"
+            },
+            {
+                "name": "inflateStateCheck",
+                "lower": "0xe16dfb4",
+                "upper": "0xe16e058"
+            },
+            {
+                "name": "fixedtables",
+                "lower": "0xe16e450",
+                "upper": "0xe16e49c"
+            },
+            {
+                "name": "updatewindow",
+                "lower": "0xe16e49c",
+                "upper": "0xe16e6fc"
+            },
+            {
+                "name": "fdt32_ld",
+                "lower": "0xe174ec8",
+                "upper": "0xe174f24"
+            },
+            {
+                "name": "fdt_header_size",
+                "lower": "0xe1726a8",
+                "upper": "0xe1726cc"
+            },
+            {
+                "name": "fdt_offset_ptr_",
+                "lower": "0xe175160",
+                "upper": "0xe175198"
+            },
+            {
+                "name": "check_off_",
+                "lower": "0xe1727d8",
+                "upper": "0xe17281c"
+            },
+            {
+                "name": "check_block_",
+                "lower": "0xe17281c",
+                "upper": "0xe1728ac"
+            },
+            {
+                "name": "fdt64_ld",
+                "lower": "0xe17339c",
+                "upper": "0xe173468"
+            },
+            {
+                "name": "fdt_mem_rsv_",
+                "lower": "0xe1734a0",
+                "upper": "0xe1734e4"
+            },
+            {
+                "name": "fdt_nodename_eq_",
+                "lower": "0xe1734e4",
+                "upper": "0xe173600"
+            },
+            {
+                "name": "fdt_string_eq_",
+                "lower": "0xe17384c",
+                "upper": "0xe173904"
+            },
+            {
+                "name": "fdt_mem_rsv",
+                "lower": "0xe173904",
+                "upper": "0xe1739a4"
+            },
+            {
+                "name": "nextprop_",
+                "lower": "0xe173a08",
+                "upper": "0xe173ac8"
+            },
+            {
+                "name": "fdt_get_property_by_offset_",
+                "lower": "0xe173f28",
+                "upper": "0xe173fb8"
+            },
+            {
+                "name": "fdt_get_property_namelen_",
+                "lower": "0xe173fb8",
+                "upper": "0xe1740a0"
+            },
+            {
+                "name": "fdt_set_magic",
+                "lower": "0xe174f24",
+                "upper": "0xe174f58"
+            },
+            {
+                "name": "fdt_set_totalsize",
+                "lower": "0xe174f58",
+                "upper": "0xe174f8c"
+            },
+            {
+                "name": "fdt_set_off_dt_struct",
+                "lower": "0xe174f8c",
+                "upper": "0xe174fc0"
+            },
+            {
+                "name": "fdt_set_off_dt_strings",
+                "lower": "0xe174fc0",
+                "upper": "0xe174ff4"
+            },
+            {
+                "name": "fdt_set_off_mem_rsvmap",
+                "lower": "0xe174ff4",
+                "upper": "0xe175028"
+            },
+            {
+                "name": "fdt_set_version",
+                "lower": "0xe175028",
+                "upper": "0xe17505c"
+            },
+            {
+                "name": "fdt_set_last_comp_version",
+                "lower": "0xe17505c",
+                "upper": "0xe175090"
+            },
+            {
+                "name": "fdt_set_boot_cpuid_phys",
+                "lower": "0xe175090",
+                "upper": "0xe1750c4"
+            },
+            {
+                "name": "fdt_set_size_dt_strings",
+                "lower": "0xe1750c4",
+                "upper": "0xe1750f8"
+            },
+            {
+                "name": "fdt_set_size_dt_struct",
+                "lower": "0xe1750f8",
+                "upper": "0xe17512c"
+            },
+            {
+                "name": "fdt_get_property_w",
+                "lower": "0xe17512c",
+                "upper": "0xe175160"
+            },
+            {
+                "name": "fdt_offset_ptr_w_",
+                "lower": "0xe175198",
+                "upper": "0xe1751bc"
+            },
+            {
+                "name": "fdt_blocks_misordered_",
+                "lower": "0xe1751bc",
+                "upper": "0xe175298"
+            },
+            {
+                "name": "fdt_rw_probe_",
+                "lower": "0xe175298",
+                "upper": "0xe175338"
+            },
+            {
+                "name": "fdt_data_size_",
+                "lower": "0xe175338",
+                "upper": "0xe175374"
+            },
+            {
+                "name": "fdt_splice_",
+                "lower": "0xe175374",
+                "upper": "0xe17549c"
+            },
+            {
+                "name": "fdt_splice_struct_",
+                "lower": "0xe17549c",
+                "upper": "0xe175544"
+            },
+            {
+                "name": "fdt_del_last_string_",
+                "lower": "0xe175544",
+                "upper": "0xe175594"
+            },
+            {
+                "name": "fdt_splice_string_",
+                "lower": "0xe175594",
+                "upper": "0xe175638"
+            },
+            {
+                "name": "fdt_find_add_string_",
+                "lower": "0xe175638",
+                "upper": "0xe175730"
+            },
+            {
+                "name": "fdt_resize_property_",
+                "lower": "0xe175730",
+                "upper": "0xe175838"
+            },
+            {
+                "name": "fdt_add_property_",
+                "lower": "0xe175838",
+                "upper": "0xe1759b0"
+            },
+            {
+                "name": "fdt_packblocks_",
+                "lower": "0xe175d70",
+                "upper": "0xe175ed0"
+            },
+            {
+                "name": "fdt_cells",
+                "lower": "0xe17625c",
+                "upper": "0xe176320"
+            },
+            {
+                "name": "prng_crypto_start",
+                "lower": "0xe1763c4",
+                "upper": "0xe1763cc"
+            },
+            {
+                "name": "prng_crypto_add_entropy",
+                "lower": "0xe1763cc",
+                "upper": "0xe1763d4"
+            },
+            {
+                "name": "prng_crypto_export",
+                "lower": "0xe1763d4",
+                "upper": "0xe1763dc"
+            },
+            {
+                "name": "prng_crypto_test",
+                "lower": "0xe1763dc",
+                "upper": "0xe1763e4"
+            },
+            {
+                "name": "prng_crypto_read",
+                "lower": "0xe1763e4",
+                "upper": "0xe17640c"
+            },
+            {
+                "name": "prng_crypto_import",
+                "lower": "0xe17640c",
+                "upper": "0xe176414"
+            },
+            {
+                "name": "prng_crypto_ready",
+                "lower": "0xe176414",
+                "upper": "0xe17641c"
+            },
+            {
+                "name": "prng_crypto_done",
+                "lower": "0xe17641c",
+                "upper": "0xe176424"
+            },
+            {
+                "name": "desfunc",
+                "lower": "0xe1768d0",
+                "upper": "0xe176ab0"
+            },
+            {
+                "name": "deskey",
+                "lower": "0xe176b2c",
+                "upper": "0xe176d50"
+            },
+            {
+                "name": "to_tee_ccm_state",
+                "lower": "0xe177290",
+                "upper": "0xe1772d8"
+            },
+            {
+                "name": "crypto_aes_ccm_copy_state",
+                "lower": "0xe1772d8",
+                "upper": "0xe177320"
+            },
+            {
+                "name": "crypto_aes_ccm_free_ctx",
+                "lower": "0xe177320",
+                "upper": "0xe177334"
+            },
+            {
+                "name": "crypto_aes_ccm_final",
+                "lower": "0xe177334",
+                "upper": "0xe17734c"
+            },
+            {
+                "name": "crypto_aes_ccm_update_payload",
+                "lower": "0xe17734c",
+                "upper": "0xe1773bc"
+            },
+            {
+                "name": "crypto_aes_ccm_dec_final",
+                "lower": "0xe1773bc",
+                "upper": "0xe1774a8"
+            },
+            {
+                "name": "crypto_aes_ccm_enc_final",
+                "lower": "0xe1774a8",
+                "upper": "0xe17754c"
+            },
+            {
+                "name": "crypto_aes_ccm_update_aad",
+                "lower": "0xe17754c",
+                "upper": "0xe17758c"
+            },
+            {
+                "name": "crypto_aes_ccm_init",
+                "lower": "0xe17758c",
+                "upper": "0xe1776a4"
+            },
+            {
+                "name": "ltc_hash_alloc_ctx",
+                "lower": "0xe177eb4",
+                "upper": "0xe177f1c"
+            },
+            {
+                "name": "ltc_hash_update",
+                "lower": "0xe177f64",
+                "upper": "0xe177fac"
+            },
+            {
+                "name": "ltc_hash_init",
+                "lower": "0xe177fac",
+                "upper": "0xe177fdc"
+            },
+            {
+                "name": "ltc_hash_free_ctx",
+                "lower": "0xe177fdc",
+                "upper": "0xe177ff0"
+            },
+            {
+                "name": "ltc_hash_final",
+                "lower": "0xe177ff0",
+                "upper": "0xe1780c4"
+            },
+            {
+                "name": "ltc_hash_copy_state",
+                "lower": "0xe1780c4",
+                "upper": "0xe178138"
+            },
+            {
+                "name": "s_md5_compress",
+                "lower": "0xe178360",
+                "upper": "0xe1785d0"
+            },
+            {
+                "name": "s_sha1_compress",
+                "lower": "0xe17887c",
+                "upper": "0xe178ae0"
+            },
+            {
+                "name": "s_keccakf",
+                "lower": "0xe178d44",
+                "upper": "0xe178f2c"
+            },
+            {
+                "name": "do_sha3_free_ctx",
+                "lower": "0xe179530",
+                "upper": "0xe179534"
+            },
+            {
+                "name": "do_shake_final",
+                "lower": "0xe179534",
+                "upper": "0xe179558"
+            },
+            {
+                "name": "do_sha3_update",
+                "lower": "0xe179558",
+                "upper": "0xe17957c"
+            },
+            {
+                "name": "do_shake256_init",
+                "lower": "0xe17957c",
+                "upper": "0xe1795a4"
+            },
+            {
+                "name": "do_sha3_copy_state",
+                "lower": "0xe1795a4",
+                "upper": "0xe1795f8"
+            },
+            {
+                "name": "do_shake128_init",
+                "lower": "0xe1795f8",
+                "upper": "0xe179620"
+            },
+            {
+                "name": "s_sha256_compress",
+                "lower": "0xe179808",
+                "upper": "0xe1799d8"
+            },
+            {
+                "name": "s_sha512_compress",
+                "lower": "0xe179e3c",
+                "upper": "0xe17a018"
+            },
+            {
+                "name": "ltc_hmac_alloc_ctx",
+                "lower": "0xe17a278",
+                "upper": "0xe17a2d4"
+            },
+            {
+                "name": "ltc_hmac_free_ctx",
+                "lower": "0xe17a31c",
+                "upper": "0xe17a330"
+            },
+            {
+                "name": "ltc_hmac_final",
+                "lower": "0xe17a330",
+                "upper": "0xe17a39c"
+            },
+            {
+                "name": "ltc_hmac_update",
+                "lower": "0xe17a39c",
+                "upper": "0xe17a3dc"
+            },
+            {
+                "name": "ltc_hmac_init",
+                "lower": "0xe17a3dc",
+                "upper": "0xe17a420"
+            },
+            {
+                "name": "ltc_hmac_copy_state",
+                "lower": "0xe17a420",
+                "upper": "0xe17a494"
+            },
+            {
+                "name": "crypto_common_cmac_alloc_ctx",
+                "lower": "0xe17aa54",
+                "upper": "0xe17aac8"
+            },
+            {
+                "name": "to_omac_ctx",
+                "lower": "0xe17aac8",
+                "upper": "0xe17ab10"
+            },
+            {
+                "name": "ltc_omac_free_ctx",
+                "lower": "0xe17ab10",
+                "upper": "0xe17ab24"
+            },
+            {
+                "name": "ltc_omac_final",
+                "lower": "0xe17ab24",
+                "upper": "0xe17ab90"
+            },
+            {
+                "name": "ltc_omac_update",
+                "lower": "0xe17ab90",
+                "upper": "0xe17abd0"
+            },
+            {
+                "name": "ltc_omac_init",
+                "lower": "0xe17abd0",
+                "upper": "0xe17ac14"
+            },
+            {
+                "name": "ltc_omac_copy_state",
+                "lower": "0xe17ac14",
+                "upper": "0xe17ac88"
+            },
+            {
+                "name": "ltc_cbc_alloc_ctx",
+                "lower": "0xe17b0ec",
+                "upper": "0xe17b158"
+            },
+            {
+                "name": "to_cbc_ctx",
+                "lower": "0xe17b158",
+                "upper": "0xe17b1a0"
+            },
+            {
+                "name": "ltc_cbc_update",
+                "lower": "0xe17b1a0",
+                "upper": "0xe17b1fc"
+            },
+            {
+                "name": "ltc_cbc_free_ctx",
+                "lower": "0xe17b1fc",
+                "upper": "0xe17b210"
+            },
+            {
+                "name": "ltc_cbc_final",
+                "lower": "0xe17b210",
+                "upper": "0xe17b228"
+            },
+            {
+                "name": "ltc_cbc_init",
+                "lower": "0xe17b228",
+                "upper": "0xe17b348"
+            },
+            {
+                "name": "ltc_cbc_copy_state",
+                "lower": "0xe17b348",
+                "upper": "0xe17b3c4"
+            },
+            {
+                "name": "to_ctr_ctx",
+                "lower": "0xe17b84c",
+                "upper": "0xe17b894"
+            },
+            {
+                "name": "ltc_ctr_update",
+                "lower": "0xe17b894",
+                "upper": "0xe17b8f0"
+            },
+            {
+                "name": "ltc_ctr_free_ctx",
+                "lower": "0xe17b8f0",
+                "upper": "0xe17b904"
+            },
+            {
+                "name": "ltc_ctr_final",
+                "lower": "0xe17b904",
+                "upper": "0xe17b91c"
+            },
+            {
+                "name": "ltc_ctr_init",
+                "lower": "0xe17b91c",
+                "upper": "0xe17b9c8"
+            },
+            {
+                "name": "ltc_ctr_copy_state",
+                "lower": "0xe17b9c8",
+                "upper": "0xe17ba44"
+            },
+            {
+                "name": "s_ctr_encrypt",
+                "lower": "0xe17bb20",
+                "upper": "0xe17bc50"
+            },
+            {
+                "name": "ltc_ecb_alloc_ctx",
+                "lower": "0xe17bf44",
+                "upper": "0xe17bfb0"
+            },
+            {
+                "name": "to_ecb_ctx",
+                "lower": "0xe17bfb0",
+                "upper": "0xe17bff8"
+            },
+            {
+                "name": "ltc_ecb_update",
+                "lower": "0xe17bff8",
+                "upper": "0xe17c054"
+            },
+            {
+                "name": "ltc_ecb_free_ctx",
+                "lower": "0xe17c054",
+                "upper": "0xe17c068"
+            },
+            {
+                "name": "ltc_ecb_final",
+                "lower": "0xe17c068",
+                "upper": "0xe17c080"
+            },
+            {
+                "name": "ltc_ecb_init",
+                "lower": "0xe17c080",
+                "upper": "0xe17c160"
+            },
+            {
+                "name": "ltc_ecb_copy_state",
+                "lower": "0xe17c160",
+                "upper": "0xe17c1dc"
+            },
+            {
+                "name": "to_xts_ctx",
+                "lower": "0xe17c54c",
+                "upper": "0xe17c594"
+            },
+            {
+                "name": "ltc_xts_update",
+                "lower": "0xe17c594",
+                "upper": "0xe17c5f4"
+            },
+            {
+                "name": "ltc_xts_copy_state",
+                "lower": "0xe17c5f4",
+                "upper": "0xe17c684"
+            },
+            {
+                "name": "ltc_xts_free_ctx",
+                "lower": "0xe17c684",
+                "upper": "0xe17c698"
+            },
+            {
+                "name": "ltc_xts_final",
+                "lower": "0xe17c698",
+                "upper": "0xe17c6b0"
+            },
+            {
+                "name": "ltc_xts_init",
+                "lower": "0xe17c6b0",
+                "upper": "0xe17c7a0"
+            },
+            {
+                "name": "s_tweak_uncrypt",
+                "lower": "0xe17c80c",
+                "upper": "0xe17c8a8"
+            },
+            {
+                "name": "s_tweak_crypt",
+                "lower": "0xe17cb30",
+                "upper": "0xe17cbd0"
+            },
+            {
+                "name": "bn_alloc_max",
+                "lower": "0xe1817e0",
+                "upper": "0xe181810"
+            },
+            {
+                "name": "rsadorep",
+                "lower": "0xe17eaac",
+                "upper": "0xe17ec30"
+            },
+            {
+                "name": "tee_algo_to_ltc_hashindex",
+                "lower": "0xe17ec30",
+                "upper": "0xe17ee28"
+            },
+            {
+                "name": "s_rsa_make_key",
+                "lower": "0xe1805f8",
+                "upper": "0xe1808fc"
+            },
+            {
+                "name": "ecc_set_curve_from_name",
+                "lower": "0xe181764",
+                "upper": "0xe1817e0"
+            },
+            {
+                "name": "_ltc_ecc_free_public_key",
+                "lower": "0xe181810",
+                "upper": "0xe18183c"
+            },
+            {
+                "name": "ecc_get_curve_info.constprop.0",
+                "lower": "0xe18183c",
+                "upper": "0xe1819f0"
+            },
+            {
+                "name": "_ltc_ecc_generate_keypair",
+                "lower": "0xe1819f0",
+                "upper": "0xe181b4c"
+            },
+            {
+                "name": "_ltc_ecc_sign",
+                "lower": "0xe181c38",
+                "upper": "0xe181d68"
+            },
+            {
+                "name": "_ltc_ecc_shared_secret",
+                "lower": "0xe181e4c",
+                "upper": "0xe181f54"
+            },
+            {
+                "name": "_ltc_ecc_verify",
+                "lower": "0xe181f54",
+                "upper": "0xe182070"
+            },
+            {
+                "name": "sm2_kep_compute_S.constprop.0",
+                "lower": "0xe186090",
+                "upper": "0xe186348"
+            },
+            {
+                "name": "sm2_kep_compute_Z.constprop.0",
+                "lower": "0xe186348",
+                "upper": "0xe1865ac"
+            },
+            {
+                "name": "s_ed25519_sign",
+                "lower": "0xe1870c8",
+                "upper": "0xe1871f8"
+            },
+            {
+                "name": "s_ed25519_verify",
+                "lower": "0xe187380",
+                "upper": "0xe1874c4"
+            },
+            {
+                "name": "setup_mix",
+                "lower": "0xe187cfc",
+                "upper": "0xe187d44"
+            },
+            {
+                "name": "setup_mix2",
+                "lower": "0xe187d44",
+                "upper": "0xe187da8"
+            },
+            {
+                "name": "s_der_decode_sequence_va",
+                "lower": "0xe189188",
+                "upper": "0xe1893a8"
+            },
+            {
+                "name": "s_qsort_helper",
+                "lower": "0xe189ce0",
+                "upper": "0xe189d68"
+            },
+            {
+                "name": "s_ecc_cmp_hex_bn",
+                "lower": "0xe18bc80",
+                "upper": "0xe18bce8"
+            },
+            {
+                "name": "s_ecc_oid_lookup",
+                "lower": "0xe18bce8",
+                "upper": "0xe18be40"
+            },
+            {
+                "name": "set25519",
+                "lower": "0xe18c3b0",
+                "upper": "0xe18c3cc"
+            },
+            {
+                "name": "car25519",
+                "lower": "0xe18c3cc",
+                "upper": "0xe18c434"
+            },
+            {
+                "name": "sel25519",
+                "lower": "0xe18c434",
+                "upper": "0xe18c474"
+            },
+            {
+                "name": "pack25519",
+                "lower": "0xe18c474",
+                "upper": "0xe18c598"
+            },
+            {
+                "name": "unpack25519",
+                "lower": "0xe18c598",
+                "upper": "0xe18c5d0"
+            },
+            {
+                "name": "A",
+                "lower": "0xe18c5d0",
+                "upper": "0xe18c5f4"
+            },
+            {
+                "name": "Z",
+                "lower": "0xe18c5f4",
+                "upper": "0xe18c618"
+            },
+            {
+                "name": "M",
+                "lower": "0xe18c618",
+                "upper": "0xe18c6fc"
+            },
+            {
+                "name": "S",
+                "lower": "0xe18c6fc",
+                "upper": "0xe18c704"
+            },
+            {
+                "name": "inv25519",
+                "lower": "0xe18c704",
+                "upper": "0xe18c7ac"
+            },
+            {
+                "name": "modL",
+                "lower": "0xe18c93c",
+                "upper": "0xe18ca34"
+            },
+            {
+                "name": "reduce",
+                "lower": "0xe18ca34",
+                "upper": "0xe18cab4"
+            },
+            {
+                "name": "tweetnacl_crypto_hash_ctx",
+                "lower": "0xe18cab4",
+                "upper": "0xe18cb6c"
+            },
+            {
+                "name": "pack",
+                "lower": "0xe18cb6c",
+                "upper": "0xe18cc10"
+            },
+            {
+                "name": "neq25519",
+                "lower": "0xe18cc10",
+                "upper": "0xe18ccb4"
+            },
+            {
+                "name": "scalarmult",
+                "lower": "0xe18ccb4",
+                "upper": "0xe18cd98"
+            },
+            {
+                "name": "scalarbase",
+                "lower": "0xe18cd98",
+                "upper": "0xe18ce44"
+            },
+            {
+                "name": "s_char_to_int",
+                "lower": "0xe190a04",
+                "upper": "0xe190a20"
+            },
+            {
+                "name": "mbedtls_ct_compiler_opaque",
+                "lower": "0xe19803c",
+                "upper": "0xe198060"
+            },
+            {
+                "name": "mbedtls_ct_if",
+                "lower": "0xe195e50",
+                "upper": "0xe195e98"
+            },
+            {
+                "name": "mbedtls_ct_uint_if",
+                "lower": "0xe1917c4",
+                "upper": "0xe1917f8"
+            },
+            {
+                "name": "mbedtls_ct_mpi_sign_if",
+                "lower": "0xe1917f8",
+                "upper": "0xe191844"
+            },
+            {
+                "name": "mpi_init",
+                "lower": "0xe191844",
+                "upper": "0xe191884"
+            },
+            {
+                "name": "mbedtls_mpi_resize_clear",
+                "lower": "0xe191d7c",
+                "upper": "0xe191e10"
+            },
+            {
+                "name": "mpi_sint_abs",
+                "lower": "0xe191fb0",
+                "upper": "0xe191fdc"
+            },
+            {
+                "name": "mpi_get_digit",
+                "lower": "0xe192318",
+                "upper": "0xe1923e0"
+            },
+            {
+                "name": "mpi_write_hlp",
+                "lower": "0xe1926fc",
+                "upper": "0xe192884"
+            },
+            {
+                "name": "add_sub_mpi",
+                "lower": "0xe193674",
+                "upper": "0xe1937a0"
+            },
+            {
+                "name": "mbedtls_int_div_int",
+                "lower": "0xe193cfc",
+                "upper": "0xe193e04"
+            },
+            {
+                "name": "mbedtls_mpi_exp_mod_optionally_safe",
+                "lower": "0xe194a6c",
+                "upper": "0xe194f0c"
+            },
+            {
+                "name": "mpi_check_small_factors",
+                "lower": "0xe1957b4",
+                "upper": "0xe1958d4"
+            },
+            {
+                "name": "mpi_miller_rabin",
+                "lower": "0xe1958d4",
+                "upper": "0xe195c40"
+            },
+            {
+                "name": "mbedtls_bswap64",
+                "lower": "0xe195d58",
+                "upper": "0xe195ddc"
+            },
+            {
+                "name": "mbedtls_ct_bool",
+                "lower": "0xe195e00",
+                "upper": "0xe195e50"
+            },
+            {
+                "name": "mbedtls_ct_uint_ne",
+                "lower": "0xe195e98",
+                "upper": "0xe195edc"
+            },
+            {
+                "name": "mbedtls_ct_mpi_uint_if",
+                "lower": "0xe195edc",
+                "upper": "0xe195f08"
+            },
+            {
+                "name": "mbedtls_ct_uint_eq",
+                "lower": "0xe195f08",
+                "upper": "0xe195f30"
+            },
+            {
+                "name": "mpi_bigendian_to_host",
+                "lower": "0xe195fe8",
+                "upper": "0xe196008"
+            },
+            {
+                "name": "mbedtls_mpi_core_ct_uint_table_lookup",
+                "lower": "0xe197698",
+                "upper": "0xe197720"
+            },
+            {
+                "name": "exp_mod_get_window_size",
+                "lower": "0xe197820",
+                "upper": "0xe197848"
+            },
+            {
+                "name": "exp_mod_precompute_window",
+                "lower": "0xe1978c0",
+                "upper": "0xe1979dc"
+            },
+            {
+                "name": "exp_mod_calc_first_bit_optionally_safe",
+                "lower": "0xe1979dc",
+                "upper": "0xe197a74"
+            },
+            {
+                "name": "exp_mod_table_lookup_optionally_safe",
+                "lower": "0xe197a74",
+                "upper": "0xe197afc"
+            },
+            {
+                "name": "mbedtls_mpi_core_exp_mod_optionally_safe",
+                "lower": "0xe197afc",
+                "upper": "0xe197d74"
+            },
+            {
+                "name": "asan_tag_heap_free",
+                "lower": "0xe198324",
+                "upper": "0xe19833c"
+            },
+            {
+                "name": "asan_memset_unchecked",
+                "lower": "0xe19833c",
+                "upper": "0xe198368"
+            },
+            {
+                "name": "asan_memcpy_unchecked",
+                "lower": "0xe198368",
+                "upper": "0xe198394"
+            },
+            {
+                "name": "memset_unchecked",
+                "lower": "0xe198530",
+                "upper": "0xe19855c"
+            },
+            {
+                "name": "memcpy_unchecked",
+                "lower": "0xe19855c",
+                "upper": "0xe198588"
+            },
+            {
+                "name": "buf_get_pos",
+                "lower": "0xe198588",
+                "upper": "0xe198654"
+            },
+            {
+                "name": "get_free2_sum",
+                "lower": "0xe198654",
+                "upper": "0xe1986bc"
+            },
+            {
+                "name": "update_free2_sum",
+                "lower": "0xe1986bc",
+                "upper": "0xe1987b8"
+            },
+            {
+                "name": "malloc_lock",
+                "lower": "0xe1994c8",
+                "upper": "0xe1994f8"
+            },
+            {
+                "name": "malloc_unlock",
+                "lower": "0xe1994f8",
+                "upper": "0xe199524"
+            },
+            {
+                "name": "print_oom",
+                "lower": "0xe199524",
+                "upper": "0xe19953c"
+            },
+            {
+                "name": "bget_buf_size",
+                "lower": "0xe19953c",
+                "upper": "0xe1995a8"
+            },
+            {
+                "name": "maybe_tag_buf",
+                "lower": "0xe1995a8",
+                "upper": "0xe199600"
+            },
+            {
+                "name": "maybe_untag_buf",
+                "lower": "0xe199600",
+                "upper": "0xe19964c"
+            },
+            {
+                "name": "strip_tag",
+                "lower": "0xe19964c",
+                "upper": "0xe199660"
+            },
+            {
+                "name": "tag_asan_free",
+                "lower": "0xe199660",
+                "upper": "0xe199694"
+            },
+            {
+                "name": "raw_malloc_return_hook",
+                "lower": "0xe199694",
+                "upper": "0xe19975c"
+            },
+            {
+                "name": "gen_malloc_reset_stats",
+                "lower": "0xe19975c",
+                "upper": "0xe1997ac"
+            },
+            {
+                "name": "gen_malloc_get_stats",
+                "lower": "0xe1997cc",
+                "upper": "0xe19980c"
+            },
+            {
+                "name": "raw_malloc_validate_pools",
+                "lower": "0xe199834",
+                "upper": "0xe199848"
+            },
+            {
+                "name": "bpool_foreach_iterator_init",
+                "lower": "0xe199848",
+                "upper": "0xe19987c"
+            },
+            {
+                "name": "bpool_foreach_pool",
+                "lower": "0xe19987c",
+                "upper": "0xe1999a4"
+            },
+            {
+                "name": "bpool_foreach",
+                "lower": "0xe1999a4",
+                "upper": "0xe199aa0"
+            },
+            {
+                "name": "mem_alloc_unlocked",
+                "lower": "0xe199e04",
+                "upper": "0xe199e6c"
+            },
+            {
+                "name": "get_ctx",
+                "lower": "0xe199e6c",
+                "upper": "0xe199e84"
+            },
+            {
+                "name": "get_payload_start_size",
+                "lower": "0xe199f70",
+                "upper": "0xe199fa0"
+            },
+            {
+                "name": "gen_malloc_add_pool",
+                "lower": "0xe19a118",
+                "upper": "0xe19a160"
+            },
+            {
+                "name": "gen_malloc_buffer_is_within_alloced",
+                "lower": "0xe19a160",
+                "upper": "0xe19a1b0"
+            },
+            {
+                "name": "gen_malloc_buffer_overlaps_heap",
+                "lower": "0xe19a1b0",
+                "upper": "0xe19a200"
+            },
+            {
+                "name": "swapfunc",
+                "lower": "0xe19a7c0",
+                "upper": "0xe19a8c4"
+            },
+            {
+                "name": "med3",
+                "lower": "0xe19a8c4",
+                "upper": "0xe19a988"
+            },
+            {
+                "name": "kprintf",
+                "lower": "0xe19c45c",
+                "upper": "0xe19e0b8"
+            },
+            {
+                "name": "uuid2str",
+                "lower": "0xe19c378",
+                "upper": "0xe19c45c"
+            },
+            {
+                "name": "trace_level_to_string",
+                "lower": "0xe19e16c",
+                "upper": "0xe19e1d0"
+            },
+            {
+                "name": "print_thread_id",
+                "lower": "0xe19e1d0",
+                "upper": "0xe19e244"
+            },
+            {
+                "name": "print_core_id",
+                "lower": "0xe19e244",
+                "upper": "0xe19e2f8"
+            },
+            {
+                "name": "print_guest_id",
+                "lower": "0xe19e2f8",
+                "upper": "0xe19e310"
+            },
+            {
+                "name": "init_mpool",
+                "lower": "0xe19e7d8",
+                "upper": "0xe19e8a4"
+            },
+            {
+                "name": "get_pool",
+                "lower": "0xe19e8a4",
+                "upper": "0xe19e8e0"
+            },
+            {
+                "name": "put_pool",
+                "lower": "0xe19e8e0",
+                "upper": "0xe19e958"
+            },
+            {
+                "name": "udiv128by64to64default",
+                "lower": "0xe19f530",
+                "upper": "0xe19f7bc"
+            },
+            {
+                "name": "udiv128by64to64",
+                "lower": "0xe19f7bc",
+                "upper": "0xe19f7f0"
+            },
+            {
+                "name": "sha224_test",
+                "lower": "0xe179718",
+                "upper": "0xe179720"
+            },
+            {
+                "name": "tee_fs_htree_truncate",
+                "lower": "0xe169040",
+                "upper": "0xe169214"
+            },
+            {
+                "name": "aes_test",
+                "lower": "0xe176868",
+                "upper": "0xe176870"
+            },
+            {
+                "name": "fdt_address_cells",
+                "lower": "0xe176320",
+                "upper": "0xe17637c"
+            },
+            {
+                "name": "syscall_cryp_random_number_generate",
+                "lower": "0xe15bc68",
+                "upper": "0xe15bce4"
+            },
+            {
+                "name": "xts_encrypt",
+                "lower": "0xe17cbd0",
+                "upper": "0xe17cdf0"
+            },
+            {
+                "name": "sha3_384_test",
+                "lower": "0xe179520",
+                "upper": "0xe179528"
+            },
+            {
+                "name": "raw_malloc_add_pool",
+                "lower": "0xe19a248",
+                "upper": "0xe19a480"
+            },
+            {
+                "name": "fdt_offset_ptr",
+                "lower": "0xe172b48",
+                "upper": "0xe172c38"
+            },
+            {
+                "name": "syscall_storage_obj_create",
+                "lower": "0xe15e4ac",
+                "upper": "0xe15e92c"
+            },
+            {
+                "name": "der_ia5_char_encode",
+                "lower": "0xe18f898",
+                "upper": "0xe18f8d4"
+            },
+            {
+                "name": "crypto_sha384_alloc_ctx",
+                "lower": "0xe1781f8",
+                "upper": "0xe178228"
+            },
+            {
+                "name": "crypto_hmac_sha384_alloc_ctx",
+                "lower": "0xe17a554",
+                "upper": "0xe17a584"
+            },
+            {
+                "name": "syscall_set_ta_time",
+                "lower": "0xe1531b0",
+                "upper": "0xe153254"
+            },
+            {
+                "name": "ltc_cleanup_multi",
+                "lower": "0xe188d64",
+                "upper": "0xe188e34"
+            },
+            {
+                "name": "mbedtls_mpi_core_fill_random",
+                "lower": "0xe197720",
+                "upper": "0xe197820"
+            },
+            {
+                "name": "rsa_free",
+                "lower": "0xe1805b0",
+                "upper": "0xe1805f8"
+            },
+            {
+                "name": "mbedtls_mpi_grow",
+                "lower": "0xe1919b8",
+                "upper": "0xe191b58"
+            },
+            {
+                "name": "der_decode_utf8_string",
+                "lower": "0xe190cbc",
+                "upper": "0xe190e44"
+            },
+            {
+                "name": "tee_obj_attr_copy_from",
+                "lower": "0xe15566c",
+                "upper": "0xe155b90"
+            },
+            {
+                "name": "des3_ecb_encrypt",
+                "lower": "0xe17708c",
+                "upper": "0xe177188"
+            },
+            {
+                "name": "sm2_ltc_dsa_verify",
+                "lower": "0xe18538c",
+                "upper": "0xe18563c"
+            },
+            {
+                "name": "ctr_start",
+                "lower": "0xe17bdac",
+                "upper": "0xe17bf44"
+            },
+            {
+                "name": "crypto_acipher_ed25519_verify",
+                "lower": "0xe186ec0",
+                "upper": "0xe186f88"
+            },
+            {
+                "name": "rand_bn_bits",
+                "lower": "0xe188fbc",
+                "upper": "0xe1890bc"
+            },
+            {
+                "name": "der_length_short_integer",
+                "lower": "0xe18a070",
+                "upper": "0xe18a130"
+            },
+            {
+                "name": "zeromem",
+                "lower": "0xe187a08",
+                "upper": "0xe187a14"
+            },
+            {
+                "name": "crypto_sha3_224_alloc_ctx",
+                "lower": "0xe178258",
+                "upper": "0xe178288"
+            },
+            {
+                "name": "mbedtls_mpi_core_shift_r",
+                "lower": "0xe196394",
+                "upper": "0xe19658c"
+            },
+            {
+                "name": "tee_uuid_from_octets",
+                "lower": "0xe16a1f0",
+                "upper": "0xe16a2e8"
+            },
+            {
+                "name": "syscall_storage_reset_enum",
+                "lower": "0xe15ee08",
+                "upper": "0xe15ef20"
+            },
+            {
+                "name": "syscall_storage_obj_seek",
+                "lower": "0xe15fb58",
+                "upper": "0xe15fd70"
+            },
+            {
+                "name": "gic_init_v3",
+                "lower": "0xe11b8cc",
+                "upper": "0xe11ba1c"
+            },
+            {
+                "name": "der_length_utctime",
+                "lower": "0xe18a3dc",
+                "upper": "0xe18a414"
+            },
+            {
+                "name": "crypto_hmac_sha3_224_alloc_ctx",
+                "lower": "0xe17a5b4",
+                "upper": "0xe17a5e4"
+            },
+            {
+                "name": "raw_free",
+                "lower": "0xe199dac",
+                "upper": "0xe199e04"
+            },
+            {
+                "name": "rsa_make_key_bn_e",
+                "lower": "0xe1809e0",
+                "upper": "0xe180a7c"
+            },
+            {
+                "name": "crypto_shake256_alloc_ctx",
+                "lower": "0xe179668",
+                "upper": "0xe1796b0"
+            },
+            {
+                "name": "der_length_asn1_identifier",
+                "lower": "0xe18ef04",
+                "upper": "0xe18ef10"
+            },
+            {
+                "name": "pkcs_1_v1_5_encode",
+                "lower": "0xe18badc",
+                "upper": "0xe18bc80"
+            },
+            {
+                "name": "sha384_done",
+                "lower": "0xe179cfc",
+                "upper": "0xe179d7c"
+            },
+            {
+                "name": "tee_fs_rpc_close",
+                "lower": "0xe1694ec",
+                "upper": "0xe169584"
+            },
+            {
+                "name": "ecc_find_curve",
+                "lower": "0xe18224c",
+                "upper": "0xe1823e8"
+            },
+            {
+                "name": "clk_alloc",
+                "lower": "0xe11ce14",
+                "upper": "0xe11cef4"
+            },
+            {
+                "name": "ecc_verify_hash_ex",
+                "lower": "0xe182ccc",
+                "upper": "0xe18325c"
+            },
+            {
+                "name": "crypto_acipher_alloc_dsa_public_key",
+                "lower": "0xe17df20",
+                "upper": "0xe17dfbc"
+            },
+            {
+                "name": "crypto_sha224_alloc_ctx",
+                "lower": "0xe178198",
+                "upper": "0xe1781c8"
+            },
+            {
+                "name": "crypto_aes_ctr_alloc_ctx",
+                "lower": "0xe17ba44",
+                "upper": "0xe17bab0"
+            },
+            {
+                "name": "der_length_ia5_string",
+                "lower": "0xe18f914",
+                "upper": "0xe18f9c4"
+            },
+            {
+                "name": "md5_init",
+                "lower": "0xe178318",
+                "upper": "0xe178358"
+            },
+            {
+                "name": "mbedtls_mpi_core_write_be",
+                "lower": "0xe19623c",
+                "upper": "0xe196394"
+            },
+            {
+                "name": "crypto_hmac_sha256_alloc_ctx",
+                "lower": "0xe17a524",
+                "upper": "0xe17a554"
+            },
+            {
+                "name": "mbedtls_mpi_init_mempool",
+                "lower": "0xe1918a8",
+                "upper": "0xe1918e8"
+            },
+            {
+                "name": "crypto_bignum_num_bits",
+                "lower": "0xe17dc94",
+                "upper": "0xe17dc98"
+            },
+            {
+                "name": "ltc_ecc_new_point",
+                "lower": "0xe183e84",
+                "upper": "0xe183edc"
+            },
+            {
+                "name": "sm2_ltc_pke_decrypt",
+                "lower": "0xe18563c",
+                "upper": "0xe185ba0"
+            },
+            {
+                "name": "rand_prime",
+                "lower": "0xe188e34",
+                "upper": "0xe188fbc"
+            },
+            {
+                "name": "mbedtls_mpi_write_binary",
+                "lower": "0xe192c4c",
+                "upper": "0xe192c90"
+            },
+            {
+                "name": "md5_done",
+                "lower": "0xe1785d0",
+                "upper": "0xe17870c"
+            },
+            {
+                "name": "dh_make_key",
+                "lower": "0xe181590",
+                "upper": "0xe181764"
+            },
+            {
+                "name": "fdt_getprop_namelen",
+                "lower": "0xe174154",
+                "upper": "0xe174244"
+            },
+            {
+                "name": "fdt_first_property_offset",
+                "lower": "0xe173e98",
+                "upper": "0xe173ee0"
+            },
+            {
+                "name": "der_encode_asn1_identifier",
+                "lower": "0xe18ebd8",
+                "upper": "0xe18ed10"
+            },
+            {
+                "name": "tee_fs_dirfile_find",
+                "lower": "0xe16649c",
+                "upper": "0xe16665c"
+            },
+            {
+                "name": "dsa_free",
+                "lower": "0xe17e4bc",
+                "upper": "0xe17e500"
+            },
+            {
+                "name": "vsnprintk",
+                "lower": "0xe19c200",
+                "upper": "0xe19c264"
+            },
+            {
+                "name": "inflateReset2",
+                "lower": "0xe16e1d8",
+                "upper": "0xe16e2e0"
+            },
+            {
+                "name": "mbedtls_mpi_sub_int",
+                "lower": "0xe1938b4",
+                "upper": "0xe193968"
+            },
+            {
+                "name": "fdt_stringlist_get",
+                "lower": "0xe174c30",
+                "upper": "0xe174dc8"
+            },
+            {
+                "name": "der_decode_octet_string",
+                "lower": "0xe1903c0",
+                "upper": "0xe1904c0"
+            },
+            {
+                "name": "aes_keysize",
+                "lower": "0xe176874",
+                "upper": "0xe1768c4"
+            },
+            {
+                "name": "ed25519_sign",
+                "lower": "0xe187370",
+                "upper": "0xe187380"
+            },
+            {
+                "name": "memmove",
+                "lower": "0xe19b6cc",
+                "upper": "0xe19b8d8"
+            },
+            {
+                "name": "fdt_parent_offset",
+                "lower": "0xe1745f0",
+                "upper": "0xe1746b0"
+            },
+            {
+                "name": "der_utf8_charsize",
+                "lower": "0xe18a67c",
+                "upper": "0xe18a6b0"
+            },
+            {
+                "name": "syscall_close_ta_session",
+                "lower": "0xe152a88",
+                "upper": "0xe152b54"
+            },
+            {
+                "name": "hash_is_valid",
+                "lower": "0xe187c3c",
+                "upper": "0xe187c9c"
+            },
+            {
+                "name": "der_encode_generalizedtime",
+                "lower": "0xe18ef1c",
+                "upper": "0xe18f2e4"
+            },
+            {
+                "name": "tee_invoke_supp_plugin_rpc",
+                "lower": "0xe16a358",
+                "upper": "0xe16a688"
+            },
+            {
+                "name": "syscall_asymm_operate",
+                "lower": "0xe15c8f0",
+                "upper": "0xe15d47c"
+            },
+            {
+                "name": "snprintf",
+                "lower": "0xe19b158",
+                "upper": "0xe19b22c"
+            },
+            {
+                "name": "tee_pobj_lock_usage",
+                "lower": "0xe169a78",
+                "upper": "0xe169ab0"
+            },
+            {
+                "name": "des_keysize",
+                "lower": "0xe176abc",
+                "upper": "0xe176aec"
+            },
+            {
+                "name": "fdt_get_property",
+                "lower": "0xe174114",
+                "upper": "0xe174154"
+            },
+            {
+                "name": "tee_svc_cryp_free_states",
+                "lower": "0xe1593ac",
+                "upper": "0xe1593fc"
+            },
+            {
+                "name": "fdt_path_offset",
+                "lower": "0xe173d6c",
+                "upper": "0xe173d9c"
+            },
+            {
+                "name": "fdt_setprop",
+                "lower": "0xe175aa4",
+                "upper": "0xe175b5c"
+            },
+            {
+                "name": "syscall_storage_next_enum",
+                "lower": "0xe15f054",
+                "upper": "0xe15f40c"
+            },
+            {
+                "name": "mbedtls_mpi_shrink",
+                "lower": "0xe191b58",
+                "upper": "0xe191d7c"
+            },
+            {
+                "name": "tee_tadb_ta_close",
+                "lower": "0xe162404",
+                "upper": "0xe162478"
+            },
+            {
+                "name": "hash_memory_multi",
+                "lower": "0xe18d82c",
+                "upper": "0xe18d9f8"
+            },
+            {
+                "name": "crypto_init",
+                "lower": "0xe176424",
+                "upper": "0xe1764e4"
+            },
+            {
+                "name": "aes_done",
+                "lower": "0xe176870",
+                "upper": "0xe176874"
+            },
+            {
+                "name": "tee_pobj_release",
+                "lower": "0xe169f2c",
+                "upper": "0xe169ff8"
+            },
+            {
+                "name": "des_setup",
+                "lower": "0xe176d50",
+                "upper": "0xe176dc8"
+            },
+            {
+                "name": "pkcs_1_v1_5_decode",
+                "lower": "0xe18b9b8",
+                "upper": "0xe18badc"
+            },
+            {
+                "name": "syscall_get_property",
+                "lower": "0xe151b80",
+                "upper": "0xe151e68"
+            },
+            {
+                "name": "crypto_sha3_512_alloc_ctx",
+                "lower": "0xe1782e8",
+                "upper": "0xe178318"
+            },
+            {
+                "name": "tee_cipher_get_block_size",
+                "lower": "0xe14fe88",
+                "upper": "0xe15023c"
+            },
+            {
+                "name": "tee_fs_fek_crypt",
+                "lower": "0xe163398",
+                "upper": "0xe16362c"
+            },
+            {
+                "name": "tee_fs_htree_meta_set_dirty",
+                "lower": "0xe168694",
+                "upper": "0xe1686c0"
+            },
+            {
+                "name": "crypto_acipher_sm2_kep_derive",
+                "lower": "0xe1865ac",
+                "upper": "0xe186ad0"
+            },
+            {
+                "name": "der_encode_sequence_multi",
+                "lower": "0xe189754",
+                "upper": "0xe1899ec"
+            },
+            {
+                "name": "mbedtls_mpi_read_string",
+                "lower": "0xe1923e0",
+                "upper": "0xe1926fc"
+            },
+            {
+                "name": "sha256_init",
+                "lower": "0xe179798",
+                "upper": "0xe179800"
+            },
+            {
+                "name": "tee_fs_htree_get_meta",
+                "lower": "0xe16867c",
+                "upper": "0xe168694"
+            },
+            {
+                "name": "tweetnacl_crypto_scalarmult",
+                "lower": "0xe18ce44",
+                "upper": "0xe18d0fc"
+            },
+            {
+                "name": "fdt_get_string",
+                "lower": "0xe173600",
+                "upper": "0xe17384c"
+            },
+            {
+                "name": "der_encode_octet_string",
+                "lower": "0xe1904c0",
+                "upper": "0xe1905b4"
+            },
+            {
+                "name": "crypto_acipher_gen_dsa_key",
+                "lower": "0xe17dfbc",
+                "upper": "0xe17e0e4"
+            },
+            {
+                "name": "mbedtls_mpi_core_mla",
+                "lower": "0xe196928",
+                "upper": "0xe19733c"
+            },
+            {
+                "name": "inflate",
+                "lower": "0xe16e6fc",
+                "upper": "0xe1706fc"
+            },
+            {
+                "name": "tweetnacl_crypto_sk_to_pk",
+                "lower": "0xe18d108",
+                "upper": "0xe18d1a4"
+            },
+            {
+                "name": "xts_start",
+                "lower": "0xe17cdf0",
+                "upper": "0xe17ceb8"
+            },
+            {
+                "name": "der_encode_asn1_length",
+                "lower": "0xe18ed10",
+                "upper": "0xe18ef04"
+            },
+            {
+                "name": "fdt_move",
+                "lower": "0xe1732bc",
+                "upper": "0xe173340"
+            },
+            {
+                "name": "ed25519ctx_verify",
+                "lower": "0xe1874c4",
+                "upper": "0xe187584"
+            },
+            {
+                "name": "syscall_authenc_update_payload",
+                "lower": "0xe15c010",
+                "upper": "0xe15c244"
+            },
+            {
+                "name": "tee_fs_htree_read_block",
+                "lower": "0xe168e4c",
+                "upper": "0xe169040"
+            },
+            {
+                "name": "plat_prng_add_jitter_entropy",
+                "lower": "0xe103a18",
+                "upper": "0xe103b98"
+            },
+            {
+                "name": "sha256_done",
+                "lower": "0xe1799d8",
+                "upper": "0xe179b1c"
+            },
+            {
+                "name": "der_length_generalizedtime",
+                "lower": "0xe18f5fc",
+                "upper": "0xe18f664"
+            },
+            {
+                "name": "mbedtls_mpi_shift_r",
+                "lower": "0xe192d50",
+                "upper": "0xe192da0"
+            },
+            {
+                "name": "syscall_get_property_name_to_index",
+                "lower": "0xe151e68",
+                "upper": "0xe1520bc"
+            },
+            {
+                "name": "tee_obj_free",
+                "lower": "0xe1513cc",
+                "upper": "0xe15140c"
+            },
+            {
+                "name": "malloc_buffer_overlaps_heap",
+                "lower": "0xe19a790",
+                "upper": "0xe19a7c0"
+            },
+            {
+                "name": "fdt_find_string_",
+                "lower": "0xe173228",
+                "upper": "0xe1732bc"
+            },
+            {
+                "name": "tee_uuid_to_octets",
+                "lower": "0xe16a0dc",
+                "upper": "0xe16a1f0"
+            },
+            {
+                "name": "sha256_test",
+                "lower": "0xe179800",
+                "upper": "0xe179808"
+            },
+            {
+                "name": "___ftmn_callee_done_check",
+                "lower": "0xe19ef70",
+                "upper": "0xe19f07c"
+            },
+            {
+                "name": "qsort",
+                "lower": "0xe19a988",
+                "upper": "0xe19b158"
+            },
+            {
+                "name": "prng_is_valid",
+                "lower": "0xe187c9c",
+                "upper": "0xe187cfc"
+            },
+            {
+                "name": "der_length_integer",
+                "lower": "0xe18fdf0",
+                "upper": "0xe18ff3c"
+            },
+            {
+                "name": "rsa_init",
+                "lower": "0xe180564",
+                "upper": "0xe1805b0"
+            },
+            {
+                "name": "clk_dt_get_by_index",
+                "lower": "0xe11d4b8",
+                "upper": "0xe11d4f4"
+            },
+            {
+                "name": "syscall_cryp_state_copy",
+                "lower": "0xe1591b8",
+                "upper": "0xe1593ac"
+            },
+            {
+                "name": "hmac_process",
+                "lower": "0xe17a9d4",
+                "upper": "0xe17aa54"
+            },
+            {
+                "name": "mbedtls_mpi_get_bit",
+                "lower": "0xe192090",
+                "upper": "0xe1920f4"
+            },
+            {
+                "name": "mbedtls_mpi_read_binary",
+                "lower": "0xe192ba8",
+                "upper": "0xe192c4c"
+            },
+            {
+                "name": "ltc_ecc_mulmod",
+                "lower": "0xe183470",
+                "upper": "0xe18395c"
+            },
+            {
+                "name": "tee_fs_rpc_open_dfh",
+                "lower": "0xe16948c",
+                "upper": "0xe1694bc"
+            },
+            {
+                "name": "tee_pobj_get",
+                "lower": "0xe169bf8",
+                "upper": "0xe169eec"
+            },
+            {
+                "name": "trace_printf",
+                "lower": "0xe19e310",
+                "upper": "0xe19e3dc"
+            },
+            {
+                "name": "mbedtls_mpi_montmul",
+                "lower": "0xe194958",
+                "upper": "0xe1949d0"
+            },
+            {
+                "name": "clk_free",
+                "lower": "0xe11cef4",
+                "upper": "0xe11cf14"
+            },
+            {
+                "name": "sw_crypto_acipher_alloc_rsa_keypair",
+                "lower": "0xe17ef58",
+                "upper": "0xe17f014"
+            },
+            {
+                "name": "tee_fs_htree_open",
+                "lower": "0xe1684cc",
+                "upper": "0xe16867c"
+            },
+            {
+                "name": "dsa_verify_hash_raw",
+                "lower": "0xe17e824",
+                "upper": "0xe17ea7c"
+            },
+            {
+                "name": "tee_tadb_get_tag",
+                "lower": "0xe161f18",
+                "upper": "0xe161f8c"
+            },
+            {
+                "name": "memcpy",
+                "lower": "0xe19b54c",
+                "upper": "0xe19b6cc"
+            },
+            {
+                "name": "cbc_encrypt",
+                "lower": "0xe17b638",
+                "upper": "0xe17b788"
+            },
+            {
+                "name": "register_hash",
+                "lower": "0xe176598",
+                "upper": "0xe176640"
+            },
+            {
+                "name": "handle_put",
+                "lower": "0xe122808",
+                "upper": "0xe122888"
+            },
+            {
+                "name": "mbedtls_mpi_core_exp_mod",
+                "lower": "0xe197d74",
+                "upper": "0xe197ddc"
+            },
+            {
+                "name": "tee_do_cipher_update",
+                "lower": "0xe15023c",
+                "upper": "0xe15049c"
+            },
+            {
+                "name": "fdt_node_offset_by_prop_value",
+                "lower": "0xe1746b0",
+                "upper": "0xe1747cc"
+            },
+            {
+                "name": "der_length_bit_string",
+                "lower": "0xe18db3c",
+                "upper": "0xe18dbc0"
+            },
+            {
+                "name": "dh_free",
+                "lower": "0xe181570",
+                "upper": "0xe181590"
+            },
+            {
+                "name": "tee_fs_dirfile_update_hash",
+                "lower": "0xe166b6c",
+                "upper": "0xe166cc4"
+            },
+            {
+                "name": "crypto_hmac_sha1_alloc_ctx",
+                "lower": "0xe17a4c4",
+                "upper": "0xe17a4f4"
+            },
+            {
+                "name": "sw_crypto_acipher_rsanopad_decrypt",
+                "lower": "0xe17f19c",
+                "upper": "0xe17f284"
+            },
+            {
+                "name": "crypto_des3_cbc_alloc_ctx",
+                "lower": "0xe17b42c",
+                "upper": "0xe17b460"
+            },
+            {
+                "name": "der_length_custom_type",
+                "lower": "0xe18e7c4",
+                "upper": "0xe18ea14"
+            },
+            {
+                "name": "mbedtls_ct_memcpy_if",
+                "lower": "0xe198060",
+                "upper": "0xe198220"
+            },
+            {
+                "name": "pkcs_1_pss_decode",
+                "lower": "0xe18b260",
+                "upper": "0xe18b620"
+            },
+            {
+                "name": "malloc_get_stats",
+                "lower": "0xe19980c",
+                "upper": "0xe199834"
+            },
+            {
+                "name": "tweetnacl_crypto_scalarmult_base",
+                "lower": "0xe18d0fc",
+                "upper": "0xe18d108"
+            },
+            {
+                "name": "raw_malloc_get_stats",
+                "lower": "0xe19a6d8",
+                "upper": "0xe19a730"
+            },
+            {
+                "name": "pk_oid_str_to_num",
+                "lower": "0xe18a964",
+                "upper": "0xe18aa54"
+            },
+            {
+                "name": "pkcs_1_oaep_decode",
+                "lower": "0xe18abc8",
+                "upper": "0xe18af0c"
+            },
+            {
+                "name": "tee_obj_get",
+                "lower": "0xe15124c",
+                "upper": "0xe1512b4"
+            },
+            {
+                "name": "rijndael_ecb_decrypt",
+                "lower": "0xe188168",
+                "upper": "0xe188528"
+            },
+            {
+                "name": "inflate_fast",
+                "lower": "0xe171abc",
+                "upper": "0xe1725f8"
+            },
+            {
+                "name": "hmac_init",
+                "lower": "0xe17a828",
+                "upper": "0xe17a9d4"
+            },
+            {
+                "name": "dsa_generate_key",
+                "lower": "0xe17e500",
+                "upper": "0xe17e578"
+            },
+            {
+                "name": "tee_tadb_ta_open",
+                "lower": "0xe161d58",
+                "upper": "0xe161f00"
+            },
+            {
+                "name": "sw_crypto_acipher_free_rsa_public_key",
+                "lower": "0xe17eecc",
+                "upper": "0xe17eefc"
+            },
+            {
+                "name": "ltc_ecc_projective_add_point",
+                "lower": "0xe184008",
+                "upper": "0xe18498c"
+            },
+            {
+                "name": "malloc",
+                "lower": "0xe199fa0",
+                "upper": "0xe199fd8"
+            },
+            {
+                "name": "sw_crypto_acipher_free_rsa_keypair",
+                "lower": "0xe17eefc",
+                "upper": "0xe17ef58"
+            },
+            {
+                "name": "crypto_acipher_gen_ed25519_key",
+                "lower": "0xe186bbc",
+                "upper": "0xe186c78"
+            },
+            {
+                "name": "sw_crypto_acipher_rsassa_verify",
+                "lower": "0xe17f9e0",
+                "upper": "0xe17fde0"
+            },
+            {
+                "name": "print_stack_arm64",
+                "lower": "0xe16df0c",
+                "upper": "0xe16dfb4"
+            },
+            {
+                "name": "tee_pobj_rename",
+                "lower": "0xe169ff8",
+                "upper": "0xe16a0dc"
+            },
+            {
+                "name": "ecb_decrypt",
+                "lower": "0xe17c278",
+                "upper": "0xe17c368"
+            },
+            {
+                "name": "md5_test",
+                "lower": "0xe178358",
+                "upper": "0xe178360"
+            },
+            {
+                "name": "tee_fs_rpc_remove_dfh",
+                "lower": "0xe169928",
+                "upper": "0xe169a50"
+            },
+            {
+                "name": "sha3_256_test",
+                "lower": "0xe179518",
+                "upper": "0xe179520"
+            },
+            {
+                "name": "syscall_authenc_init",
+                "lower": "0xe15bce4",
+                "upper": "0xe15beb0"
+            },
+            {
+                "name": "aes_setup",
+                "lower": "0xe1768c4",
+                "upper": "0xe1768c8"
+            },
+            {
+                "name": "tee_obj_attr_clear",
+                "lower": "0xe155210",
+                "upper": "0xe1552fc"
+            },
+            {
+                "name": "der_decode_ia5_string",
+                "lower": "0xe18f664",
+                "upper": "0xe18f788"
+            },
+            {
+                "name": "syscall_cryp_derive_key",
+                "lower": "0xe15af5c",
+                "upper": "0xe15bc68"
+            },
+            {
+                "name": "tee_ta_decrypt_init",
+                "lower": "0xe162f90",
+                "upper": "0xe1630e4"
+            },
+            {
+                "name": "ltc_init_multi",
+                "lower": "0xe1889f8",
+                "upper": "0xe188b44"
+            },
+            {
+                "name": "crypto_des3_cmac_alloc_ctx",
+                "lower": "0xe17ac94",
+                "upper": "0xe17aca0"
+            },
+            {
+                "name": "fdt_subnode_offset_namelen",
+                "lower": "0xe173ac8",
+                "upper": "0xe173bc4"
+            },
+            {
+                "name": "syscall_hash_init",
+                "lower": "0xe1594b4",
+                "upper": "0xe15965c"
+            },
+            {
+                "name": "ltc_ecc_copy_point",
+                "lower": "0xe183f90",
+                "upper": "0xe184008"
+            },
+            {
+                "name": "mempool_free",
+                "lower": "0xe19eb64",
+                "upper": "0xe19ebac"
+            },
+            {
+                "name": "tee_ta_decrypt_update",
+                "lower": "0xe1630e4",
+                "upper": "0xe163188"
+            },
+            {
+                "name": "rsa_decrypt_key_ex",
+                "lower": "0xe17fde0",
+                "upper": "0xe17ff9c"
+            },
+            {
+                "name": "fdt_node_depth",
+                "lower": "0xe174554",
+                "upper": "0xe1745f0"
+            },
+            {
+                "name": "memzero_explicit",
+                "lower": "0xe19ecf4",
+                "upper": "0xe19ed2c"
+            },
+            {
+                "name": "tee_fs_rpc_read_final",
+                "lower": "0xe1696d4",
+                "upper": "0xe169718"
+            },
+            {
+                "name": "syscall_cryp_obj_reset",
+                "lower": "0xe156304",
+                "upper": "0xe156400"
+            },
+            {
+                "name": "crypto_acipher_rsanopad_encrypt",
+                "lower": "0xe17f138",
+                "upper": "0xe17f19c"
+            },
+            {
+                "name": "mbedtls_mpi_bitlen",
+                "lower": "0xe1922c0",
+                "upper": "0xe1922f4"
+            },
+            {
+                "name": "syscall_get_time",
+                "lower": "0xe153078",
+                "upper": "0xe1531b0"
+            },
+            {
+                "name": "raw_malloc_flags",
+                "lower": "0xe199aa0",
+                "upper": "0xe199d68"
+            },
+            {
+                "name": "rsa_exptmod",
+                "lower": "0xe180158",
+                "upper": "0xe180564"
+            },
+            {
+                "name": "atomic_inc32",
+                "lower": "0xe19f4d0",
+                "upper": "0xe19f4ec"
+            },
+            {
+                "name": "gpio_dt_alloc_pin",
+                "lower": "0xe11d838",
+                "upper": "0xe11d8c0"
+            },
+            {
+                "name": "der_decode_custom_type_ex",
+                "lower": "0xe18dd80",
+                "upper": "0xe18e4a4"
+            },
+            {
+                "name": "tee_hash_createdigest",
+                "lower": "0xe14fd8c",
+                "upper": "0xe14fe88"
+            },
+            {
+                "name": "raw_malloc",
+                "lower": "0xe199d68",
+                "upper": "0xe199dac"
+            },
+            {
+                "name": "bgetz",
+                "lower": "0xe198d6c",
+                "upper": "0xe198e60"
+            },
+            {
+                "name": "der_utf8_valid_char",
+                "lower": "0xe18a6b0",
+                "upper": "0xe18a6c0"
+            },
+            {
+                "name": "fdt_num_mem_rsv",
+                "lower": "0xe1739a4",
+                "upper": "0xe173a08"
+            },
+            {
+                "name": "syscall_cryp_obj_get_info",
+                "lower": "0xe154a48",
+                "upper": "0xe154bb8"
+            },
+            {
+                "name": "mbedtls_mpi_mul_mpi",
+                "lower": "0xe193968",
+                "upper": "0xe193be8"
+            },
+            {
+                "name": "crypto_acipher_dh_shared_secret",
+                "lower": "0xe18151c",
+                "upper": "0xe181570"
+            },
+            {
+                "name": "sha1_process",
+                "lower": "0xe178c24",
+                "upper": "0xe178d44"
+            },
+            {
+                "name": "ltc_deinit_multi",
+                "lower": "0xe188ca4",
+                "upper": "0xe188d64"
+            },
+            {
+                "name": "der_encode_ia5_string",
+                "lower": "0xe18f788",
+                "upper": "0xe18f898"
+            },
+            {
+                "name": "syscall_storage_free_enum",
+                "lower": "0xe15ed54",
+                "upper": "0xe15ee08"
+            },
+            {
+                "name": "___ftmn_set_check_res_memcmp",
+                "lower": "0xe19f244",
+                "upper": "0xe19f31c"
+            },
+            {
+                "name": "trace_vprintf",
+                "lower": "0xe19e3dc",
+                "upper": "0xe19e7a8"
+            },
+            {
+                "name": "syscall_storage_obj_rename",
+                "lower": "0xe15ea4c",
+                "upper": "0xe15eca0"
+            },
+            {
+                "name": "tee_obj_attr_free",
+                "lower": "0xe155124",
+                "upper": "0xe155210"
+            },
+            {
+                "name": "der_encode_utf8_string",
+                "lower": "0xe18a414",
+                "upper": "0xe18a67c"
+            },
+            {
+                "name": "sha1_init",
+                "lower": "0xe17882c",
+                "upper": "0xe178874"
+            },
+            {
+                "name": "ccm_init",
+                "lower": "0xe1776ec",
+                "upper": "0xe1777f8"
+            },
+            {
+                "name": "ecb_done",
+                "lower": "0xe17c368",
+                "upper": "0xe17c3c0"
+            },
+            {
+                "name": "mbedtls_mpi_init",
+                "lower": "0xe191884",
+                "upper": "0xe1918a8"
+            },
+            {
+                "name": "tee_svc_storage_close_all_enum",
+                "lower": "0xe15fd70",
+                "upper": "0xe15fdc0"
+            },
+            {
+                "name": "mbedtls_mpi_lsb",
+                "lower": "0xe19222c",
+                "upper": "0xe1922c0"
+            },
+            {
+                "name": "ltc_ecc_map",
+                "lower": "0xe18325c",
+                "upper": "0xe183470"
+            },
+            {
+                "name": "crypto_sha3_384_alloc_ctx",
+                "lower": "0xe1782b8",
+                "upper": "0xe1782e8"
+            },
+            {
+                "name": "fdt_check_node_offset_",
+                "lower": "0xe172e7c",
+                "upper": "0xe172ee0"
+            },
+            {
+                "name": "crypto_aes_ecb_alloc_ctx",
+                "lower": "0xe17c1dc",
+                "upper": "0xe17c210"
+            },
+            {
+                "name": "_assert_log",
+                "lower": "0xe11de30",
+                "upper": "0xe11de8c"
+            },
+            {
+                "name": "register_cipher",
+                "lower": "0xe1764e4",
+                "upper": "0xe176598"
+            },
+            {
+                "name": "syscall_mask_cancellation",
+                "lower": "0xe152eb0",
+                "upper": "0xe152f48"
+            },
+            {
+                "name": "sw_crypto_acipher_rsaes_encrypt",
+                "lower": "0xe17f574",
+                "upper": "0xe17f730"
+            },
+            {
+                "name": "mbedtls_mpi_add_mpi",
+                "lower": "0xe1937a0",
+                "upper": "0xe1937d0"
+            },
+            {
+                "name": "ecc_sign_hash_ex",
+                "lower": "0xe182794",
+                "upper": "0xe182ccc"
+            },
+            {
+                "name": "ltc_ecc_is_point",
+                "lower": "0xe18bf94",
+                "upper": "0xe18c198"
+            },
+            {
+                "name": "aes_ecb_encrypt",
+                "lower": "0xe1768c8",
+                "upper": "0xe1768cc"
+            },
+            {
+                "name": "__stack_chk_fail",
+                "lower": "0xe19b22c",
+                "upper": "0xe19b26c"
+            },
+            {
+                "name": "ccm_done",
+                "lower": "0xe177d20",
+                "upper": "0xe177e5c"
+            },
+            {
+                "name": "pkcs_1_oaep_encode",
+                "lower": "0xe18af0c",
+                "upper": "0xe18b260"
+            },
+            {
+                "name": "syscall_cipher_init",
+                "lower": "0xe159c6c",
+                "upper": "0xe159ee4"
+            },
+            {
+                "name": "pl011_init",
+                "lower": "0xe11a7e0",
+                "upper": "0xe11a8e4"
+            },
+            {
+                "name": "syscall_asymm_verify",
+                "lower": "0xe15d47c",
+                "upper": "0xe15d94c"
+            },
+            {
+                "name": "___ftmn_expect_state",
+                "lower": "0xe19ed2c",
+                "upper": "0xe19eddc"
+            },
+            {
+                "name": "sha1_test",
+                "lower": "0xe178874",
+                "upper": "0xe17887c"
+            },
+            {
+                "name": "syscall_log",
+                "lower": "0xe1514cc",
+                "upper": "0xe1515bc"
+            },
+            {
+                "name": "sw_crypto_acipher_rsanopad_encrypt",
+                "lower": "0xe17f138",
+                "upper": "0xe17f19c"
+            },
+            {
+                "name": "der_decode_generalizedtime",
+                "lower": "0xe18f300",
+                "upper": "0xe18f5fc"
+            },
+            {
+                "name": "mbedtls_mpi_core_check_zero_ct",
+                "lower": "0xe197ee8",
+                "upper": "0xe197f58"
+            },
+            {
+                "name": "find_cipher",
+                "lower": "0xe187a74",
+                "upper": "0xe187b0c"
+            },
+            {
+                "name": "mbedtls_mpi_sub_mpi",
+                "lower": "0xe1937d0",
+                "upper": "0xe193800"
+            },
+            {
+                "name": "consttime_memcmp",
+                "lower": "0xe19ebfc",
+                "upper": "0xe19ecf4"
+            },
+            {
+                "name": "tee_obj_set_type",
+                "lower": "0xe155ce4",
+                "upper": "0xe156158"
+            },
+            {
+                "name": "des3_keysize",
+                "lower": "0xe176aec",
+                "upper": "0xe176b2c"
+            },
+            {
+                "name": "syscall_cryp_obj_get_attr",
+                "lower": "0xe154ec0",
+                "upper": "0xe155124"
+            },
+            {
+                "name": "strnlen",
+                "lower": "0xe19c060",
+                "upper": "0xe19c0bc"
+            },
+            {
+                "name": "crypto_acipher_alloc_ed25519_public_key",
+                "lower": "0xe186b60",
+                "upper": "0xe186bbc"
+            },
+            {
+                "name": "fdt_getprop",
+                "lower": "0xe174244",
+                "upper": "0xe174284"
+            },
+            {
+                "name": "sm2_ltc_dsa_sign",
+                "lower": "0xe1850c4",
+                "upper": "0xe18538c"
+            },
+            {
+                "name": "free_wipe",
+                "lower": "0xe19a0f4",
+                "upper": "0xe19a118"
+            },
+            {
+                "name": "mempool_alloc",
+                "lower": "0xe19e9f8",
+                "upper": "0xe19ea80"
+            },
+            {
+                "name": "sha3_process",
+                "lower": "0xe17902c",
+                "upper": "0xe179230"
+            },
+            {
+                "name": "raw_malloc_init_ctx",
+                "lower": "0xe19a208",
+                "upper": "0xe19a248"
+            },
+            {
+                "name": "syscall_cipher_final",
+                "lower": "0xe15a1bc",
+                "upper": "0xe15a1fc"
+            },
+            {
+                "name": "mempool_calloc",
+                "lower": "0xe19ea80",
+                "upper": "0xe19eb64"
+            },
+            {
+                "name": "strrchr",
+                "lower": "0xe19c0bc",
+                "upper": "0xe19c130"
+            },
+            {
+                "name": "ecc_set_curve",
+                "lower": "0xe1824e8",
+                "upper": "0xe182678"
+            },
+            {
+                "name": "inflateInit_",
+                "lower": "0xe16e420",
+                "upper": "0xe16e450"
+            },
+            {
+                "name": "calloc",
+                "lower": "0xe19a01c",
+                "upper": "0xe19a058"
+            },
+            {
+                "name": "syscall_cryp_obj_copy",
+                "lower": "0xe157198",
+                "upper": "0xe157384"
+            },
+            {
+                "name": "der_decode_raw_bit_string",
+                "lower": "0xe191220",
+                "upper": "0xe191374"
+            },
+            {
+                "name": "tee_tadb_ta_get_property",
+                "lower": "0xe161f00",
+                "upper": "0xe161f18"
+            },
+            {
+                "name": "tee_pobj_unlock_usage",
+                "lower": "0xe169ab0",
+                "upper": "0xe169ae8"
+            },
+            {
+                "name": "der_decode_bit_string",
+                "lower": "0xe1910ec",
+                "upper": "0xe191220"
+            },
+            {
+                "name": "tee_fs_dirfile_remove",
+                "lower": "0xe1669dc",
+                "upper": "0xe166b6c"
+            },
+            {
+                "name": "ed25519_make_key",
+                "lower": "0xe187080",
+                "upper": "0xe1870c8"
+            },
+            {
+                "name": "der_encode_boolean",
+                "lower": "0xe18dd18",
+                "upper": "0xe18dd64"
+            },
+            {
+                "name": "crypto_acipher_alloc_dh_keypair",
+                "lower": "0xe181334",
+                "upper": "0xe1813ec"
+            },
+            {
+                "name": "pk_oid_cmp_with_ulong",
+                "lower": "0xe18a8b0",
+                "upper": "0xe18a964"
+            },
+            {
+                "name": "fdt_stringlist_contains",
+                "lower": "0xe1748ec",
+                "upper": "0xe1749ac"
+            },
+            {
+                "name": "mbedtls_mpi_lset",
+                "lower": "0xe191fdc",
+                "upper": "0xe192090"
+            },
+            {
+                "name": "syscall_cryp_obj_close",
+                "lower": "0xe15621c",
+                "upper": "0xe156304"
+            },
+            {
+                "name": "clk_dt_get_by_name",
+                "lower": "0xe11d398",
+                "upper": "0xe11d40c"
+            },
+            {
+                "name": "find_hash",
+                "lower": "0xe187b0c",
+                "upper": "0xe187ba4"
+            },
+            {
+                "name": "crypto_des3_ecb_alloc_ctx",
+                "lower": "0xe17c244",
+                "upper": "0xe17c278"
+            },
+            {
+                "name": "mbedtls_mpi_core_sub_int",
+                "lower": "0xe197e48",
+                "upper": "0xe197ee8"
+            },
+            {
+                "name": "adler32",
+                "lower": "0xe171a8c",
+                "upper": "0xe171abc"
+            },
+            {
+                "name": "crypto_aes_xts_alloc_ctx",
+                "lower": "0xe17c7a0",
+                "upper": "0xe17c80c"
+            },
+            {
+                "name": "tee_fs_dirfile_open",
+                "lower": "0xe166064",
+                "upper": "0xe1662ac"
+            },
+            {
+                "name": "tee_pobj_create_final",
+                "lower": "0xe169eec",
+                "upper": "0xe169f2c"
+            },
+            {
+                "name": "syscall_storage_obj_del",
+                "lower": "0xe15e92c",
+                "upper": "0xe15ea4c"
+            },
+            {
+                "name": "sha3_256_init",
+                "lower": "0xe178f6c",
+                "upper": "0xe178fac"
+            },
+            {
+                "name": "___ftmn_callee_done",
+                "lower": "0xe19eddc",
+                "upper": "0xe19ee28"
+            },
+            {
+                "name": "des3_ecb_decrypt",
+                "lower": "0xe177188",
+                "upper": "0xe177284"
+            },
+            {
+                "name": "mbedtls_mpi_div_int",
+                "lower": "0xe1945dc",
+                "upper": "0xe194698"
+            },
+            {
+                "name": "sm2_ltc_pke_encrypt",
+                "lower": "0xe185ba0",
+                "upper": "0xe186090"
+            },
+            {
+                "name": "__plat_rng_init",
+                "lower": "0xe15049c",
+                "upper": "0xe15055c"
+            },
+            {
+                "name": "sha3_224_test",
+                "lower": "0xe179510",
+                "upper": "0xe179518"
+            },
+            {
+                "name": "gpio_dt_get_by_index",
+                "lower": "0xe11d8c0",
+                "upper": "0xe11da14"
+            },
+            {
+                "name": "rsa_sign_hash_ex",
+                "lower": "0xe180a7c",
+                "upper": "0xe180d18"
+            },
+            {
+                "name": "ctr_decrypt",
+                "lower": "0xe17bab0",
+                "upper": "0xe17bac8"
+            },
+            {
+                "name": "sha256_process",
+                "lower": "0xe179b1c",
+                "upper": "0xe179c3c"
+            },
+            {
+                "name": "crypto_bignum_allocate",
+                "lower": "0xe17dd60",
+                "upper": "0xe17ddb8"
+            },
+            {
+                "name": "fdt_pack",
+                "lower": "0xe176184",
+                "upper": "0xe176208"
+            },
+            {
+                "name": "mbedtls_mpi_is_prime_ext",
+                "lower": "0xe195c40",
+                "upper": "0xe195d58"
+            },
+            {
+                "name": "crypto_acipher_ed25519ctx_sign",
+                "lower": "0xe186d84",
+                "upper": "0xe186ec0"
+            },
+            {
+                "name": "x25519_shared_secret",
+                "lower": "0xe18797c",
+                "upper": "0xe187a08"
+            },
+            {
+                "name": "fdt_setprop_placeholder",
+                "lower": "0xe1759b0",
+                "upper": "0xe175aa4"
+            },
+            {
+                "name": "___ftmn_copy_linked_call_res",
+                "lower": "0xe19f0d8",
+                "upper": "0xe19f170"
+            },
+            {
+                "name": "mbedtls_mpi_mul_int",
+                "lower": "0xe193be8",
+                "upper": "0xe193cfc"
+            },
+            {
+                "name": "des_test",
+                "lower": "0xe176ab0",
+                "upper": "0xe176ab8"
+            },
+            {
+                "name": "mbedtls_mpi_exp_mod",
+                "lower": "0xe194f0c",
+                "upper": "0xe194f4c"
+            },
+            {
+                "name": "der_decode_object_identifier",
+                "lower": "0xe18ff3c",
+                "upper": "0xe1900c8"
+            },
+            {
+                "name": "des3_done",
+                "lower": "0xe177284",
+                "upper": "0xe177288"
+            },
+            {
+                "name": "tee_fs_rpc_read_init",
+                "lower": "0xe169584",
+                "upper": "0xe1696d4"
+            },
+            {
+                "name": "crypto_acipher_dsa_verify",
+                "lower": "0xe17e338",
+                "upper": "0xe17e4bc"
+            },
+            {
+                "name": "crypto_bignum_free",
+                "lower": "0xe17ddb8",
+                "upper": "0xe17de10"
+            },
+            {
+                "name": "___ftmn_callee_done_memcmp",
+                "lower": "0xe19eea0",
+                "upper": "0xe19ef70"
+            },
+            {
+                "name": "cipher_is_valid",
+                "lower": "0xe187a14",
+                "upper": "0xe187a74"
+            },
+            {
+                "name": "der_encode_raw_bit_string",
+                "lower": "0xe18dbc0",
+                "upper": "0xe18dd18"
+            },
+            {
+                "name": "mbedtls_platform_zeroize",
+                "lower": "0xe198220",
+                "upper": "0xe1982a0"
+            },
+            {
+                "name": "mbedtls_mpi_cmp_abs",
+                "lower": "0xe192da0",
+                "upper": "0xe192f40"
+            },
+            {
+                "name": "zmemcpy",
+                "lower": "0xe17112c",
+                "upper": "0xe171190"
+            },
+            {
+                "name": "memchr",
+                "lower": "0xe19b26c",
+                "upper": "0xe19b424"
+            },
+            {
+                "name": "syscall_storage_obj_open",
+                "lower": "0xe15df20",
+                "upper": "0xe15e1f0"
+            },
+            {
+                "name": "crypto_acipher_alloc_ed25519_keypair",
+                "lower": "0xe186ad0",
+                "upper": "0xe186b60"
+            },
+            {
+                "name": "der_decode_utctime",
+                "lower": "0xe190a20",
+                "upper": "0xe190cbc"
+            },
+            {
+                "name": "fdt_size_cells",
+                "lower": "0xe17637c",
+                "upper": "0xe1763c4"
+            },
+            {
+                "name": "rijndael_setup",
+                "lower": "0xe188528",
+                "upper": "0xe1888f4"
+            },
+            {
+                "name": "dsa_sign_hash_raw",
+                "lower": "0xe17e578",
+                "upper": "0xe17e824"
+            },
+            {
+                "name": "___ftmn_set_check_res_not_zero",
+                "lower": "0xe19f1c4",
+                "upper": "0xe19f244"
+            },
+            {
+                "name": "tee_obj_attr_from_binary",
+                "lower": "0xe1554dc",
+                "upper": "0xe15566c"
+            },
+            {
+                "name": "mbedtls_mpi_core_read_be",
+                "lower": "0xe196160",
+                "upper": "0xe19623c"
+            },
+            {
+                "name": "syscall_check_access_rights",
+                "lower": "0xe152d34",
+                "upper": "0xe152d94"
+            },
+            {
+                "name": "tee_alg_get_digest_size",
+                "lower": "0xe14fd44",
+                "upper": "0xe14fd8c"
+            },
+            {
+                "name": "fdt_supernode_atdepth_offset",
+                "lower": "0xe1743e4",
+                "upper": "0xe174554"
+            },
+            {
+                "name": "mbedtls_mpi_cmp_int",
+                "lower": "0xe193168",
+                "upper": "0xe193214"
+            },
+            {
+                "name": "sw_crypto_acipher_alloc_rsa_public_key",
+                "lower": "0xe17ee70",
+                "upper": "0xe17eecc"
+            },
+            {
+                "name": "gic_init_per_cpu",
+                "lower": "0xe11b3ac",
+                "upper": "0xe11b424"
+            },
+            {
+                "name": "der_decode_asn1_identifier",
+                "lower": "0xe18eac0",
+                "upper": "0xe18ebd8"
+            },
+            {
+                "name": "ftrace_map_lr",
+                "lower": "0xe16dd98",
+                "upper": "0xe16ddac"
+            },
+            {
+                "name": "cbc_done",
+                "lower": "0xe17b5e0",
+                "upper": "0xe17b638"
+            },
+            {
+                "name": "crypto_acipher_gen_dh_key",
+                "lower": "0xe1813ec",
+                "upper": "0xe18151c"
+            },
+            {
+                "name": "fdt_next_subnode",
+                "lower": "0xe173184",
+                "upper": "0xe173228"
+            },
+            {
+                "name": "crypto_acipher_rsassa_verify",
+                "lower": "0xe17f9e0",
+                "upper": "0xe17fde0"
+            },
+            {
+                "name": "syscall_open_ta_session",
+                "lower": "0xe15286c",
+                "upper": "0xe152a88"
+            },
+            {
+                "name": "mbedtls_mpi_mod_int",
+                "lower": "0xe194774",
+                "upper": "0xe194924"
+            },
+            {
+                "name": "find_prng",
+                "lower": "0xe187ba4",
+                "upper": "0xe187c3c"
+            },
+            {
+                "name": "der_length_object_identifier",
+                "lower": "0xe1902e0",
+                "upper": "0xe1903c0"
+            },
+            {
+                "name": "syscall_hash_update",
+                "lower": "0xe15965c",
+                "upper": "0xe159828"
+            },
+            {
+                "name": "crypto_acipher_alloc_dsa_keypair",
+                "lower": "0xe17de68",
+                "upper": "0xe17df20"
+            },
+            {
+                "name": "crypto_md5_alloc_ctx",
+                "lower": "0xe178138",
+                "upper": "0xe178168"
+            },
+            {
+                "name": "crypto_acipher_free_rsa_public_key",
+                "lower": "0xe17eecc",
+                "upper": "0xe17eefc"
+            },
+            {
+                "name": "strlcpy",
+                "lower": "0xe19e0b8",
+                "upper": "0xe19e16c"
+            },
+            {
+                "name": "der_printable_char_encode",
+                "lower": "0xe19085c",
+                "upper": "0xe190898"
+            },
+            {
+                "name": "strncmp",
+                "lower": "0xe19bee8",
+                "upper": "0xe19c060"
+            },
+            {
+                "name": "mbedtls_mpi_copy",
+                "lower": "0xe191e10",
+                "upper": "0xe191fb0"
+            },
+            {
+                "name": "mbedtls_mpi_core_clz",
+                "lower": "0xe195f30",
+                "upper": "0xe195f4c"
+            },
+            {
+                "name": "ecc_free",
+                "lower": "0xe1823e8",
+                "upper": "0xe182444"
+            },
+            {
+                "name": "tee_fs_htree_write_block",
+                "lower": "0xe168c14",
+                "upper": "0xe168e4c"
+            },
+            {
+                "name": "malloc_reset_stats",
+                "lower": "0xe1997ac",
+                "upper": "0xe1997cc"
+            },
+            {
+                "name": "xts_decrypt",
+                "lower": "0xe17c8a8",
+                "upper": "0xe17cae0"
+            },
+            {
+                "name": "syscall_authenc_enc_final",
+                "lower": "0xe15c244",
+                "upper": "0xe15c544"
+            },
+            {
+                "name": "crypto_hmac_sha3_384_alloc_ctx",
+                "lower": "0xe17a614",
+                "upper": "0xe17a644"
+            },
+            {
+                "name": "init_mp_tomcrypt",
+                "lower": "0xe17dc10",
+                "upper": "0xe17dc90"
+            },
+            {
+                "name": "ecb_start",
+                "lower": "0xe17c4b0",
+                "upper": "0xe17c54c"
+            },
+            {
+                "name": "fdt_check_prop_offset_",
+                "lower": "0xe172ee0",
+                "upper": "0xe172f44"
+            },
+            {
+                "name": "syscall_unmask_cancellation",
+                "lower": "0xe152e1c",
+                "upper": "0xe152eb0"
+            },
+            {
+                "name": "x25519_make_key",
+                "lower": "0xe1878d8",
+                "upper": "0xe18797c"
+            },
+            {
+                "name": "pk_oid_num_to_str",
+                "lower": "0xe18aa54",
+                "upper": "0xe18abc8"
+            },
+            {
+                "name": "realloc",
+                "lower": "0xe19a058",
+                "upper": "0xe19a094"
+            },
+            {
+                "name": "sha384_init",
+                "lower": "0xe179c3c",
+                "upper": "0xe179cf4"
+            },
+            {
+                "name": "ccm_add_aad",
+                "lower": "0xe177a4c",
+                "upper": "0xe177b64"
+            },
+            {
+                "name": "mempool_alloc_pool",
+                "lower": "0xe19e958",
+                "upper": "0xe19e9f8"
+            },
+            {
+                "name": "crypto_acipher_rsaes_decrypt",
+                "lower": "0xe17f284",
+                "upper": "0xe17f574"
+            },
+            {
+                "name": "tweetnacl_crypto_sign",
+                "lower": "0xe18d224",
+                "upper": "0xe18d418"
+            },
+            {
+                "name": "der_decode_integer",
+                "lower": "0xe18f9c4",
+                "upper": "0xe18fb1c"
+            },
+            {
+                "name": "raw_malloc_get_ctx_size",
+                "lower": "0xe19a200",
+                "upper": "0xe19a208"
+            },
+            {
+                "name": "ltc_init_multi_size",
+                "lower": "0xe188b44",
+                "upper": "0xe188ca4"
+            },
+            {
+                "name": "inflateResetKeep",
+                "lower": "0xe16e058",
+                "upper": "0xe16e180"
+            },
+            {
+                "name": "mbedtls_mpi_shift_l",
+                "lower": "0xe192c90",
+                "upper": "0xe192d50"
+            },
+            {
+                "name": "tee_cryp_concat_kdf",
+                "lower": "0xe150b74",
+                "upper": "0xe150dc8"
+            },
+            {
+                "name": "mbedtls_mpi_cmp_mpi",
+                "lower": "0xe192f40",
+                "upper": "0xe193168"
+            },
+            {
+                "name": "malloc_flags",
+                "lower": "0xe199fd8",
+                "upper": "0xe19a01c"
+            },
+            {
+                "name": "ed25519ph_sign",
+                "lower": "0xe1872b0",
+                "upper": "0xe187370"
+            },
+            {
+                "name": "inflateReset",
+                "lower": "0xe16e180",
+                "upper": "0xe16e1d8"
+            },
+            {
+                "name": "memcmp",
+                "lower": "0xe19b424",
+                "upper": "0xe19b54c"
+            },
+            {
+                "name": "mbedtls_mpi_core_exp_mod_unsafe",
+                "lower": "0xe197ddc",
+                "upper": "0xe197e48"
+            },
+            {
+                "name": "mem_neq",
+                "lower": "0xe18d7d4",
+                "upper": "0xe18d82c"
+            },
+            {
+                "name": "malloc_add_pool",
+                "lower": "0xe19a730",
+                "upper": "0xe19a760"
+            },
+            {
+                "name": "sha512_process",
+                "lower": "0xe17a158",
+                "upper": "0xe17a278"
+            },
+            {
+                "name": "crypto_bignum_copy",
+                "lower": "0xe17dd24",
+                "upper": "0xe17dd60"
+            },
+            {
+                "name": "ccm_reset",
+                "lower": "0xe177e5c",
+                "upper": "0xe177eb4"
+            },
+            {
+                "name": "tee_tadb_ta_close_and_commit",
+                "lower": "0xe161b5c",
+                "upper": "0xe161d58"
+            },
+            {
+                "name": "fdt_path_offset_namelen",
+                "lower": "0xe173bc4",
+                "upper": "0xe173d6c"
+            },
+            {
+                "name": "fdt_next_property_offset",
+                "lower": "0xe173ee0",
+                "upper": "0xe173f28"
+            },
+            {
+                "name": "crypto_aes_expand_enc_key",
+                "lower": "0xe1766e8",
+                "upper": "0xe176778"
+            },
+            {
+                "name": "xts_mult_x",
+                "lower": "0xe17ceb8",
+                "upper": "0xe17cef4"
+            },
+            {
+                "name": "der_teletex_char_encode",
+                "lower": "0xe18a784",
+                "upper": "0xe18a7c0"
+            },
+            {
+                "name": "crypto_bignum_num_bytes",
+                "lower": "0xe17dc90",
+                "upper": "0xe17dc94"
+            },
+            {
+                "name": "mbedtls_mpi_add_abs",
+                "lower": "0xe193214",
+                "upper": "0xe19341c"
+            },
+            {
+                "name": "rem_array_elem",
+                "lower": "0xe19f420",
+                "upper": "0xe19f4d0"
+            },
+            {
+                "name": "syscall_cryp_obj_restrict_usage",
+                "lower": "0xe154bb8",
+                "upper": "0xe154d00"
+            },
+            {
+                "name": "tee_fs_rpc_write_init",
+                "lower": "0xe169718",
+                "upper": "0xe169868"
+            },
+            {
+                "name": "register_prng",
+                "lower": "0xe176640",
+                "upper": "0xe1766e8"
+            },
+            {
+                "name": "crypto_acipher_rsaes_encrypt",
+                "lower": "0xe17f574",
+                "upper": "0xe17f730"
+            },
+            {
+                "name": "tee_cryp_pbkdf2",
+                "lower": "0xe151008",
+                "upper": "0xe151200"
+            },
+            {
+                "name": "mbedtls_mpi_mod_mpi",
+                "lower": "0xe194698",
+                "upper": "0xe194774"
+            },
+            {
+                "name": "fdt_get_property_namelen",
+                "lower": "0xe1740a0",
+                "upper": "0xe174114"
+            },
+            {
+                "name": "crypto_acipher_ed25519ctx_verify",
+                "lower": "0xe186f88",
+                "upper": "0xe187080"
+            },
+            {
+                "name": "fdt_node_offset_by_phandle",
+                "lower": "0xe1747cc",
+                "upper": "0xe1748ec"
+            },
+            {
+                "name": "ecb_encrypt",
+                "lower": "0xe17c3c0",
+                "upper": "0xe17c4b0"
+            },
+            {
+                "name": "atomic_dec32",
+                "lower": "0xe19f4ec",
+                "upper": "0xe19f508"
+            },
+            {
+                "name": "mbedtls_mpi_core_sub",
+                "lower": "0xe196830",
+                "upper": "0xe196928"
+            },
+            {
+                "name": "bpool",
+                "lower": "0xe199358",
+                "upper": "0xe1994c8"
+            },
+            {
+                "name": "pauth_strip_pac",
+                "lower": "0xe16ddac",
+                "upper": "0xe16ddc0"
+            },
+            {
+                "name": "crypto_acipher_free_rsa_keypair",
+                "lower": "0xe17eefc",
+                "upper": "0xe17ef58"
+            },
+            {
+                "name": "tee_obj_close",
+                "lower": "0xe1512b4",
+                "upper": "0xe151360"
+            },
+            {
+                "name": "der_decode_choice",
+                "lower": "0xe1913cc",
+                "upper": "0xe191758"
+            },
+            {
+                "name": "crypto_aes_cbc_alloc_ctx",
+                "lower": "0xe17b3c4",
+                "upper": "0xe17b3f8"
+            },
+            {
+                "name": "mbedtls_mpi_gcd",
+                "lower": "0xe194f4c",
+                "upper": "0xe1951a8"
+            },
+            {
+                "name": "crypto_asym_alloc_ecc_public_key",
+                "lower": "0xe18216c",
+                "upper": "0xe18224c"
+            },
+            {
+                "name": "mbedtls_zeroize_and_free",
+                "lower": "0xe1982a0",
+                "upper": "0xe1982dc"
+            },
+            {
+                "name": "sha512_init",
+                "lower": "0xe179d7c",
+                "upper": "0xe179e34"
+            },
+            {
+                "name": "sha512_test",
+                "lower": "0xe179e34",
+                "upper": "0xe179e3c"
+            },
+            {
+                "name": "tee_fs_dirfile_commit_writes",
+                "lower": "0xe1662fc",
+                "upper": "0xe166338"
+            },
+            {
+                "name": "tee_ta_decrypt_final",
+                "lower": "0xe163188",
+                "upper": "0xe163254"
+            },
+            {
+                "name": "der_length_printable_string",
+                "lower": "0xe1908d8",
+                "upper": "0xe190988"
+            },
+            {
+                "name": "rijndael_ecb_encrypt",
+                "lower": "0xe187da8",
+                "upper": "0xe188168"
+            },
+            {
+                "name": "memset",
+                "lower": "0xe19b8d8",
+                "upper": "0xe19baa4"
+            },
+            {
+                "name": "fdt_add_subnode",
+                "lower": "0xe175d38",
+                "upper": "0xe175d70"
+            },
+            {
+                "name": "tee_fs_rpc_write_final",
+                "lower": "0xe169868",
+                "upper": "0xe169884"
+            },
+            {
+                "name": "ec25519_crypto_ctx",
+                "lower": "0xe18c300",
+                "upper": "0xe18c3b0"
+            },
+            {
+                "name": "mbedtls_mpi_core_bigendian_to_host",
+                "lower": "0xe196008",
+                "upper": "0xe1960b4"
+            },
+            {
+                "name": "rstctrl_dt_get_by_name",
+                "lower": "0xe11dc64",
+                "upper": "0xe11dcd0"
+            },
+            {
+                "name": "ltc_ecc_mul2add",
+                "lower": "0xe18395c",
+                "upper": "0xe183e84"
+            },
+            {
+                "name": "tee_fs_dirfile_close",
+                "lower": "0xe1662ac",
+                "upper": "0xe1662fc"
+            },
+            {
+                "name": "syscall_not_supported",
+                "lower": "0xe1515bc",
+                "upper": "0xe1515c4"
+            },
+            {
+                "name": "ltc_ecc_del_point",
+                "lower": "0xe183edc",
+                "upper": "0xe183f14"
+            },
+            {
+                "name": "sha1_done",
+                "lower": "0xe178ae0",
+                "upper": "0xe178c24"
+            },
+            {
+                "name": "___ftmn_callee_done_not_zero",
+                "lower": "0xe19ee28",
+                "upper": "0xe19eea0"
+            },
+            {
+                "name": "tee_fs_rpc_create_dfh",
+                "lower": "0xe1694bc",
+                "upper": "0xe1694ec"
+            },
+            {
+                "name": "syscall_storage_start_enum",
+                "lower": "0xe15ef20",
+                "upper": "0xe15f054"
+            },
+            {
+                "name": "gpio_dt_cfg_by_index",
+                "lower": "0xe11db48",
+                "upper": "0xe11dbb8"
+            },
+            {
+                "name": "crypto_bignum_bn2bin",
+                "lower": "0xe17dc98",
+                "upper": "0xe17dcf4"
+            },
+            {
+                "name": "__tee_entry_std",
+                "lower": "0xe14f524",
+                "upper": "0xe14f674"
+            },
+            {
+                "name": "crypto_aes_cmac_alloc_ctx",
+                "lower": "0xe17ac88",
+                "upper": "0xe17ac94"
+            },
+            {
+                "name": "der_decode_short_integer",
+                "lower": "0xe190988",
+                "upper": "0xe190a04"
+            },
+            {
+                "name": "syscall_cryp_state_free",
+                "lower": "0xe1593fc",
+                "upper": "0xe1594b4"
+            },
+            {
+                "name": "syscall_get_cancellation_flag",
+                "lower": "0xe152d94",
+                "upper": "0xe152e1c"
+            },
+            {
+                "name": "der_decode_asn1_length",
+                "lower": "0xe18ea14",
+                "upper": "0xe18eac0"
+            },
+            {
+                "name": "clk_print_tree",
+                "lower": "0xe11d390",
+                "upper": "0xe11d398"
+            },
+            {
+                "name": "__udivmodti4",
+                "lower": "0xe19f7f0",
+                "upper": "0xe19fae8"
+            },
+            {
+                "name": "fdt_get_alias",
+                "lower": "0xe1743b4",
+                "upper": "0xe1743e4"
+            },
+            {
+                "name": "der_decode_boolean",
+                "lower": "0xe191374",
+                "upper": "0xe1913cc"
+            },
+            {
+                "name": "mbedtls_mpi_core_to_mont_rep",
+                "lower": "0xe197f58",
+                "upper": "0xe197fac"
+            },
+            {
+                "name": "ccm_add_nonce",
+                "lower": "0xe1777f8",
+                "upper": "0xe177a4c"
+            },
+            {
+                "name": "der_encode_printable_string",
+                "lower": "0xe19074c",
+                "upper": "0xe19085c"
+            },
+            {
+                "name": "ltc_ecc_projective_dbl_point",
+                "lower": "0xe18498c",
+                "upper": "0xe1850c4"
+            },
+            {
+                "name": "fdt_get_phandle",
+                "lower": "0xe174284",
+                "upper": "0xe174358"
+            },
+            {
+                "name": "syscall_authenc_dec_final",
+                "lower": "0xe15c544",
+                "upper": "0xe15c7e8"
+            },
+            {
+                "name": "crypto_hmac_md5_alloc_ctx",
+                "lower": "0xe17a494",
+                "upper": "0xe17a4c4"
+            },
+            {
+                "name": "strcmp",
+                "lower": "0xe19bd00",
+                "upper": "0xe19be14"
+            },
+            {
+                "name": "tee_tadb_ta_write",
+                "lower": "0xe161774",
+                "upper": "0xe1618f0"
+            },
+            {
+                "name": "tee_fs_htree_close",
+                "lower": "0xe1686f4",
+                "upper": "0xe168750"
+            },
+            {
+                "name": "ecc_shared_secret",
+                "lower": "0xe182678",
+                "upper": "0xe182794"
+            },
+            {
+                "name": "syscall_cryp_obj_populate",
+                "lower": "0xe156f40",
+                "upper": "0xe157198"
+            },
+            {
+                "name": "crypto_acipher_rsassa_sign",
+                "lower": "0xe17f730",
+                "upper": "0xe17f9e0"
+            },
+            {
+                "name": "der_length_teletex_string",
+                "lower": "0xe18a800",
+                "upper": "0xe18a8b0"
+            },
+            {
+                "name": "der_length_boolean",
+                "lower": "0xe18dd64",
+                "upper": "0xe18dd80"
+            },
+            {
+                "name": "plat_rng_init",
+                "lower": "0xe15049c",
+                "upper": "0xe15055c"
+            },
+            {
+                "name": "des_done",
+                "lower": "0xe176ab8",
+                "upper": "0xe176abc"
+            },
+            {
+                "name": "crypto_acipher_ed25519_sign",
+                "lower": "0xe186c78",
+                "upper": "0xe186d84"
+            },
+            {
+                "name": "fdt_open_into",
+                "lower": "0xe175ed0",
+                "upper": "0xe176184"
+            },
+            {
+                "name": "nex_strdup",
+                "lower": "0xe19ebac",
+                "upper": "0xe19ebfc"
+            },
+            {
+                "name": "crypto_acipher_alloc_x25519_keypair",
+                "lower": "0xe187660",
+                "upper": "0xe1876f8"
+            },
+            {
+                "name": "clk_get_rate",
+                "lower": "0xe11d354",
+                "upper": "0xe11d378"
+            },
+            {
+                "name": "mbedtls_mpi_montred",
+                "lower": "0xe1949d0",
+                "upper": "0xe194a6c"
+            },
+            {
+                "name": "memalign",
+                "lower": "0xe19a094",
+                "upper": "0xe19a0d0"
+            },
+            {
+                "name": "tee_tadb_ta_close_and_delete",
+                "lower": "0xe1618f0",
+                "upper": "0xe161988"
+            },
+            {
+                "name": "mbedtls_mpi_core_shift_l",
+                "lower": "0xe19658c",
+                "upper": "0xe196730"
+            },
+            {
+                "name": "mbedtls_mpi_add_int",
+                "lower": "0xe193800",
+                "upper": "0xe1938b4"
+            },
+            {
+                "name": "handle_lookup",
+                "lower": "0xe122888",
+                "upper": "0xe1228e8"
+            },
+            {
+                "name": "tee_entry_std",
+                "lower": "0xe14f500",
+                "upper": "0xe14f524"
+            },
+            {
+                "name": "sha384_test",
+                "lower": "0xe179cf4",
+                "upper": "0xe179cfc"
+            },
+            {
+                "name": "rsa_verify_hash_ex",
+                "lower": "0xe180d44",
+                "upper": "0xe181304"
+            },
+            {
+                "name": "crypto_des_ecb_alloc_ctx",
+                "lower": "0xe17c210",
+                "upper": "0xe17c244"
+            },
+            {
+                "name": "ltc_ecc_set_point_xyz",
+                "lower": "0xe183f14",
+                "upper": "0xe183f90"
+            },
+            {
+                "name": "crypto_acipher_dsa_sign",
+                "lower": "0xe17e0e4",
+                "upper": "0xe17e338"
+            },
+            {
+                "name": "tee_fs_htree_sync_to_storage",
+                "lower": "0xe1689b8",
+                "upper": "0xe168b78"
+            },
+            {
+                "name": "malloc_buffer_is_within_alloced",
+                "lower": "0xe19a760",
+                "upper": "0xe19a790"
+            },
+            {
+                "name": "crypto_bignum_clear",
+                "lower": "0xe17de10",
+                "upper": "0xe17de38"
+            },
+            {
+                "name": "ecc_populate_ltc_private_key",
+                "lower": "0xe181b4c",
+                "upper": "0xe181c38"
+            },
+            {
+                "name": "syscall_storage_obj_read",
+                "lower": "0xe15f40c",
+                "upper": "0xe15f66c"
+            },
+            {
+                "name": "ctr_encrypt",
+                "lower": "0xe17bc50",
+                "upper": "0xe17bdac"
+            },
+            {
+                "name": "der_length_sequence_ex",
+                "lower": "0xe1899ec",
+                "upper": "0xe189bd4"
+            },
+            {
+                "name": "fdt_check_header",
+                "lower": "0xe172910",
+                "upper": "0xe172b48"
+            },
+            {
+                "name": "crypto_aes_enc_block",
+                "lower": "0xe176778",
+                "upper": "0xe176868"
+            },
+            {
+                "name": "cbc_decrypt",
+                "lower": "0xe17b460",
+                "upper": "0xe17b5e0"
+            },
+            {
+                "name": "tee_obj_close_all",
+                "lower": "0xe151360",
+                "upper": "0xe1513b0"
+            },
+            {
+                "name": "rsa_encrypt_key_ex",
+                "lower": "0xe17ff9c",
+                "upper": "0xe180158"
+            },
+            {
+                "name": "clk_get_parent",
+                "lower": "0xe11d378",
+                "upper": "0xe11d390"
+            },
+            {
+                "name": "ed25519ctx_sign",
+                "lower": "0xe1871f8",
+                "upper": "0xe1872b0"
+            },
+            {
+                "name": "syscall_storage_obj_trunc",
+                "lower": "0xe15f914",
+                "upper": "0xe15fb58"
+            },
+            {
+                "name": "der_ia5_value_decode",
+                "lower": "0xe18f8d4",
+                "upper": "0xe18f914"
+            },
+            {
+                "name": "tee_fs_rpc_truncate",
+                "lower": "0xe169884",
+                "upper": "0xe169928"
+            },
+            {
+                "name": "fdt_get_name",
+                "lower": "0xe173d9c",
+                "upper": "0xe173e98"
+            },
+            {
+                "name": "crypto_hmac_sha512_alloc_ctx",
+                "lower": "0xe17a584",
+                "upper": "0xe17a5b4"
+            },
+            {
+                "name": "free_flags",
+                "lower": "0xe199f08",
+                "upper": "0xe199f70"
+            },
+            {
+                "name": "mbedtls_mpi_core_bitlen",
+                "lower": "0xe195f4c",
+                "upper": "0xe195fe8"
+            },
+            {
+                "name": "der_encode_integer",
+                "lower": "0xe18fb1c",
+                "upper": "0xe18fdf0"
+            },
+            {
+                "name": "tweetnacl_crypto_sign_open",
+                "lower": "0xe18d418",
+                "upper": "0xe18d7c8"
+            },
+            {
+                "name": "der_decode_teletex_string",
+                "lower": "0xe190e44",
+                "upper": "0xe190f68"
+            },
+            {
+                "name": "sha512_done",
+                "lower": "0xe17a018",
+                "upper": "0xe17a158"
+            },
+            {
+                "name": "der_object_identifier_bits",
+                "lower": "0xe1902c4",
+                "upper": "0xe1902e0"
+            },
+            {
+                "name": "xts_done",
+                "lower": "0xe17cae0",
+                "upper": "0xe17cb30"
+            },
+            {
+                "name": "snprintk",
+                "lower": "0xe19c130",
+                "upper": "0xe19c200"
+            },
+            {
+                "name": "mbedtls_mpi_montg_init",
+                "lower": "0xe194924",
+                "upper": "0xe194958"
+            },
+            {
+                "name": "crypto_acipher_alloc_rsa_keypair",
+                "lower": "0xe17ef58",
+                "upper": "0xe17f014"
+            },
+            {
+                "name": "fdt_first_subnode",
+                "lower": "0xe1730f0",
+                "upper": "0xe173184"
+            },
+            {
+                "name": "crypto_des_cbc_alloc_ctx",
+                "lower": "0xe17b3f8",
+                "upper": "0xe17b42c"
+            },
+            {
+                "name": "fdt_add_subnode_namelen",
+                "lower": "0xe175b5c",
+                "upper": "0xe175d38"
+            },
+            {
+                "name": "sha3_shake_done",
+                "lower": "0xe17938c",
+                "upper": "0xe179510"
+            },
+            {
+                "name": "mbedtls_mpi_inv_mod",
+                "lower": "0xe19525c",
+                "upper": "0xe1957b4"
+            },
+            {
+                "name": "syscall_cryp_obj_alloc",
+                "lower": "0xe156158",
+                "upper": "0xe15621c"
+            },
+            {
+                "name": "der_encode_setof",
+                "lower": "0xe189d68",
+                "upper": "0xe189f30"
+            },
+            {
+                "name": "crypto_acipher_rsanopad_decrypt",
+                "lower": "0xe17f19c",
+                "upper": "0xe17f284"
+            },
+            {
+                "name": "___ftmn_callee_update_not_zero",
+                "lower": "0xe19f07c",
+                "upper": "0xe19f0d8"
+            },
+            {
+                "name": "sw_crypto_acipher_rsaes_decrypt",
+                "lower": "0xe17f284",
+                "upper": "0xe17f574"
+            },
+            {
+                "name": "mbedtls_mpi_div_mpi",
+                "lower": "0xe193e04",
+                "upper": "0xe1945dc"
+            },
+            {
+                "name": "mbedtls_mpi_size",
+                "lower": "0xe1922f4",
+                "upper": "0xe192318"
+            },
+            {
+                "name": "bget",
+                "lower": "0xe1987b8",
+                "upper": "0xe198d6c"
+            },
+            {
+                "name": "interrupt_main_handler",
+                "lower": "0xe11c464",
+                "upper": "0xe11c47c"
+            },
+            {
+                "name": "der_decode_custom_type",
+                "lower": "0xe18e4a4",
+                "upper": "0xe18e4c0"
+            },
+            {
+                "name": "hash_memory",
+                "lower": "0xe1888f4",
+                "upper": "0xe1889f8"
+            },
+            {
+                "name": "der_encode_utctime",
+                "lower": "0xe18a130",
+                "upper": "0xe18a3dc"
+            },
+            {
+                "name": "mbedtls_mpi_set_bit",
+                "lower": "0xe1920f4",
+                "upper": "0xe19222c"
+            },
+            {
+                "name": "hmac_done",
+                "lower": "0xe17a674",
+                "upper": "0xe17a828"
+            },
+            {
+                "name": "der_decode_sequence_ex",
+                "lower": "0xe189174",
+                "upper": "0xe189188"
+            },
+            {
+                "name": "crypto_sha512_alloc_ctx",
+                "lower": "0xe178228",
+                "upper": "0xe178258"
+            },
+            {
+                "name": "___ftmn_set_check_res",
+                "lower": "0xe19f170",
+                "upper": "0xe19f1c4"
+            },
+            {
+                "name": "des3_test",
+                "lower": "0xe177288",
+                "upper": "0xe177290"
+            },
+            {
+                "name": "der_length_octet_string",
+                "lower": "0xe1905b4",
+                "upper": "0xe190628"
+            },
+            {
+                "name": "ltc_ecc_is_point_at_infinity",
+                "lower": "0xe18c198",
+                "upper": "0xe18c300"
+            },
+            {
+                "name": "pkcs_1_pss_encode",
+                "lower": "0xe18b620",
+                "upper": "0xe18b9b8"
+            },
+            {
+                "name": "fdt_next_node",
+                "lower": "0xe172f44",
+                "upper": "0xe1730f0"
+            },
+            {
+                "name": "_assert_break",
+                "lower": "0xe11de8c",
+                "upper": "0xe11deb0"
+            },
+            {
+                "name": "mbedtls_mpi_core_exp_mod_working_limbs",
+                "lower": "0xe197848",
+                "upper": "0xe1978c0"
+            },
+            {
+                "name": "des_ecb_encrypt",
+                "lower": "0xe176eb4",
+                "upper": "0xe176fa0"
+            },
+            {
+                "name": "syscall_invoke_ta_command",
+                "lower": "0xe152b54",
+                "upper": "0xe152d34"
+            },
+            {
+                "name": "gpio_configure",
+                "lower": "0xe11da14",
+                "upper": "0xe11db48"
+            },
+            {
+                "name": "mbedtls_mpi_core_add",
+                "lower": "0xe196730",
+                "upper": "0xe196830"
+            },
+            {
+                "name": "handle_get",
+                "lower": "0xe122690",
+                "upper": "0xe122808"
+            },
+            {
+                "name": "der_length_utf8_string",
+                "lower": "0xe18a6c0",
+                "upper": "0xe18a784"
+            },
+            {
+                "name": "syscall_cipher_update",
+                "lower": "0xe15a17c",
+                "upper": "0xe15a1bc"
+            },
+            {
+                "name": "clk_register",
+                "lower": "0xe11d0f4",
+                "upper": "0xe11d190"
+            },
+            {
+                "name": "ecc_generate_key",
+                "lower": "0xe182444",
+                "upper": "0xe1824e8"
+            },
+            {
+                "name": "tee_obj_alloc",
+                "lower": "0xe1513b0",
+                "upper": "0xe1513cc"
+            },
+            {
+                "name": "sha224_init",
+                "lower": "0xe1796b0",
+                "upper": "0xe179718"
+            },
+            {
+                "name": "syscall_authenc_update_aad",
+                "lower": "0xe15beb0",
+                "upper": "0xe15c010"
+            },
+            {
+                "name": "clk_disable",
+                "lower": "0xe11d32c",
+                "upper": "0xe11d354"
+            },
+            {
+                "name": "syscall_storage_alloc_enum",
+                "lower": "0xe15eca0",
+                "upper": "0xe15ed54"
+            },
+            {
+                "name": "omac_process",
+                "lower": "0xe17afbc",
+                "upper": "0xe17b0ec"
+            },
+            {
+                "name": "__udivti3",
+                "lower": "0xe19f508",
+                "upper": "0xe19f530"
+            },
+            {
+                "name": "syscall_cryp_state_alloc",
+                "lower": "0xe158c94",
+                "upper": "0xe1591b8"
+            },
+            {
+                "name": "sha3_done",
+                "lower": "0xe179230",
+                "upper": "0xe17932c"
+            },
+            {
+                "name": "syscall_wait",
+                "lower": "0xe152f48",
+                "upper": "0xe153078"
+            },
+            {
+                "name": "tee_obj_add",
+                "lower": "0xe151200",
+                "upper": "0xe15124c"
+            },
+            {
+                "name": "der_encode_set",
+                "lower": "0xe189c10",
+                "upper": "0xe189ce0"
+            },
+            {
+                "name": "crypto_bignum_bin2bn",
+                "lower": "0xe17dcf4",
+                "upper": "0xe17dd24"
+            },
+            {
+                "name": "tee_tadb_ta_create",
+                "lower": "0xe16144c",
+                "upper": "0xe161774"
+            },
+            {
+                "name": "crypto_asym_alloc_ecc_keypair",
+                "lower": "0xe182070",
+                "upper": "0xe18216c"
+            },
+            {
+                "name": "der_length_asn1_length",
+                "lower": "0xe18ef10",
+                "upper": "0xe18ef1c"
+            },
+            {
+                "name": "crypto_sha1_alloc_ctx",
+                "lower": "0xe178168",
+                "upper": "0xe178198"
+            },
+            {
+                "name": "crypto_aes_ccm_alloc_ctx",
+                "lower": "0xe1776a4",
+                "upper": "0xe1776ec"
+            },
+            {
+                "name": "tweetnacl_crypto_sign_keypair",
+                "lower": "0xe18d1a4",
+                "upper": "0xe18d224"
+            },
+            {
+                "name": "md5_process",
+                "lower": "0xe17870c",
+                "upper": "0xe17882c"
+            },
+            {
+                "name": "__vsnprintf",
+                "lower": "0xe19c264",
+                "upper": "0xe19c378"
+            },
+            {
+                "name": "der_encode_object_identifier",
+                "lower": "0xe1900c8",
+                "upper": "0xe1902c4"
+            },
+            {
+                "name": "der_encode_bit_string",
+                "lower": "0xe18d9f8",
+                "upper": "0xe18db3c"
+            },
+            {
+                "name": "tee_fs_dirfile_rename",
+                "lower": "0xe166810",
+                "upper": "0xe1669dc"
+            },
+            {
+                "name": "sha3_224_init",
+                "lower": "0xe178f2c",
+                "upper": "0xe178f6c"
+            },
+            {
+                "name": "adler32_z",
+                "lower": "0xe171190",
+                "upper": "0xe171a8c"
+            },
+            {
+                "name": "des_ecb_decrypt",
+                "lower": "0xe176fa0",
+                "upper": "0xe17708c"
+            },
+            {
+                "name": "omac_done",
+                "lower": "0xe17aca0",
+                "upper": "0xe17ae18"
+            },
+            {
+                "name": "aes_ecb_decrypt",
+                "lower": "0xe1768cc",
+                "upper": "0xe1768d0"
+            },
+            {
+                "name": "mbedtls_mpi_core_from_mont_rep",
+                "lower": "0xe197fac",
+                "upper": "0xe19803c"
+            },
+            {
+                "name": "handle_db_destroy",
+                "lower": "0xe122560",
+                "upper": "0xe12261c"
+            },
+            {
+                "name": "der_encode_short_integer",
+                "lower": "0xe189f30",
+                "upper": "0xe18a070"
+            },
+            {
+                "name": "trace_ext_puts",
+                "lower": "0xe126e54",
+                "upper": "0xe126f3c"
+            },
+            {
+                "name": "crypto_acipher_gen_x25519_key",
+                "lower": "0xe1876f8",
+                "upper": "0xe1877b8"
+            },
+            {
+                "name": "raw_malloc_buffer_is_within_alloced",
+                "lower": "0xe19a5a4",
+                "upper": "0xe19a6d8"
+            },
+            {
+                "name": "tee_fs_dirfile_get_tmp",
+                "lower": "0xe166338",
+                "upper": "0xe16649c"
+            },
+            {
+                "name": "der_teletex_value_decode",
+                "lower": "0xe18a7c0",
+                "upper": "0xe18a800"
+            },
+            {
+                "name": "trace_ext_get_thread_id",
+                "lower": "0xe126f3c",
+                "upper": "0xe126f54"
+            },
+            {
+                "name": "crypto_hmac_sha224_alloc_ctx",
+                "lower": "0xe17a4f4",
+                "upper": "0xe17a524"
+            },
+            {
+                "name": "raw_malloc_buffer_overlaps_heap",
+                "lower": "0xe19a480",
+                "upper": "0xe19a5a4"
+            },
+            {
+                "name": "tee_cryp_hkdf",
+                "lower": "0xe150a5c",
+                "upper": "0xe150b40"
+            },
+            {
+                "name": "fdt_next_tag",
+                "lower": "0xe172c38",
+                "upper": "0xe172e7c"
+            },
+            {
+                "name": "crypto_sha256_alloc_ctx",
+                "lower": "0xe1781c8",
+                "upper": "0xe1781f8"
+            },
+            {
+                "name": "mbedtls_mpi_free",
+                "lower": "0xe1918e8",
+                "upper": "0xe1919b8"
+            },
+            {
+                "name": "crypto_hmac_sha3_256_alloc_ctx",
+                "lower": "0xe17a5e4",
+                "upper": "0xe17a614"
+            },
+            {
+                "name": "der_decode_sequence_multi_ex",
+                "lower": "0xe1893a8",
+                "upper": "0xe189480"
+            },
+            {
+                "name": "fdt_get_alias_namelen",
+                "lower": "0xe174358",
+                "upper": "0xe1743b4"
+            },
+            {
+                "name": "mbedtls_mpi_core_montmul",
+                "lower": "0xe19747c",
+                "upper": "0xe1975e0"
+            },
+            {
+                "name": "omac_init",
+                "lower": "0xe17ae18",
+                "upper": "0xe17afbc"
+            },
+            {
+                "name": "syscall_hash_final",
+                "lower": "0xe159874",
+                "upper": "0xe159c6c"
+            },
+            {
+                "name": "unwind_stack_arm64",
+                "lower": "0xe16ddf0",
+                "upper": "0xe16df0c"
+            },
+            {
+                "name": "crypto_acipher_gen_rsa_key",
+                "lower": "0xe17f014",
+                "upper": "0xe17f138"
+            },
+            {
+                "name": "fdt_stringlist_count",
+                "lower": "0xe1749ac",
+                "upper": "0xe174ac8"
+            },
+            {
+                "name": "strlen",
+                "lower": "0xe19be14",
+                "upper": "0xe19bee8"
+            },
+            {
+                "name": "sha3_shake_init",
+                "lower": "0xe17932c",
+                "upper": "0xe17938c"
+            },
+            {
+                "name": "sha3_512_init",
+                "lower": "0xe178fec",
+                "upper": "0xe17902c"
+            },
+            {
+                "name": "ins_array_elem",
+                "lower": "0xe19f34c",
+                "upper": "0xe19f420"
+            },
+            {
+                "name": "tee_svc_storage_write_usage",
+                "lower": "0xe15f8c4",
+                "upper": "0xe15f914"
+            },
+            {
+                "name": "tee_time_get_ta_time",
+                "lower": "0xe1600e8",
+                "upper": "0xe1602fc"
+            },
+            {
+                "name": "strchr",
+                "lower": "0xe19baa4",
+                "upper": "0xe19bd00"
+            },
+            {
+                "name": "ccm_process",
+                "lower": "0xe177b64",
+                "upper": "0xe177d20"
+            },
+            {
+                "name": "crypto_sha3_256_alloc_ctx",
+                "lower": "0xe178288",
+                "upper": "0xe1782b8"
+            },
+            {
+                "name": "sha3_512_test",
+                "lower": "0xe179528",
+                "upper": "0xe179530"
+            },
+            {
+                "name": "tee_fs_dirfile_fileh_to_fname",
+                "lower": "0xe166758",
+                "upper": "0xe166810"
+            },
+            {
+                "name": "der_length_sequence",
+                "lower": "0xe189bd4",
+                "upper": "0xe189bdc"
+            },
+            {
+                "name": "cbc_start",
+                "lower": "0xe17b788",
+                "upper": "0xe17b84c"
+            },
+            {
+                "name": "inflateEnd",
+                "lower": "0xe1706fc",
+                "upper": "0xe170798"
+            },
+            {
+                "name": "brel",
+                "lower": "0xe198e60",
+                "upper": "0xe199358"
+            },
+            {
+                "name": "fdt_ro_probe_",
+                "lower": "0xe172704",
+                "upper": "0xe1727d8"
+            },
+            {
+                "name": "ecc_populate_ltc_public_key",
+                "lower": "0xe181d68",
+                "upper": "0xe181e4c"
+            },
+            {
+                "name": "fdt_stringlist_search",
+                "lower": "0xe174ac8",
+                "upper": "0xe174c30"
+            },
+            {
+                "name": "tee_obj_attr_to_binary",
+                "lower": "0xe1552fc",
+                "upper": "0xe1554dc"
+            },
+            {
+                "name": "clk_enable",
+                "lower": "0xe11d2f8",
+                "upper": "0xe11d32c"
+            },
+            {
+                "name": "mbedtls_mpi_sub_abs",
+                "lower": "0xe19341c",
+                "upper": "0xe193674"
+            },
+            {
+                "name": "mbedtls_mpi_fill_random",
+                "lower": "0xe1951a8",
+                "upper": "0xe19525c"
+            },
+            {
+                "name": "fdt_node_check_compatible",
+                "lower": "0xe174dc8",
+                "upper": "0xe174e74"
+            },
+            {
+                "name": "crypto_acipher_alloc_rsa_public_key",
+                "lower": "0xe17ee70",
+                "upper": "0xe17eecc"
+            },
+            {
+                "name": "der_encode_sequence_ex",
+                "lower": "0xe189480",
+                "upper": "0xe189754"
+            },
+            {
+                "name": "der_printable_value_decode",
+                "lower": "0xe190898",
+                "upper": "0xe1908d8"
+            },
+            {
+                "name": "sha224_done",
+                "lower": "0xe179720",
+                "upper": "0xe179798"
+            },
+            {
+                "name": "ed25519_verify",
+                "lower": "0xe18764c",
+                "upper": "0xe187660"
+            },
+            {
+                "name": "crypto_hmac_sha3_512_alloc_ctx",
+                "lower": "0xe17a644",
+                "upper": "0xe17a674"
+            },
+            {
+                "name": "ecc_copy_curve",
+                "lower": "0xe18be40",
+                "upper": "0xe18bf94"
+            },
+            {
+                "name": "der_encode_custom_type",
+                "lower": "0xe18e4c0",
+                "upper": "0xe18e7c4"
+            },
+            {
+                "name": "rsa_make_key",
+                "lower": "0xe1808fc",
+                "upper": "0xe1809e0"
+            },
+            {
+                "name": "mbedtls_mpi_core_cond_assign",
+                "lower": "0xe1960b4",
+                "upper": "0xe196160"
+            },
+            {
+                "name": "mbedtls_mpi_write_string",
+                "lower": "0xe192884",
+                "upper": "0xe192ba8"
+            },
+            {
+                "name": "ctr_done",
+                "lower": "0xe17bac8",
+                "upper": "0xe17bb20"
+            },
+            {
+                "name": "inflateInit2_",
+                "lower": "0xe16e2e0",
+                "upper": "0xe16e420"
+            },
+            {
+                "name": "mbedtls_mpi_core_montmul_init",
+                "lower": "0xe1973f0",
+                "upper": "0xe19747c"
+            },
+            {
+                "name": "sha3_384_init",
+                "lower": "0xe178fac",
+                "upper": "0xe178fec"
+            },
+            {
+                "name": "sw_crypto_acipher_rsassa_sign",
+                "lower": "0xe17f730",
+                "upper": "0xe17f9e0"
+            },
+            {
+                "name": "rand_bn_upto",
+                "lower": "0xe1890bc",
+                "upper": "0xe189174"
+            },
+            {
+                "name": "fdt_header_size_",
+                "lower": "0xe1728ac",
+                "upper": "0xe172910"
+            },
+            {
+                "name": "syscall_obj_generate_key",
+                "lower": "0xe157f44",
+                "upper": "0xe158540"
+            },
+            {
+                "name": "mbedtls_mpi_core_get_mont_r2_unsafe",
+                "lower": "0xe1975e0",
+                "upper": "0xe197698"
+            },
+            {
+                "name": "crypto_shake128_alloc_ctx",
+                "lower": "0xe179620",
+                "upper": "0xe179668"
+            },
+            {
+                "name": "syscall_storage_obj_write",
+                "lower": "0xe15f66c",
+                "upper": "0xe15f8c4"
+            },
+            {
+                "name": "des3_setup",
+                "lower": "0xe176dc8",
+                "upper": "0xe176eb4"
+            },
+            {
+                "name": "inflate_table",
+                "lower": "0xe170798",
+                "upper": "0xe17112c"
+            },
+            {
+                "name": "tee_fs_dirfile_get_next",
+                "lower": "0xe166cc4",
+                "upper": "0xe166e38"
+            },
+            {
+                "name": "tee_time_set_ta_time",
+                "lower": "0xe1602fc",
+                "upper": "0xe1604cc"
+            },
+            {
+                "name": "crypto_acipher_x25519_shared_secret",
+                "lower": "0xe1877b8",
+                "upper": "0xe1878d8"
+            },
+            {
+                "name": "tee_tadb_ta_read",
+                "lower": "0xe16212c",
+                "upper": "0xe162404"
+            },
+            {
+                "name": "mbedtls_mpi_core_mul",
+                "lower": "0xe19733c",
+                "upper": "0xe1973f0"
+            },
+            {
+                "name": "free",
+                "lower": "0xe19a0d0",
+                "upper": "0xe19a0f4"
+            },
+            {
+                "name": "ed25519ph_verify",
+                "lower": "0xe187584",
+                "upper": "0xe18764c"
+            },
+            {
+                "name": "pkcs_1_mgf1",
+                "lower": "0xe190f68",
+                "upper": "0xe1910ec"
+            },
+            {
+                "name": "der_decode_printable_string",
+                "lower": "0xe190628",
+                "upper": "0xe19074c"
+            },
+            {
+                "name": "tweetnacl_crypto_ph",
+                "lower": "0xe18d7c8",
+                "upper": "0xe18d7d4"
+            },
+            {
+                "name": "sw_crypto_acipher_gen_rsa_key",
+                "lower": "0xe17f014",
+                "upper": "0xe17f138"
             }
         ]
     },
